@@ -1,0 +1,30 @@
+; Engine configuration file.
+; Edit through the Godot editor when possible.
+
+config_version=5
+
+[application]
+
+config/name="ARCHIVE ZERO"
+run/main_scene="res://scenes/debug/debug_dashboard.tscn"
+
+[autoload]
+
+GameState="*res://scripts/core/game_state.gd"
+Economy="*res://scripts/economy/economy.gd"
+SimulationManager="*res://scripts/simulation/simulation_manager.gd"
+SaveManager="*res://scripts/core/save_manager.gd"
+
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=540
+window/size/window_width_override=960
+window/size/window_height_override=540
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.025, 0.035, 0.05, 1)
