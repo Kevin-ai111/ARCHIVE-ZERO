@@ -16,9 +16,9 @@ researching, and containing increasingly impossible objects.
 | **Platform** | PC / Steam |
 | **Status** | Early Development |
 
-The current build is a technical foundation. It provides authoritative session
-state, transaction-safe currency handling, fixed-interval numerical simulation,
-a temporary Basic Scanner, JSON saving, and a minimal debug dashboard.
+The current build provides authoritative session state, transaction-safe
+currency handling, fixed-interval numerical simulation, a data-driven four-stage
+production line, versioned JSON saving, and a minimal debug dashboard.
 
 ## Open locally
 
@@ -28,6 +28,15 @@ a temporary Basic Scanner, JSON saving, and a minimal debug dashboard.
 4. Open the project and press **F6**/**F5** to run the configured debug scene.
 
 No third-party addons are required.
+
+Run the lightweight production-domain validation from the repository root with:
+
+```bash
+godot --headless --path . --script tests/production_pipeline_test.gd
+```
+
+Manual runtime checks are listed in
+[`docs/VALIDATION.md`](docs/VALIDATION.md).
 
 ## Development notes
 
