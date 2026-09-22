@@ -1,0 +1,171 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/debug_dashboard.gd" id="1_dashboard"]
+
+[node name="DebugDashboard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dashboard")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.025, 0.035, 0.05, 1)
+mouse_filter = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Content" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "ARCHIVE ZERO"
+horizontal_alignment = 1
+
+[node name="StateGrid" type="GridContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="MoneyLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+layout_mode = 2
+text = "Money:"
+
+[node name="MoneyValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+horizontal_alignment = 2
+
+[node name="ProcessedItemsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+layout_mode = 2
+text = "Processed Items:"
+
+[node name="ProcessedItemsValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+horizontal_alignment = 2
+
+[node name="PlaytimeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+layout_mode = 2
+text = "Playtime:"
+
+[node name="PlaytimeValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "00:00:00"
+horizontal_alignment = 2
+
+[node name="Divider" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+
+[node name="ProductionTitle" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Production"
+
+[node name="ProductionGrid" type="GridContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="ItemsPerSecondLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+layout_mode = 2
+text = "Items/sec:"
+
+[node name="ItemsPerSecondValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.00"
+horizontal_alignment = 2
+
+[node name="CreditsPerSecondLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+layout_mode = 2
+text = "Credits/sec:"
+
+[node name="CreditsPerSecondValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "2.00"
+horizontal_alignment = 2
+
+[node name="TransactionButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="ProcessItemButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons"]
+layout_mode = 2
+text = "Process 1 Item"
+
+[node name="AddCreditsButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons"]
+layout_mode = 2
+text = "Add 10 Credits"
+
+[node name="SpendCreditsButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons"]
+layout_mode = 2
+text = "Spend 5 Credits"
+
+[node name="ScannerToggleButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Disable Basic Scanner"
+
+[node name="SaveButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="SaveButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Save"
+
+[node name="LoadButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Load"
+
+[node name="StatusValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Debug systems ready."
+horizontal_alignment = 1
+
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/ProcessItemButton" to="." method="_on_process_item_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/AddCreditsButton" to="." method="_on_add_credits_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/SpendCreditsButton" to="." method="_on_spend_credits_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/ScannerToggleButton" to="." method="_on_scanner_toggle_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons/LoadButton" to="." method="_on_load_button_pressed"]
