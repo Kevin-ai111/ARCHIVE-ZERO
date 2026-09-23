@@ -18,7 +18,8 @@ researching, and containing increasingly impossible objects.
 
 The current build provides authoritative session state, transaction-safe
 currency handling, fixed-interval numerical simulation, a data-driven four-stage
-production line, versioned JSON saving, and a minimal debug dashboard.
+production line, a purchasable Scanner Motor I capacity upgrade, versioned JSON
+saving, and a minimal debug dashboard.
 
 ## Open locally
 
@@ -29,10 +30,11 @@ production line, versioned JSON saving, and a minimal debug dashboard.
 
 No third-party addons are required.
 
-Run the lightweight production-domain validation from the repository root with:
+Run the headless production and persistence validation from the repository root
+with:
 
 ```bash
-godot --headless --path . --script tests/production_pipeline_test.gd
+godot --headless --path . tests/production_pipeline_test.tscn
 ```
 
 Manual runtime checks are listed in

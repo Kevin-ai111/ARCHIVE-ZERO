@@ -147,14 +147,30 @@ func _prepare_save_data(save_data: Dictionary) -> Dictionary:
 		return {}
 
 	var version: int = int(save_data["save_version"])
-	if version == SAVE_VERSION:
-		return save_data.duplicate(true)
 	if version == LEGACY_SAVE_VERSION:
-		var migrated_data: Dictionary = save_data.duplicate(true)
-		migrated_data["save_version"] = SAVE_VERSION
-		migrated_data["production_line"] = SimulationManager.get_default_production_save_data()
-		return migrated_data
-	return {}
+		var legacy_data: Dictionary = save_data.duplicate(true)
+		legacy_data["save_version"] = SAVE_VERSION
+		legacy_data["production_line"] = SimulationManager.get_default_production_save_data()
+		return legacy_data
+	if version != SAVE_VERSION:
+		return {}
+
+	var migrated_data: Dictionary = save_data.duplicate(true)
+	var production_data: Variant = migrated_data.get(
+		"production_line", migrated_data.get("production", null)
+	)
+	if typeof(production_data) != TYPE_DICTIONARY:
+		return {}
+
+	var migrated_production: Dictionary = SimulationManager.migrate_production_save_data(
+		production_data as Dictionary
+	)
+	if migrated_production.is_empty():
+		return {}
+
+	migrated_data["production_line"] = migrated_production
+	migrated_data.erase("production")
+	return migrated_data
 
 
 func _remove_temporary_save() -> void:

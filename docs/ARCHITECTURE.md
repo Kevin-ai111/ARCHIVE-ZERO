@@ -10,8 +10,8 @@ Four session-wide services remain Autoloads:
 3. `SimulationManager` advances time and commits completed output.
 4. `SaveManager` persists and restores supported state.
 
-Machine definitions, installed machines, and production lines are domain
-objects rather than Nodes or Autoloads.
+Machine definitions, installed machines, upgrades, and production lines are
+domain objects rather than Nodes or Autoloads.
 
 ## Production domain
 
@@ -32,8 +32,8 @@ capacity is:
 definition.base_processing_rate × capacity_multiplier
 ```
 
-The multiplier is a debug seam for validating capacity changes. It is not an
-upgrade system.
+The multiplier is the integration point for upgrades and remains available as
+a debug seam for validating capacity changes.
 
 ### ProductionLine
 
@@ -61,6 +61,15 @@ fractional accumulator. Only complete items are returned; the remainder stays
 in the line for later calls. One large elapsed interval and many smaller
 intervals therefore preserve equivalent output without spawning item Nodes.
 
+### Scanner upgrades
+
+`ScannerUpgrades` is the small catalog for purchasable Scanner modifiers. The
+current Scanner Motor I costs 50 Credits and applies a `1.25×` capacity
+multiplier. `SimulationManager` owns purchased upgrade IDs, spends through
+`Economy`, applies the resulting multiplier to the Scanner `MachineRuntime`, and
+rejects duplicate or unaffordable purchases. Upgrade definitions and ownership
+do not live in UI code.
+
 ### SimulationManager
 
 `SimulationManager` schedules fixed simulation ticks and delegates production
@@ -68,16 +77,16 @@ math to `ProductionLine`. It commits completed item totals to `GameState` and
 credits through `Economy`. The temporary prototype output value of two credits
 per completed item lives here, outside all machine definitions.
 
-Before a machine state change or save, pending sub-tick time is simulated using
-the previous configuration. This prevents the scheduler remainder from being
-lost or retroactively processed with a new capacity.
+Before a machine state change, upgrade purchase, or save, pending sub-tick time
+is simulated using the previous configuration. This prevents the scheduler
+remainder from being lost or retroactively processed with a new capacity.
 
 The manager does not calculate bottlenecks, utilization, machine configuration,
 or UI formatting.
 
 ## Saving
 
-Save schema version 2 adds a `production_line` dictionary:
+Save schema version 2 stores a `production_line` dictionary:
 
 ```json
 {
@@ -85,16 +94,23 @@ Save schema version 2 adds a `production_line` dictionary:
   "machines": {
     "basic_scanner": {
       "enabled": true,
-      "capacity_multiplier": 1.0
+      "capacity_multiplier": 1.25
     }
-  }
+  },
+  "scanner_upgrades": ["scanner_motor_1"]
 }
 ```
 
-Only primitive data keyed by stable machine IDs is serialized. Nodes, scenes,
-and Resource objects are never stored. The entire production payload is
-validated before live state changes. Version 1 development saves load with the
-new line's default runtime state; no general migration framework exists yet.
+Only primitive data keyed by stable machine and upgrade IDs is serialized.
+Nodes, scenes, and Resource objects are never stored. The entire production
+payload is validated before live state changes. Version 1 development saves
+load with the new line's default runtime state.
+
+Two independently developed version-2 shapes existed before the production
+branches were reconciled. Loading accepts both the current `production_line`
+shape and the earlier Scanner-only `production` shape, then normalizes them to
+the current data-driven line. Existing current-main saves that predate upgrade
+ownership receive an empty upgrade list.
 
 ## Simulation and visuals
 
@@ -103,7 +119,7 @@ them, but visible objects must never determine throughput, inventory, or income.
 Fifty rendered objects may represent millions of numerically processed items.
 
 The debug UI calls service APIs and reads domain results. It does not calculate
-throughput, bottlenecks, utilization, rewards, or save data.
+throughput, bottlenecks, utilization, rewards, upgrade prices, or save data.
 
 ## Future extension
 
@@ -120,4 +136,5 @@ machine types themselves.
 - Add Autoloads only for truly session-wide single authorities.
 - Keep machine type configuration in data resources.
 - Version save changes and validate a complete payload before applying it.
+- Keep upgrade definitions out of UI and machine runtime state.
 - Add signals only when a current consumer benefits from decoupling.

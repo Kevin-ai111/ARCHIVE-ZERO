@@ -2,14 +2,17 @@ extends Node
 
 signal simulation_updated(items_processed: int, credits_earned: int, elapsed_seconds: float)
 signal production_line_changed
+signal scanner_upgrades_changed
 
 const DEFAULT_TICK_INTERVAL: float = 0.25
 const MINIMUM_TICK_INTERVAL: float = 0.01
 const PROTOTYPE_CREDITS_PER_ITEM: int = 2
+const BASIC_SCANNER_ID: StringName = &"basic_scanner"
 
 var _tick_interval: float = DEFAULT_TICK_INTERVAL
 var _tick_accumulator: float = 0.0
 var _production_line: ProductionLine = ProductionLineFactory.create_initial_line()
+var _owned_scanner_upgrades: Array[String] = []
 
 
 func _process(delta: float) -> void:
@@ -55,6 +58,40 @@ func process_manual_items(amount: int) -> bool:
 	return credits_earned > 0
 
 
+func purchase_scanner_upgrade(upgrade_id: String) -> bool:
+	if _owned_scanner_upgrades.has(upgrade_id):
+		return false
+
+	var definition: Dictionary = ScannerUpgrades.get_definition(upgrade_id)
+	if definition.is_empty():
+		return false
+
+	flush_pending_simulation()
+	if not Economy.spend_money(int(definition["cost"])):
+		return false
+
+	_owned_scanner_upgrades.append(upgrade_id)
+	_apply_scanner_upgrades()
+	production_line_changed.emit()
+	scanner_upgrades_changed.emit()
+	return true
+
+
+func owns_scanner_upgrade(upgrade_id: String) -> bool:
+	return _owned_scanner_upgrades.has(upgrade_id)
+
+
+func get_owned_scanner_upgrades() -> Array[String]:
+	return _owned_scanner_upgrades.duplicate()
+
+
+func get_scanner_throughput_multiplier() -> float:
+	var scanner: MachineRuntime = _production_line.get_stage(BASIC_SCANNER_ID)
+	if scanner == null:
+		return 0.0
+	return scanner.get_capacity_multiplier()
+
+
 func set_tick_interval(interval_seconds: float) -> bool:
 	if not is_finite(interval_seconds) or interval_seconds < MINIMUM_TICK_INTERVAL:
 		return false
@@ -83,6 +120,15 @@ func set_machine_enabled(machine_id: StringName, enabled: bool) -> bool:
 	return true
 
 
+func set_basic_scanner_enabled(enabled: bool) -> void:
+	set_machine_enabled(BASIC_SCANNER_ID, enabled)
+
+
+func is_basic_scanner_enabled() -> bool:
+	var scanner: MachineRuntime = _production_line.get_stage(BASIC_SCANNER_ID)
+	return scanner != null and scanner.is_enabled()
+
+
 func set_machine_capacity_multiplier(machine_id: StringName, multiplier: float) -> bool:
 	var stage: MachineRuntime = _production_line.get_stage(machine_id)
 	if stage == null or not is_finite(multiplier) or multiplier < 0.0:
@@ -94,6 +140,10 @@ func set_machine_capacity_multiplier(machine_id: StringName, multiplier: float) 
 	_production_line.set_stage_capacity_multiplier(machine_id, multiplier)
 	production_line_changed.emit()
 	return true
+
+
+func get_scanner_capacity_per_minute() -> float:
+	return _production_line.get_stage_capacity(BASIC_SCANNER_ID) * 60.0
 
 
 func get_effective_throughput() -> float:
@@ -114,24 +164,87 @@ func flush_pending_simulation() -> void:
 
 
 func get_production_save_data() -> Dictionary:
-	return _production_line.get_save_data()
+	var save_data: Dictionary = _production_line.get_save_data()
+	save_data["scanner_upgrades"] = _owned_scanner_upgrades.duplicate()
+	return save_data
 
 
 func get_default_production_save_data() -> Dictionary:
-	return ProductionLineFactory.create_initial_line().get_save_data()
+	var save_data: Dictionary = ProductionLineFactory.create_initial_line().get_save_data()
+	save_data["scanner_upgrades"] = []
+	return save_data
+
+
+func migrate_production_save_data(save_data: Dictionary) -> Dictionary:
+	if save_data.has("machines"):
+		var current_data: Dictionary = save_data.duplicate(true)
+		if not current_data.has("scanner_upgrades"):
+			current_data["scanner_upgrades"] = []
+		return current_data if is_valid_production_save_data(current_data) else {}
+
+	var legacy_fields: Array[String] = [
+		"scanner_enabled",
+		"scanner_upgrades",
+		"incoming_item_buffer",
+		"processed_item_fraction",
+	]
+	for field: String in legacy_fields:
+		if not save_data.has(field):
+			return {}
+
+	var migrated_data: Dictionary = get_default_production_save_data()
+	var scanner_state: Dictionary = migrated_data["machines"][String(BASIC_SCANNER_ID)]
+	scanner_state["enabled"] = save_data["scanner_enabled"]
+	scanner_state["capacity_multiplier"] = ScannerUpgrades.get_scanner_multiplier(
+		_array_to_strings(save_data["scanner_upgrades"])
+	)
+	migrated_data["fractional_progress"] = save_data["processed_item_fraction"]
+	migrated_data["scanner_upgrades"] = save_data["scanner_upgrades"]
+	return migrated_data if is_valid_production_save_data(migrated_data) else {}
 
 
 func is_valid_production_save_data(save_data: Dictionary) -> bool:
-	return _production_line.is_valid_save_data(save_data)
+	if not _production_line.is_valid_save_data(save_data):
+		return false
+	if not save_data.has("scanner_upgrades") or typeof(save_data["scanner_upgrades"]) != TYPE_ARRAY:
+		return false
+
+	for upgrade_id: Variant in save_data["scanner_upgrades"]:
+		if typeof(upgrade_id) != TYPE_STRING or not ScannerUpgrades.DEFINITIONS.has(upgrade_id):
+			return false
+	return true
 
 
 func restore_production_save_data(save_data: Dictionary) -> bool:
+	if not is_valid_production_save_data(save_data):
+		return false
 	if not _production_line.restore_save_data(save_data):
 		return false
 
+	_owned_scanner_upgrades.assign(save_data["scanner_upgrades"])
+	_apply_scanner_upgrades()
 	_tick_accumulator = 0.0
 	production_line_changed.emit()
+	scanner_upgrades_changed.emit()
 	return true
+
+
+func _apply_scanner_upgrades() -> void:
+	_production_line.set_stage_capacity_multiplier(
+		BASIC_SCANNER_ID,
+		ScannerUpgrades.get_scanner_multiplier(_owned_scanner_upgrades)
+	)
+
+
+func _array_to_strings(value: Variant) -> Array[String]:
+	var result: Array[String] = []
+	if typeof(value) != TYPE_ARRAY:
+		return result
+	for entry: Variant in value:
+		if typeof(entry) != TYPE_STRING:
+			return []
+		result.append(entry)
+	return result
 
 
 func _commit_production(items_processed: int) -> int:
