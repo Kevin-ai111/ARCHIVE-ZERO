@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="MachineDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machines/machine_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+id = &"basic_scanner"
+display_name = "Basic Scanner"
+description = "Digitizes identifying information for each received object."
+base_processing_rate = 1.0
+purchase_cost = 0

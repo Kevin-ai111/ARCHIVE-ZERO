@@ -1,11 +1,17 @@
 extends Control
 
+const BASIC_SORTER_ID: StringName = &"basic_sorter"
+
+var _stage_views: Dictionary = {}
+
 @onready var money_value: Label = %MoneyValue
 @onready var processed_items_value: Label = %ProcessedItemsValue
 @onready var playtime_value: Label = %PlaytimeValue
-@onready var items_per_second_value: Label = %ItemsPerSecondValue
+@onready var stage_rows: VBoxContainer = %StageRows
+@onready var throughput_value: Label = %ThroughputValue
 @onready var credits_per_second_value: Label = %CreditsPerSecondValue
-@onready var scanner_toggle_button: Button = %ScannerToggleButton
+@onready var bottleneck_value: Label = %BottleneckValue
+@onready var fractional_progress_value: Label = %FractionalProgressValue
 @onready var status_value: Label = %StatusValue
 
 
@@ -14,9 +20,10 @@ func _ready() -> void:
 	GameState.processed_items_changed.connect(_on_processed_items_changed)
 	GameState.state_restored.connect(_refresh_all)
 	SimulationManager.simulation_updated.connect(_on_simulation_updated)
-	SimulationManager.basic_scanner_enabled_changed.connect(_on_scanner_enabled_changed)
+	SimulationManager.production_line_changed.connect(_on_production_line_changed)
 	SaveManager.game_saved.connect(_on_game_saved)
 	SaveManager.game_loaded.connect(_on_game_loaded)
+	_build_stage_rows()
 	_refresh_all()
 
 
@@ -35,8 +42,23 @@ func _on_spend_credits_button_pressed() -> void:
 		status_value.text = "Cannot afford 5 credits."
 
 
-func _on_scanner_toggle_button_pressed() -> void:
-	SimulationManager.set_basic_scanner_enabled(not SimulationManager.is_basic_scanner_enabled())
+func _on_stage_toggle_pressed(machine_id: StringName) -> void:
+	var stage: MachineRuntime = SimulationManager.get_production_line().get_stage(machine_id)
+	if stage == null:
+		status_value.text = "Unknown production stage: %s" % machine_id
+		return
+
+	SimulationManager.set_machine_enabled(machine_id, not stage.is_enabled())
+
+
+func _on_sorter_x1_button_pressed() -> void:
+	SimulationManager.set_machine_capacity_multiplier(BASIC_SORTER_ID, 1.0)
+	status_value.text = "Basic Sorter capacity multiplier set to x1."
+
+
+func _on_sorter_x2_button_pressed() -> void:
+	SimulationManager.set_machine_capacity_multiplier(BASIC_SORTER_ID, 2.0)
+	status_value.text = "Basic Sorter capacity multiplier set to x2."
 
 
 func _on_save_button_pressed() -> void:
@@ -64,9 +86,8 @@ func _on_simulation_updated(
 	_refresh_production()
 
 
-func _on_scanner_enabled_changed(_enabled: bool) -> void:
+func _on_production_line_changed() -> void:
 	_refresh_production()
-	_refresh_scanner_button()
 
 
 func _on_game_saved() -> void:
@@ -78,12 +99,50 @@ func _on_game_loaded() -> void:
 	_refresh_all()
 
 
+func _build_stage_rows() -> void:
+	for stage: MachineRuntime in SimulationManager.get_production_line().get_stages():
+		var row: HBoxContainer = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 12)
+
+		var name_label: Label = Label.new()
+		name_label.custom_minimum_size = Vector2(190.0, 0.0)
+		name_label.text = stage.get_definition().display_name
+		row.add_child(name_label)
+
+		var capacity_label: Label = Label.new()
+		capacity_label.custom_minimum_size = Vector2(100.0, 0.0)
+		capacity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		row.add_child(capacity_label)
+
+		var utilization_label: Label = Label.new()
+		utilization_label.custom_minimum_size = Vector2(90.0, 0.0)
+		utilization_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		row.add_child(utilization_label)
+
+		var state_label: Label = Label.new()
+		state_label.custom_minimum_size = Vector2(130.0, 0.0)
+		state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		row.add_child(state_label)
+
+		var toggle_button: Button = Button.new()
+		toggle_button.custom_minimum_size = Vector2(90.0, 0.0)
+		toggle_button.pressed.connect(_on_stage_toggle_pressed.bind(stage.get_id()))
+		row.add_child(toggle_button)
+
+		stage_rows.add_child(row)
+		_stage_views[String(stage.get_id())] = {
+			"capacity": capacity_label,
+			"utilization": utilization_label,
+			"state": state_label,
+			"toggle": toggle_button,
+		}
+
+
 func _refresh_all() -> void:
 	_refresh_money()
 	_refresh_processed_items()
 	_refresh_playtime()
 	_refresh_production()
-	_refresh_scanner_button()
 
 
 func _refresh_money() -> void:
@@ -103,12 +162,33 @@ func _refresh_playtime() -> void:
 
 
 func _refresh_production() -> void:
-	items_per_second_value.text = "%.2f" % SimulationManager.get_items_per_second()
+	var production_line: ProductionLine = SimulationManager.get_production_line()
+	var bottleneck: MachineRuntime = production_line.get_bottleneck()
+
+	for stage: MachineRuntime in production_line.get_stages():
+		var view: Dictionary = _stage_views[String(stage.get_id())] as Dictionary
+		var capacity_label: Label = view["capacity"] as Label
+		var utilization_label: Label = view["utilization"] as Label
+		var state_label: Label = view["state"] as Label
+		var toggle_button: Button = view["toggle"] as Button
+
+		capacity_label.text = "%.2f/s" % stage.get_configured_capacity()
+		utilization_label.text = (
+			"%.1f%%" % (production_line.get_stage_utilization(stage.get_id()) * 100.0)
+		)
+		toggle_button.text = "ON" if stage.is_enabled() else "OFF"
+
+		if not stage.is_enabled():
+			state_label.text = "DISABLED"
+		elif bottleneck == stage:
+			state_label.text = "BOTTLENECK"
+		else:
+			state_label.text = ""
+
+	throughput_value.text = "%.2f items/sec" % SimulationManager.get_effective_throughput()
 	credits_per_second_value.text = "%.2f" % SimulationManager.get_credits_per_second()
-
-
-func _refresh_scanner_button() -> void:
-	if SimulationManager.is_basic_scanner_enabled():
-		scanner_toggle_button.text = "Disable Basic Scanner"
+	fractional_progress_value.text = "%.4f" % production_line.get_fractional_progress()
+	if bottleneck == null:
+		bottleneck_value.text = "None (line stopped)"
 	else:
-		scanner_toggle_button.text = "Enable Basic Scanner"
+		bottleneck_value.text = bottleneck.get_definition().display_name
