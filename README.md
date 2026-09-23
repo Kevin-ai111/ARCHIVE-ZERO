@@ -16,9 +16,9 @@ researching, and containing increasingly impossible objects.
 | **Platform** | PC / Steam |
 | **Status** | Early Development |
 
-The current build is a technical foundation. It provides authoritative session
-state, transaction-safe currency handling, fixed-interval numerical simulation,
-a temporary Basic Scanner, JSON saving, and a minimal debug dashboard.
+The current build includes the first production pipeline: incoming items feed a
+throughput-limited Scanner, processed items generate Credits, and Scanner Motor I
+can be purchased to increase capacity. Production remains aggregate and numerical.
 
 ## Open locally
 
@@ -28,6 +28,14 @@ a temporary Basic Scanner, JSON saving, and a minimal debug dashboard.
 4. Open the project and press **F6**/**F5** to run the configured debug scene.
 
 No third-party addons are required.
+
+## Tests
+
+Run the headless production and persistence suite from the project root:
+
+```bash
+godot --headless --path . --script tests/production_pipeline_test.gd
+```
 
 ## Development notes
 

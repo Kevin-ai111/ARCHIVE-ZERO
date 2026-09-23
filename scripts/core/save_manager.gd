@@ -3,7 +3,7 @@ extends Node
 signal game_saved
 signal game_loaded
 
-const SAVE_VERSION: int = 1
+const SAVE_VERSION: int = 2
 const SAVE_PATH: String = "user://archive_zero_save.json"
 const TEMP_SAVE_PATH: String = "user://archive_zero_save.tmp"
 
@@ -15,6 +15,7 @@ func save_game() -> bool:
 		"total_money_earned": GameState.get_total_money_earned(),
 		"total_processed_items": GameState.get_total_processed_items(),
 		"total_playtime": GameState.get_total_playtime(),
+		"production": SimulationManager.get_production_save_data(),
 		"save_timestamp": int(Time.get_unix_time_from_system()),
 	}
 
@@ -72,14 +73,17 @@ func load_game() -> bool:
 		push_warning("Save file has an unsupported or invalid structure.")
 		return false
 
-	var validated_data: Dictionary = save_data as Dictionary
+	var validated_data: Dictionary = _migrate_save_data(save_data as Dictionary)
+	if not _is_valid_save(validated_data):
+		push_warning("Save migration produced an invalid structure.")
+		return false
 	GameState.restore_state(
 		int(validated_data["money"]),
 		int(validated_data["total_money_earned"]),
 		int(validated_data["total_processed_items"]),
 		float(validated_data["total_playtime"])
 	)
-	SimulationManager.reset_transient_progress()
+	SimulationManager.restore_production_state(validated_data["production"])
 	game_loaded.emit()
 	return true
 
@@ -120,13 +124,34 @@ func _is_valid_save(save_data: Dictionary) -> bool:
 
 	return (
 		_is_non_negative_integer(save_data["save_version"])
-		and int(save_data["save_version"]) == SAVE_VERSION
+		and (int(save_data["save_version"]) == 1 or int(save_data["save_version"]) == SAVE_VERSION)
 		and _is_non_negative_integer(save_data["money"])
 		and _is_non_negative_integer(save_data["total_money_earned"])
 		and _is_non_negative_integer(save_data["total_processed_items"])
 		and _is_non_negative_number(save_data["total_playtime"])
 		and _is_non_negative_integer(save_data["save_timestamp"])
+		and (
+			int(save_data["save_version"]) == 1
+			or (
+				save_data.has("production")
+				and typeof(save_data["production"]) == TYPE_DICTIONARY
+				and SimulationManager.is_valid_production_state(save_data["production"])
+			)
+		)
 	)
+
+
+func _migrate_save_data(save_data: Dictionary) -> Dictionary:
+	var migrated_data: Dictionary = save_data.duplicate(true)
+	if int(migrated_data["save_version"]) == 1:
+		migrated_data["save_version"] = SAVE_VERSION
+		migrated_data["production"] = {
+			"scanner_enabled": true,
+			"scanner_upgrades": [],
+			"incoming_item_buffer": 0.0,
+			"processed_item_fraction": 0.0,
+		}
+	return migrated_data
 
 
 func _is_non_negative_integer(value: Variant) -> bool:

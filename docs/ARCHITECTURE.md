@@ -4,7 +4,7 @@
 
 ARCHIVE ZERO separates authoritative numerical simulation from presentation.
 The current runtime is deliberately small and consists of four project-wide
-services plus one temporary production source.
+services plus a reusable numerical machine model.
 
 Autoload order is significant:
 
@@ -37,12 +37,14 @@ are not Autoloads.
 - Schedules simulation at a configurable fixed interval.
 - Can advance an arbitrary elapsed duration in one numerical operation.
 - Commits aggregate item and credit totals; it never spawns an item Node.
-- Owns the temporary Basic Scanner instance and exposes its current rates.
+- Owns incoming inventory, the Basic Scanner instance, upgrade ownership, and rates.
+- Resolves the pipeline using aggregate floating-point quantities each tick.
 
-`BasicScanner` retains fractional numerical progress between ticks. At its
-current rate it completes one item per second and awards two credits per item.
-This makes results independent of rendering frame rate and provides the basis
-for later offline progress.
+`Machine` provides enabled state, base throughput, and a throughput multiplier.
+`BasicScanner` specializes it only with scanner capacity and available-item
+processing. `SimulationManager` retains fractional input/output between ticks,
+so no item Nodes are spawned and the same calculation handles millions of items
+per minute. Completed items award two credits through `Economy`.
 
 ### SaveManager
 
@@ -51,10 +53,11 @@ for later offline progress.
 - Writes a temporary file before replacing the main save.
 - Validates the complete payload before changing live state.
 - Rejects missing, malformed, negative, or unsupported-version saves safely.
-- Provides a version boundary where migrations can be added later.
+- Migrates version 1 saves to version 2 defaults before restoring state.
 
-The Basic Scanner's enabled flag and fractional progress are intentionally not
-part of save version 1. Loading clears transient fractional progress.
+Save version 2 persists Scanner enabled state, owned upgrades, queued incoming
+items, and fractional processed progress. Scanner Motor I is defined in the
+upgrade catalog rather than embedded in UI or transaction code.
 
 ## Simulation and visuals
 

@@ -1,30 +1,16 @@
 class_name BasicScanner
-extends RefCounted
+extends Machine
 
-const ITEMS_PER_SECOND: float = 1.0
+const BASE_THROUGHPUT_PER_MINUTE: float = 60.0
 const CREDITS_PER_ITEM: int = 2
 
-var _enabled: bool = true
-var _fractional_items: float = 0.0
+
+func _init() -> void:
+	super(BASE_THROUGHPUT_PER_MINUTE)
 
 
-func process_elapsed(elapsed_seconds: float) -> int:
-	if not _enabled or elapsed_seconds <= 0.0:
-		return 0
-
-	_fractional_items += ITEMS_PER_SECOND * elapsed_seconds
-	var completed_items: int = int(floor(_fractional_items))
-	_fractional_items -= completed_items
-	return completed_items
-
-
-func set_enabled(enabled: bool) -> void:
-	_enabled = enabled
-
-
-func is_enabled() -> bool:
-	return _enabled
-
-
-func reset_progress() -> void:
-	_fractional_items = 0.0
+func process_available(available_items: float, elapsed_seconds: float) -> float:
+	if available_items <= 0.0 or elapsed_seconds <= 0.0 or not is_enabled():
+		return 0.0
+	var capacity: float = get_effective_throughput_per_minute() * elapsed_seconds / 60.0
+	return minf(available_items, capacity)

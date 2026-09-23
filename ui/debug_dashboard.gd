@@ -3,8 +3,13 @@ extends Control
 @onready var money_value: Label = %MoneyValue
 @onready var processed_items_value: Label = %ProcessedItemsValue
 @onready var playtime_value: Label = %PlaytimeValue
-@onready var items_per_second_value: Label = %ItemsPerSecondValue
-@onready var credits_per_second_value: Label = %CreditsPerSecondValue
+@onready var incoming_rate_value: Label = %IncomingRateValue
+@onready var scanner_capacity_value: Label = %ScannerCapacityValue
+@onready var processed_rate_value: Label = %ProcessedRateValue
+@onready var credits_rate_value: Label = %CreditsRateValue
+@onready var bottleneck_value: Label = %BottleneckValue
+@onready var scanner_upgrade_value: Label = %ScannerUpgradeValue
+@onready var scanner_upgrade_button: Button = %ScannerUpgradeButton
 @onready var scanner_toggle_button: Button = %ScannerToggleButton
 @onready var status_value: Label = %StatusValue
 
@@ -15,6 +20,7 @@ func _ready() -> void:
 	GameState.state_restored.connect(_refresh_all)
 	SimulationManager.simulation_updated.connect(_on_simulation_updated)
 	SimulationManager.basic_scanner_enabled_changed.connect(_on_scanner_enabled_changed)
+	SimulationManager.scanner_upgrades_changed.connect(_on_scanner_upgrades_changed)
 	SaveManager.game_saved.connect(_on_game_saved)
 	SaveManager.game_loaded.connect(_on_game_loaded)
 	_refresh_all()
@@ -37,6 +43,13 @@ func _on_spend_credits_button_pressed() -> void:
 
 func _on_scanner_toggle_button_pressed() -> void:
 	SimulationManager.set_basic_scanner_enabled(not SimulationManager.is_basic_scanner_enabled())
+
+
+func _on_scanner_upgrade_button_pressed() -> void:
+	if SimulationManager.purchase_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID):
+		status_value.text = "Purchased Scanner Motor I."
+	else:
+		status_value.text = "Scanner Motor I is owned or unaffordable."
 
 
 func _on_save_button_pressed() -> void:
@@ -69,6 +82,11 @@ func _on_scanner_enabled_changed(_enabled: bool) -> void:
 	_refresh_scanner_button()
 
 
+func _on_scanner_upgrades_changed() -> void:
+	_refresh_production()
+	_refresh_upgrade()
+
+
 func _on_game_saved() -> void:
 	status_value.text = "Game saved."
 
@@ -84,6 +102,7 @@ func _refresh_all() -> void:
 	_refresh_playtime()
 	_refresh_production()
 	_refresh_scanner_button()
+	_refresh_upgrade()
 
 
 func _refresh_money() -> void:
@@ -103,8 +122,11 @@ func _refresh_playtime() -> void:
 
 
 func _refresh_production() -> void:
-	items_per_second_value.text = "%.2f" % SimulationManager.get_items_per_second()
-	credits_per_second_value.text = "%.2f" % SimulationManager.get_credits_per_second()
+	incoming_rate_value.text = "%.2f" % SimulationManager.get_incoming_items_per_minute()
+	scanner_capacity_value.text = "%.2f" % SimulationManager.get_scanner_capacity_per_minute()
+	processed_rate_value.text = "%.2f" % SimulationManager.get_processed_items_per_minute()
+	credits_rate_value.text = "%.2f" % SimulationManager.get_credits_per_minute()
+	bottleneck_value.text = SimulationManager.get_bottleneck()
 
 
 func _refresh_scanner_button() -> void:
@@ -112,3 +134,15 @@ func _refresh_scanner_button() -> void:
 		scanner_toggle_button.text = "Disable Basic Scanner"
 	else:
 		scanner_toggle_button.text = "Enable Basic Scanner"
+
+
+func _refresh_upgrade() -> void:
+	var owned: bool = SimulationManager.owns_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID)
+	scanner_upgrade_value.text = "%.2fx (%s)" % [
+		SimulationManager.get_scanner_throughput_multiplier(),
+		"Motor I" if owned else "Base",
+	]
+	scanner_upgrade_button.disabled = owned
+	scanner_upgrade_button.text = (
+		"Scanner Motor I — Owned" if owned else "Buy Scanner Motor I — 50 Credits"
+	)

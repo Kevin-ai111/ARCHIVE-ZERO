@@ -100,24 +100,64 @@ theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 6
 columns = 2
 
-[node name="ItemsPerSecondLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+[node name="IncomingRateLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
 layout_mode = 2
-text = "Items/sec:"
+text = "Incoming items/min:"
 
-[node name="ItemsPerSecondValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+[node name="IncomingRateValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "1.00"
+text = "90.00"
 horizontal_alignment = 2
 
-[node name="CreditsPerSecondLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+[node name="ScannerCapacityLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
 layout_mode = 2
-text = "Credits/sec:"
+text = "Scanner capacity/min:"
 
-[node name="CreditsPerSecondValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+[node name="ScannerCapacityValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "2.00"
+text = "60.00"
+horizontal_alignment = 2
+
+[node name="ProcessedRateLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+layout_mode = 2
+text = "Processed items/min:"
+
+[node name="ProcessedRateValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "60.00"
+horizontal_alignment = 2
+
+[node name="CreditsRateLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+layout_mode = 2
+text = "Credits/min:"
+
+[node name="CreditsRateValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "120.00"
+horizontal_alignment = 2
+
+[node name="BottleneckLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+layout_mode = 2
+text = "Bottleneck:"
+
+[node name="BottleneckValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Scanner"
+horizontal_alignment = 2
+
+[node name="ScannerUpgradeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+layout_mode = 2
+text = "Scanner upgrade:"
+
+[node name="ScannerUpgradeValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.00x (Base)"
 horizontal_alignment = 2
 
 [node name="TransactionButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
@@ -141,6 +181,11 @@ text = "Spend 5 Credits"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Disable Basic Scanner"
+
+[node name="ScannerUpgradeButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Buy Scanner Motor I — 50 Credits"
 
 [node name="SaveButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
@@ -167,5 +212,6 @@ horizontal_alignment = 1
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/AddCreditsButton" to="." method="_on_add_credits_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/SpendCreditsButton" to="." method="_on_spend_credits_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/ScannerToggleButton" to="." method="_on_scanner_toggle_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeButton" to="." method="_on_scanner_upgrade_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons/LoadButton" to="." method="_on_load_button_pressed"]
