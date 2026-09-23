@@ -4,19 +4,21 @@ signal game_saved
 signal game_loaded
 
 const SAVE_VERSION: int = 2
+const LEGACY_SAVE_VERSION: int = 1
 const SAVE_PATH: String = "user://archive_zero_save.json"
 const TEMP_SAVE_PATH: String = "user://archive_zero_save.tmp"
 
 
 func save_game() -> bool:
+	SimulationManager.flush_pending_simulation()
 	var save_data: Dictionary = {
 		"save_version": SAVE_VERSION,
 		"money": GameState.get_money(),
 		"total_money_earned": GameState.get_total_money_earned(),
 		"total_processed_items": GameState.get_total_processed_items(),
 		"total_playtime": GameState.get_total_playtime(),
-		"production": SimulationManager.get_production_save_data(),
 		"save_timestamp": int(Time.get_unix_time_from_system()),
+		"production_line": SimulationManager.get_production_save_data(),
 	}
 
 	var save_file: FileAccess = FileAccess.open(TEMP_SAVE_PATH, FileAccess.WRITE)
@@ -49,41 +51,16 @@ func load_game() -> bool:
 		push_warning("No ARCHIVE ZERO save file exists yet.")
 		return false
 
-	var save_file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.READ)
-	if save_file == null:
-		push_error("Could not open save file for reading. Error: %s" % FileAccess.get_open_error())
+	var serialized_data: String = _read_save_file()
+	if serialized_data.is_empty():
 		return false
 
-	var serialized_data: String = save_file.get_as_text()
-	save_file.close()
-
-	var json: JSON = JSON.new()
-	var parse_error: Error = json.parse(serialized_data)
-	if parse_error != OK:
-		push_warning(
-			(
-				"Save file is invalid JSON at line %d: %s"
-				% [json.get_error_line(), json.get_error_message()]
-			)
-		)
+	var save_data: Dictionary = _parse_and_prepare_save_data(serialized_data)
+	if save_data.is_empty() or not _is_valid_complete_save(save_data):
+		return false
+	if not _restore_save_data(save_data):
 		return false
 
-	var save_data: Variant = json.data
-	if typeof(save_data) != TYPE_DICTIONARY or not _is_valid_save(save_data as Dictionary):
-		push_warning("Save file has an unsupported or invalid structure.")
-		return false
-
-	var validated_data: Dictionary = _migrate_save_data(save_data as Dictionary)
-	if not _is_valid_save(validated_data):
-		push_warning("Save migration produced an invalid structure.")
-		return false
-	GameState.restore_state(
-		int(validated_data["money"]),
-		int(validated_data["total_money_earned"]),
-		int(validated_data["total_processed_items"]),
-		float(validated_data["total_playtime"])
-	)
-	SimulationManager.restore_production_state(validated_data["production"])
 	game_loaded.emit()
 	return true
 
@@ -104,12 +81,104 @@ func delete_save() -> bool:
 	return true
 
 
+func _read_save_file() -> String:
+	var save_file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if save_file == null:
+		push_error("Could not open save file for reading. Error: %s" % FileAccess.get_open_error())
+		return ""
+
+	var serialized_data: String = save_file.get_as_text()
+	save_file.close()
+	return serialized_data
+
+
+func _parse_and_prepare_save_data(serialized_data: String) -> Dictionary:
+	var json: JSON = JSON.new()
+	var parse_error: Error = json.parse(serialized_data)
+	if parse_error != OK:
+		push_warning(
+			(
+				"Save file is invalid JSON at line %d: %s"
+				% [json.get_error_line(), json.get_error_message()]
+			)
+		)
+		return {}
+	if typeof(json.data) != TYPE_DICTIONARY:
+		push_warning("Save file root must be a dictionary.")
+		return {}
+
+	return _prepare_save_data(json.data as Dictionary)
+
+
+func _is_valid_complete_save(save_data: Dictionary) -> bool:
+	if not _is_valid_base_save(save_data):
+		push_warning("Save file has an unsupported or invalid structure.")
+		return false
+	if typeof(save_data["production_line"]) != TYPE_DICTIONARY:
+		push_warning("Save file contains invalid production state.")
+		return false
+
+	var production_data: Dictionary = save_data["production_line"] as Dictionary
+	if not SimulationManager.is_valid_production_save_data(production_data):
+		push_warning("Save file contains invalid production state.")
+		return false
+	return true
+
+
+func _restore_save_data(save_data: Dictionary) -> bool:
+	if not GameState.restore_state(
+		int(save_data["money"]),
+		int(save_data["total_money_earned"]),
+		int(save_data["total_processed_items"]),
+		float(save_data["total_playtime"])
+	):
+		push_warning("Save file contains invalid game state.")
+		return false
+
+	var production_data: Dictionary = save_data["production_line"] as Dictionary
+	if not SimulationManager.restore_production_save_data(production_data):
+		push_error("Validated production state could not be restored.")
+		return false
+	return true
+
+
+func _prepare_save_data(save_data: Dictionary) -> Dictionary:
+	if not save_data.has("save_version") or not _is_non_negative_integer(save_data["save_version"]):
+		return {}
+
+	var version: int = int(save_data["save_version"])
+	if version == LEGACY_SAVE_VERSION:
+		var legacy_data: Dictionary = save_data.duplicate(true)
+		legacy_data["save_version"] = SAVE_VERSION
+		legacy_data["production_line"] = SimulationManager.get_default_production_save_data()
+		return legacy_data
+	if version != SAVE_VERSION:
+		return {}
+
+	var migrated_data: Dictionary = save_data.duplicate(true)
+	var production_data: Variant = migrated_data.get(
+		"production_line", migrated_data.get("production", null)
+	)
+	if typeof(production_data) != TYPE_DICTIONARY:
+		return {}
+
+	var migrated_production: Dictionary = SimulationManager.migrate_production_save_data(
+		production_data as Dictionary
+	)
+	if migrated_production.is_empty():
+		return {}
+
+	migrated_data["production_line"] = migrated_production
+	migrated_data.erase("production")
+	return migrated_data
+
+
 func _remove_temporary_save() -> void:
 	if FileAccess.file_exists(TEMP_SAVE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(TEMP_SAVE_PATH))
 
 
-func _is_valid_save(save_data: Dictionary) -> bool:
+func _is_valid_base_save(save_data: Dictionary) -> bool:
 	var required_fields: Array[String] = [
 		"save_version",
 		"money",
@@ -117,6 +186,7 @@ func _is_valid_save(save_data: Dictionary) -> bool:
 		"total_processed_items",
 		"total_playtime",
 		"save_timestamp",
+		"production_line",
 	]
 	for field: String in required_fields:
 		if not save_data.has(field):
@@ -124,43 +194,24 @@ func _is_valid_save(save_data: Dictionary) -> bool:
 
 	return (
 		_is_non_negative_integer(save_data["save_version"])
-		and (int(save_data["save_version"]) == 1 or int(save_data["save_version"]) == SAVE_VERSION)
+		and int(save_data["save_version"]) == SAVE_VERSION
 		and _is_non_negative_integer(save_data["money"])
 		and _is_non_negative_integer(save_data["total_money_earned"])
 		and _is_non_negative_integer(save_data["total_processed_items"])
 		and _is_non_negative_number(save_data["total_playtime"])
 		and _is_non_negative_integer(save_data["save_timestamp"])
-		and (
-			int(save_data["save_version"]) == 1
-			or (
-				save_data.has("production")
-				and typeof(save_data["production"]) == TYPE_DICTIONARY
-				and SimulationManager.is_valid_production_state(save_data["production"])
-			)
-		)
 	)
-
-
-func _migrate_save_data(save_data: Dictionary) -> Dictionary:
-	var migrated_data: Dictionary = save_data.duplicate(true)
-	if int(migrated_data["save_version"]) == 1:
-		migrated_data["save_version"] = SAVE_VERSION
-		migrated_data["production"] = {
-			"scanner_enabled": true,
-			"scanner_upgrades": [],
-			"incoming_item_buffer": 0.0,
-			"processed_item_fraction": 0.0,
-		}
-	return migrated_data
 
 
 func _is_non_negative_integer(value: Variant) -> bool:
 	if typeof(value) == TYPE_INT:
 		return value >= 0
 	if typeof(value) == TYPE_FLOAT:
-		return value >= 0.0 and value == floor(value)
+		return is_finite(value) and value >= 0.0 and value == floor(value)
 	return false
 
 
 func _is_non_negative_number(value: Variant) -> bool:
-	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and value >= 0.0
+	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
+		return false
+	return is_finite(float(value)) and value >= 0.0

@@ -16,9 +16,10 @@ researching, and containing increasingly impossible objects.
 | **Platform** | PC / Steam |
 | **Status** | Early Development |
 
-The current build includes the first production pipeline: incoming items feed a
-throughput-limited Scanner, processed items generate Credits, and Scanner Motor I
-can be purchased to increase capacity. Production remains aggregate and numerical.
+The current build provides authoritative session state, transaction-safe
+currency handling, fixed-interval numerical simulation, a data-driven four-stage
+production line, a purchasable Scanner Motor I capacity upgrade, versioned JSON
+saving, and a minimal debug dashboard.
 
 ## Open locally
 
@@ -29,13 +30,15 @@ can be purchased to increase capacity. Production remains aggregate and numerica
 
 No third-party addons are required.
 
-## Tests
-
-Run the headless production and persistence suite from the project root:
+Run the headless production and persistence validation from the repository root
+with:
 
 ```bash
-godot --headless --path . --script tests/production_pipeline_test.gd
+godot --headless --path . tests/production_pipeline_test.tscn
 ```
+
+Manual runtime checks are listed in
+[`docs/VALIDATION.md`](docs/VALIDATION.md).
 
 ## Development notes
 

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="MachineDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machines/machine_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+id = &"basic_sorter"
+display_name = "Basic Sorter"
+description = "Sorts scanned objects into their initial archive categories."
+base_processing_rate = 0.75
+purchase_cost = 0
