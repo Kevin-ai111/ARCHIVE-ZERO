@@ -2,17 +2,28 @@ extends Node
 
 signal simulation_updated(items_processed: int, credits_earned: int, elapsed_seconds: float)
 signal production_line_changed
-signal scanner_upgrades_changed
+signal upgrades_changed
+
+enum PurchaseResult {
+	SUCCESS,
+	INVALID_UPGRADE,
+	ALREADY_OWNED,
+	TARGET_UNAVAILABLE,
+	INSUFFICIENT_FUNDS,
+}
 
 const DEFAULT_TICK_INTERVAL: float = 0.25
 const MINIMUM_TICK_INTERVAL: float = 0.01
 const PROTOTYPE_CREDITS_PER_ITEM: int = 2
 const BASIC_SCANNER_ID: StringName = &"basic_scanner"
+const BASIC_SORTER_ID: StringName = &"basic_sorter"
+const CURRENT_SAVE_VERSION: int = 3
+const PREVIOUS_SAVE_VERSION: int = 2
 
 var _tick_interval: float = DEFAULT_TICK_INTERVAL
 var _tick_accumulator: float = 0.0
 var _production_line: ProductionLine = ProductionLineFactory.create_initial_line()
-var _owned_scanner_upgrades: Array[String] = []
+var _owned_upgrade_ids: Array[String] = []
 
 
 func _process(delta: float) -> void:
@@ -58,38 +69,101 @@ func process_manual_items(amount: int) -> bool:
 	return credits_earned > 0
 
 
-func purchase_scanner_upgrade(upgrade_id: String) -> bool:
-	if _owned_scanner_upgrades.has(upgrade_id):
-		return false
-
-	var definition: Dictionary = ScannerUpgrades.get_definition(upgrade_id)
-	if definition.is_empty():
-		return false
+func purchase_upgrade(upgrade_id: String) -> int:
+	var definition: UpgradeDefinition = UpgradeCatalog.get_definition(upgrade_id)
+	if definition == null or not definition.is_valid():
+		return PurchaseResult.INVALID_UPGRADE
+	if _owned_upgrade_ids.has(upgrade_id):
+		return PurchaseResult.ALREADY_OWNED
+	if _production_line.get_stage(definition.target_machine_id) == null:
+		return PurchaseResult.TARGET_UNAVAILABLE
+	if not Economy.can_afford(definition.cost):
+		return PurchaseResult.INSUFFICIENT_FUNDS
 
 	flush_pending_simulation()
-	if not Economy.spend_money(int(definition["cost"])):
-		return false
+	if not Economy.spend_money(definition.cost):
+		return PurchaseResult.INSUFFICIENT_FUNDS
 
-	_owned_scanner_upgrades.append(upgrade_id)
-	_apply_scanner_upgrades()
+	_owned_upgrade_ids.append(upgrade_id)
+	_apply_upgrade_multipliers()
 	production_line_changed.emit()
-	scanner_upgrades_changed.emit()
-	return true
+	upgrades_changed.emit()
+	return PurchaseResult.SUCCESS
 
 
-func owns_scanner_upgrade(upgrade_id: String) -> bool:
-	return _owned_scanner_upgrades.has(upgrade_id)
+func get_purchase_result_message(result: int, upgrade_id: String) -> String:
+	var definition: UpgradeDefinition = UpgradeCatalog.get_definition(upgrade_id)
+	var upgrade_name: String = upgrade_id if definition == null else definition.display_name
+	match result:
+		PurchaseResult.SUCCESS:
+			return "Purchased %s." % upgrade_name
+		PurchaseResult.ALREADY_OWNED:
+			return "%s is already owned." % upgrade_name
+		PurchaseResult.TARGET_UNAVAILABLE:
+			return "%s cannot be installed because its machine is unavailable." % upgrade_name
+		PurchaseResult.INSUFFICIENT_FUNDS:
+			return "Not enough Credits to buy %s." % upgrade_name
+		_:
+			return "Unknown upgrade: %s." % upgrade_id
 
 
-func get_owned_scanner_upgrades() -> Array[String]:
-	return _owned_scanner_upgrades.duplicate()
+func get_upgrade_definitions() -> Array[UpgradeDefinition]:
+	return UpgradeCatalog.get_definitions()
 
 
-func get_scanner_throughput_multiplier() -> float:
-	var scanner: MachineRuntime = _production_line.get_stage(BASIC_SCANNER_ID)
-	if scanner == null:
+func get_owned_upgrade_ids() -> Array[String]:
+	return _owned_upgrade_ids.duplicate()
+
+
+func get_owned_upgrade_definitions() -> Array[UpgradeDefinition]:
+	var owned_definitions: Array[UpgradeDefinition] = []
+	for upgrade_id: String in _owned_upgrade_ids:
+		var definition: UpgradeDefinition = UpgradeCatalog.get_definition(upgrade_id)
+		if definition != null:
+			owned_definitions.append(definition)
+	return owned_definitions
+
+
+func owns_upgrade(upgrade_id: String) -> bool:
+	return _owned_upgrade_ids.has(upgrade_id)
+
+
+func get_machine_upgrade_multiplier(machine_id: StringName) -> float:
+	var stage: MachineRuntime = _production_line.get_stage(machine_id)
+	if stage == null:
 		return 0.0
-	return scanner.get_capacity_multiplier()
+	return stage.get_upgrade_capacity_multiplier()
+
+
+func get_upgrade_impact(upgrade_id: String) -> Dictionary:
+	var definition: UpgradeDefinition = UpgradeCatalog.get_definition(upgrade_id)
+	if definition == null:
+		return {}
+
+	var current_throughput: float = _production_line.get_effective_throughput()
+	var projected_throughput: float = INF
+	var projected_bottleneck: MachineRuntime = null
+	for stage: MachineRuntime in _production_line.get_stages():
+		var capacity: float = stage.get_effective_capacity()
+		if stage.get_id() == definition.target_machine_id and not owns_upgrade(upgrade_id):
+			capacity *= definition.capacity_multiplier
+		if capacity <= 0.0:
+			return {
+				"current_throughput": current_throughput,
+				"projected_throughput": 0.0,
+				"projected_bottleneck": "Line stopped",
+				"improves_throughput": false,
+			}
+		if projected_bottleneck == null or capacity < projected_throughput:
+			projected_throughput = capacity
+			projected_bottleneck = stage
+
+	return {
+		"current_throughput": current_throughput,
+		"projected_throughput": projected_throughput,
+		"projected_bottleneck": projected_bottleneck.get_definition().display_name,
+		"improves_throughput": projected_throughput > current_throughput,
+	}
 
 
 func set_tick_interval(interval_seconds: float) -> bool:
@@ -120,34 +194,19 @@ func set_machine_enabled(machine_id: StringName, enabled: bool) -> bool:
 	return true
 
 
-func set_basic_scanner_enabled(enabled: bool) -> void:
-	set_machine_enabled(BASIC_SCANNER_ID, enabled)
-
-
-func is_basic_scanner_enabled() -> bool:
-	var scanner: MachineRuntime = _production_line.get_stage(BASIC_SCANNER_ID)
-	return scanner != null and scanner.is_enabled()
-
-
 func set_machine_capacity_multiplier(machine_id: StringName, multiplier: float) -> bool:
 	var stage: MachineRuntime = _production_line.get_stage(machine_id)
 	if stage == null or not is_finite(multiplier) or multiplier < 0.0:
 		return false
-	# Scanner capacity is derived from owned upgrades. Allowing this generic debug
-	# seam to write it would create a state that changes after save/load.
-	if machine_id == BASIC_SCANNER_ID:
+	if UpgradeCatalog.has_upgrade_for_machine(machine_id):
 		return false
-	if is_equal_approx(stage.get_capacity_multiplier(), multiplier):
+	if is_equal_approx(stage.get_runtime_capacity_multiplier(), multiplier):
 		return true
 
 	flush_pending_simulation()
 	_production_line.set_stage_capacity_multiplier(machine_id, multiplier)
 	production_line_changed.emit()
 	return true
-
-
-func get_scanner_capacity_per_minute() -> float:
-	return _production_line.get_stage_capacity(BASIC_SCANNER_ID) * 60.0
 
 
 func get_effective_throughput() -> float:
@@ -169,63 +228,40 @@ func flush_pending_simulation() -> void:
 
 func get_production_save_data() -> Dictionary:
 	var save_data: Dictionary = _production_line.get_save_data()
-	save_data["scanner_upgrades"] = _owned_scanner_upgrades.duplicate()
+	save_data["owned_upgrade_ids"] = _owned_upgrade_ids.duplicate()
 	return save_data
 
 
 func get_default_production_save_data() -> Dictionary:
 	var save_data: Dictionary = ProductionLineFactory.create_initial_line().get_save_data()
-	save_data["scanner_upgrades"] = []
+	save_data["owned_upgrade_ids"] = []
 	return save_data
 
 
-func migrate_production_save_data(save_data: Dictionary) -> Dictionary:
-	if save_data.has("machines"):
+func migrate_production_save_data(save_data: Dictionary, source_version: int) -> Dictionary:
+	if source_version == CURRENT_SAVE_VERSION:
 		var current_data: Dictionary = save_data.duplicate(true)
-		if not current_data.has("scanner_upgrades"):
-			current_data["scanner_upgrades"] = []
-		if not _normalize_scanner_multiplier(current_data):
-			return {}
 		return current_data if is_valid_production_save_data(current_data) else {}
-
-	var legacy_fields: Array[String] = [
-		"scanner_enabled",
-		"scanner_upgrades",
-		"incoming_item_buffer",
-		"processed_item_fraction",
-	]
-	for field: String in legacy_fields:
-		if not save_data.has(field):
-			return {}
-
-	var migrated_data: Dictionary = get_default_production_save_data()
-	var scanner_state: Dictionary = migrated_data["machines"][String(BASIC_SCANNER_ID)]
-	scanner_state["enabled"] = save_data["scanner_enabled"]
-	scanner_state["capacity_multiplier"] = ScannerUpgrades.get_scanner_multiplier(
-		_array_to_strings(save_data["scanner_upgrades"])
-	)
-	migrated_data["fractional_progress"] = save_data["processed_item_fraction"]
-	migrated_data["scanner_upgrades"] = save_data["scanner_upgrades"]
-	return migrated_data if is_valid_production_save_data(migrated_data) else {}
+	if source_version != PREVIOUS_SAVE_VERSION:
+		return {}
+	if save_data.has("machines"):
+		return _migrate_version_two_line(save_data)
+	return _migrate_version_two_scanner_only(save_data)
 
 
 func is_valid_production_save_data(save_data: Dictionary) -> bool:
 	if not _production_line.is_valid_save_data(save_data):
 		return false
-	if not save_data.has("scanner_upgrades"):
+	if not save_data.has("owned_upgrade_ids"):
 		return false
-	if not _is_valid_scanner_upgrades(save_data["scanner_upgrades"]):
+	if not UpgradeCatalog.are_valid_owned_upgrade_ids(save_data["owned_upgrade_ids"]):
 		return false
 
-	var machines: Dictionary = save_data["machines"] as Dictionary
-	var scanner_key: String = String(BASIC_SCANNER_ID)
-	if not machines.has(scanner_key) or typeof(machines[scanner_key]) != TYPE_DICTIONARY:
-		return false
-	var scanner_state: Dictionary = machines[scanner_key] as Dictionary
-	var expected_multiplier: float = ScannerUpgrades.get_scanner_multiplier(
-		_array_to_strings(save_data["scanner_upgrades"])
-	)
-	return is_equal_approx(float(scanner_state["capacity_multiplier"]), expected_multiplier)
+	for upgrade_id: Variant in save_data["owned_upgrade_ids"]:
+		var definition: UpgradeDefinition = UpgradeCatalog.get_definition(upgrade_id)
+		if definition == null or _production_line.get_stage(definition.target_machine_id) == null:
+			return false
+	return true
 
 
 func restore_production_save_data(save_data: Dictionary) -> bool:
@@ -234,58 +270,91 @@ func restore_production_save_data(save_data: Dictionary) -> bool:
 	if not _production_line.restore_save_data(save_data):
 		return false
 
-	_owned_scanner_upgrades.assign(save_data["scanner_upgrades"])
-	_apply_scanner_upgrades()
+	_owned_upgrade_ids.assign(save_data["owned_upgrade_ids"])
+	_apply_upgrade_multipliers()
 	_tick_accumulator = 0.0
 	production_line_changed.emit()
-	scanner_upgrades_changed.emit()
+	upgrades_changed.emit()
 	return true
 
 
-func _apply_scanner_upgrades() -> void:
-	_production_line.set_stage_capacity_multiplier(
-		BASIC_SCANNER_ID,
-		ScannerUpgrades.get_scanner_multiplier(_owned_scanner_upgrades)
-	)
+func _apply_upgrade_multipliers() -> void:
+	for stage: MachineRuntime in _production_line.get_stages():
+		stage.set_upgrade_capacity_multiplier(
+			UpgradeCatalog.get_capacity_multiplier(stage.get_id(), _owned_upgrade_ids)
+		)
 
 
-func _normalize_scanner_multiplier(save_data: Dictionary) -> bool:
-	if typeof(save_data.get("machines")) != TYPE_DICTIONARY:
-		return false
-	if typeof(save_data.get("scanner_upgrades")) != TYPE_ARRAY:
-		return false
-	if not _is_valid_scanner_upgrades(save_data["scanner_upgrades"]):
-		return false
+func _migrate_version_two_line(save_data: Dictionary) -> Dictionary:
+	if not save_data.has("fractional_progress") or typeof(save_data.get("machines")) != TYPE_DICTIONARY:
+		return {}
 
-	var serialized_upgrades: Array = save_data["scanner_upgrades"] as Array
-	var owned_upgrades: Array[String] = _array_to_strings(serialized_upgrades)
+	var legacy_upgrade_ids: Variant = save_data.get("scanner_upgrades", [])
+	if not UpgradeCatalog.are_valid_owned_upgrade_ids(legacy_upgrade_ids):
+		return {}
+	var owned_upgrade_ids: Array[String] = _array_to_strings(legacy_upgrade_ids)
 
-	var machines: Dictionary = save_data["machines"] as Dictionary
-	var scanner_key: String = String(BASIC_SCANNER_ID)
-	if not machines.has(scanner_key) or typeof(machines[scanner_key]) != TYPE_DICTIONARY:
-		return false
-	var scanner_state: Dictionary = machines[scanner_key] as Dictionary
-	if not scanner_state.has("capacity_multiplier"):
-		return false
+	var migrated_data: Dictionary = get_default_production_save_data()
+	migrated_data["fractional_progress"] = save_data["fractional_progress"]
+	var old_machines: Dictionary = save_data["machines"] as Dictionary
+	var new_machines: Dictionary = migrated_data["machines"] as Dictionary
+	for stage: MachineRuntime in _production_line.get_stages():
+		var machine_key: String = String(stage.get_id())
+		if not old_machines.has(machine_key) or typeof(old_machines[machine_key]) != TYPE_DICTIONARY:
+			return {}
+		var old_state: Dictionary = old_machines[machine_key] as Dictionary
+		if not old_state.has("enabled") or not old_state.has("capacity_multiplier"):
+			return {}
+		var new_state: Dictionary = new_machines[machine_key] as Dictionary
+		new_state["enabled"] = old_state["enabled"]
+		var legacy_multiplier: Variant = old_state["capacity_multiplier"]
+		if typeof(legacy_multiplier) != TYPE_INT and typeof(legacy_multiplier) != TYPE_FLOAT:
+			return {}
+		var runtime_multiplier: float = float(legacy_multiplier)
+		if not is_finite(runtime_multiplier) or runtime_multiplier < 0.0:
+			return {}
 
-	# Upgrade ownership is authoritative; normalize the redundant runtime field
-	# so reconciled saves cannot retain or apply the Scanner modifier separately.
-	scanner_state["capacity_multiplier"] = ScannerUpgrades.get_scanner_multiplier(owned_upgrades)
-	return true
+		if stage.get_id() == BASIC_SCANNER_ID:
+			runtime_multiplier = 1.0
+		elif stage.get_id() == BASIC_SORTER_ID and is_equal_approx(runtime_multiplier, 2.0):
+			runtime_multiplier = 1.0
+			if not owned_upgrade_ids.has(UpgradeCatalog.SORTER_MOTOR_I_ID):
+				owned_upgrade_ids.append(UpgradeCatalog.SORTER_MOTOR_I_ID)
+		new_state["runtime_capacity_multiplier"] = runtime_multiplier
+
+	migrated_data["owned_upgrade_ids"] = owned_upgrade_ids
+	return migrated_data if is_valid_production_save_data(migrated_data) else {}
 
 
-func _is_valid_scanner_upgrades(value: Variant) -> bool:
-	if typeof(value) != TYPE_ARRAY:
-		return false
+func _migrate_version_two_scanner_only(save_data: Dictionary) -> Dictionary:
+	var required_fields: Array[String] = [
+		"scanner_enabled",
+		"scanner_upgrades",
+		"incoming_item_buffer",
+		"processed_item_fraction",
+	]
+	for field: String in required_fields:
+		if not save_data.has(field):
+			return {}
+	if typeof(save_data["scanner_enabled"]) != TYPE_BOOL:
+		return {}
+	if not _is_non_negative_number(save_data["incoming_item_buffer"]):
+		return {}
+	if not UpgradeCatalog.are_valid_owned_upgrade_ids(save_data["scanner_upgrades"]):
+		return {}
 
-	var seen_upgrade_ids: Dictionary = {}
-	for upgrade_id: Variant in value:
-		if typeof(upgrade_id) != TYPE_STRING or not ScannerUpgrades.DEFINITIONS.has(upgrade_id):
-			return false
-		if seen_upgrade_ids.has(upgrade_id):
-			return false
-		seen_upgrade_ids[upgrade_id] = true
-	return true
+	var owned_upgrade_ids: Array[String] = _array_to_strings(save_data["scanner_upgrades"])
+	for upgrade_id: String in owned_upgrade_ids:
+		var definition: UpgradeDefinition = UpgradeCatalog.get_definition(upgrade_id)
+		if definition == null or definition.target_machine_id != BASIC_SCANNER_ID:
+			return {}
+
+	var migrated_data: Dictionary = get_default_production_save_data()
+	var scanner_state: Dictionary = migrated_data["machines"][String(BASIC_SCANNER_ID)]
+	scanner_state["enabled"] = save_data["scanner_enabled"]
+	migrated_data["fractional_progress"] = save_data["processed_item_fraction"]
+	migrated_data["owned_upgrade_ids"] = owned_upgrade_ids
+	return migrated_data if is_valid_production_save_data(migrated_data) else {}
 
 
 func _array_to_strings(value: Variant) -> Array[String]:
@@ -297,6 +366,12 @@ func _array_to_strings(value: Variant) -> Array[String]:
 			return []
 		result.append(entry)
 	return result
+
+
+func _is_non_negative_number(value: Variant) -> bool:
+	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
+		return false
+	return is_finite(float(value)) and float(value) >= 0.0
 
 
 func _commit_production(items_processed: int) -> int:

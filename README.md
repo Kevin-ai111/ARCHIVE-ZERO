@@ -18,8 +18,8 @@ researching, and containing increasingly impossible objects.
 
 The current build provides authoritative session state, transaction-safe
 currency handling, fixed-interval numerical simulation, a data-driven four-stage
-production line, a purchasable Scanner Motor I capacity upgrade, versioned JSON
-saving, and a minimal debug dashboard.
+production line, a data-driven two-step motor upgrade loop, versioned JSON saving,
+and a minimal debug dashboard with an upgrade shop.
 
 ## Open locally
 

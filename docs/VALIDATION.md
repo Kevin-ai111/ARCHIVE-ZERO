@@ -1,48 +1,59 @@
-# Production Pipeline Validation
+# Production and Upgrade Validation
 
-## Automated domain test
+## Automated validation
 
-Use the official standard Godot 4.7 stable binary. On a fresh checkout, first
-run one headless editor import so Godot registers the project's global
-`class_name` types, then run the test scene:
+Use the official Godot 4.7 stable binary. From a fresh checkout, run exactly:
 
 ```bash
 godot --version
 godot --headless --editor --path . --quit
 godot --headless --path . tests/production_pipeline_test.tscn
+godot --headless --path . --quit-after 2
 ```
 
-The version command must report `4.7.stable`; the final command must exit with
-code `0` and print `Production pipeline tests passed.`
-It validates initial throughput and utilization, dynamic bottlenecks, disabled
-stages, 100-second output, fractional continuity, runtime-state restoration,
-Scanner upgrade purchase rules, upgrade/multiplier consistency, save/load, and
-both supported legacy save migrations.
+The version must report Godot 4.7 stable. Every command must exit with code `0`,
+and the test scene must print `Production pipeline tests passed.`
+
+The suite covers:
+
+- starting capacities, throughput, utilization, and bottleneck;
+- fixed rewards, disabled stages, and fractional continuity;
+- both data-driven upgrade definitions;
+- affordability, exact deductions, invalid IDs, and duplicate rejection;
+- Sorter → Scanner progression and deterministic tie handling;
+- rejection of free overrides for upgrade-managed machines;
+- separation of runtime and upgrade multipliers;
+- save-v3 round trips with enabled state, fractions, ownership, and unrelated modifiers;
+- malformed and duplicated ownership rejection before live-state mutation;
+- version 1, version 2 line, and version 2 Scanner-only migrations;
+- exact legacy Sorter ×2 mapping without multiplier duplication.
 
 The test temporarily uses `user://archive_zero_save.json`. It backs up and
-restores an existing file when the process completes normally. An interrupted
-or forcibly terminated test process cannot guarantee that cleanup. The suite
-validates numerical and persistence behavior headlessly; it does not validate
-rendering, final UI layout, platform exports, or Steam integration.
+restores an existing file when the process completes normally. A forcibly
+terminated process cannot guarantee cleanup.
 
-Pull requests run the same two commands through
-`.github/workflows/godot-headless-validation.yml`. The workflow downloads the
-official Godot 4.7 stable Linux binary and verifies its pinned SHA-256 checksum
-before execution.
+Pull requests run the import and automated test commands through
+`.github/workflows/godot-headless-validation.yml`. The workflow uses the pinned
+official Godot 4.7 stable Linux binary.
 
-## Manual runtime check
+## Manual gameplay check
 
-1. Open `project.godot` in Godot 4.7.x and run the project.
-2. Confirm the initial line reports `0.75 items/sec`, `1.50 credits/sec`, and
-   `Basic Sorter` as the bottleneck.
-3. Confirm utilization is 60%, 75%, 100%, and 37.5% in stage order.
-4. Select `Sorter x2`. Throughput must become `1.00 items/sec` and the Basic
-   Scanner must become the bottleneck.
-5. Add 50 Credits and buy Scanner Motor I. Scanner capacity must increase from
-   `1.00/s` to `1.25/s`; a second purchase must not spend more Credits.
-6. Turn the Basic Scanner off. Throughput and credits per second must become 0.
-   Turn it on again and confirm production resumes.
-7. Turn one stage off, set the Sorter to x2, and save. Change both settings,
-   then load. The saved enabled state and multiplier must return.
-8. Leave the line running and confirm money and processed-item totals increase
-   while no visual item Nodes are created.
+1. Run the project and confirm the initial line reports `0.75 items/sec`,
+   `1.50 Credits/sec`, and Basic Sorter as bottleneck.
+2. Confirm stage capacities are `1.25`, `1.00`, `0.75`, and `2.00` items/sec.
+3. Confirm the shop lists exactly Sorter Motor I and Scanner Motor I with their
+   descriptions, prices, ownership state, and purchase buttons.
+4. With fewer than 25 Credits, try Sorter Motor I. The purchase must fail with
+   meaningful feedback and no Credit or ownership change.
+5. Reach 25 Credits and buy Sorter Motor I. Credits decrease by exactly 25,
+   Sorter capacity becomes `1.50/s`, throughput becomes `1.00/s`, and Basic
+   Scanner becomes the bottleneck.
+6. Reach 50 Credits and buy Scanner Motor I. Credits decrease by exactly 50,
+   Scanner capacity becomes `1.25/s`, throughput becomes `1.25/s`, and Receiving
+   Desk is reported for the Receiving/Scanner tie.
+7. Confirm owned upgrades list both motors and owned purchase buttons are disabled.
+8. Disable Basic Scanner. Throughput and Credit rate must become zero; enable it
+   again and confirm production resumes.
+9. Save with both upgrades, a disabled stage, and fractional progress. Change the
+   state, load, and confirm ownership, capacities, enabled state, and fraction return.
+10. Confirm the former free Sorter x1/x2 buttons are absent from player flow.

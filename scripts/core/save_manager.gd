@@ -3,7 +3,8 @@ extends Node
 signal game_saved
 signal game_loaded
 
-const SAVE_VERSION: int = 2
+const SAVE_VERSION: int = 3
+const PREVIOUS_SAVE_VERSION: int = 2
 const LEGACY_SAVE_VERSION: int = 1
 const SAVE_PATH: String = "user://archive_zero_save.json"
 const TEMP_SAVE_PATH: String = "user://archive_zero_save.tmp"
@@ -152,7 +153,7 @@ func _prepare_save_data(save_data: Dictionary) -> Dictionary:
 		legacy_data["save_version"] = SAVE_VERSION
 		legacy_data["production_line"] = SimulationManager.get_default_production_save_data()
 		return legacy_data
-	if version != SAVE_VERSION:
+	if version != PREVIOUS_SAVE_VERSION and version != SAVE_VERSION:
 		return {}
 
 	var migrated_data: Dictionary = save_data.duplicate(true)
@@ -163,12 +164,13 @@ func _prepare_save_data(save_data: Dictionary) -> Dictionary:
 		return {}
 
 	var migrated_production: Dictionary = SimulationManager.migrate_production_save_data(
-		production_data as Dictionary
+		production_data as Dictionary, version
 	)
 	if migrated_production.is_empty():
 		return {}
 
 	migrated_data["production_line"] = migrated_production
+	migrated_data["save_version"] = SAVE_VERSION
 	migrated_data.erase("production")
 	return migrated_data
 

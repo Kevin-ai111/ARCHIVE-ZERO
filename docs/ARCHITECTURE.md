@@ -7,130 +7,147 @@ Four session-wide services remain Autoloads:
 
 1. `GameState` owns session totals.
 2. `Economy` validates currency transactions.
-3. `SimulationManager` advances time and commits completed output.
+3. `SimulationManager` advances time, owns purchased upgrade IDs, and commits output.
 4. `SaveManager` persists and restores supported state.
 
-Machine definitions, installed machines, upgrades, and production lines are
-domain objects rather than Nodes or Autoloads.
+Machine definitions, installed machines, upgrade definitions, and production
+lines are domain objects rather than Nodes or additional Autoloads.
 
 ## Production domain
 
-### MachineDefinition
+### MachineDefinition and MachineRuntime
 
-`MachineDefinition` is a Godot `Resource` containing static machine-type data:
-stable ID, display name, description, base processing rate, and purchase cost.
-The development definitions live in `data/machines/` and contain no installed
-or mutable state.
+`MachineDefinition` is a Godot `Resource` containing static machine data. The
+definitions in `data/machines/` provide stable IDs, display metadata, base
+processing rates, and purchase costs.
 
-### MachineRuntime
-
-`MachineRuntime` represents one installed stage. It references a definition and
-owns only runtime state: enabled state and a capacity multiplier. Its configured
-capacity is:
+`MachineRuntime` represents one installed stage. It owns enabled state and two
+separate multiplier channels:
 
 ```text
-definition.base_processing_rate × capacity_multiplier
+configured capacity = base rate × runtime multiplier × upgrade multiplier
 ```
 
-The multiplier is the integration point for upgrades and remains available as
-a debug seam for validating capacity changes.
+- The runtime multiplier represents unrelated temporary, migrated, or future
+  effects. It is serialized.
+- The upgrade multiplier is derived from authoritative upgrade ownership. It is
+  never serialized as independent state.
+
+This separation prevents an upgrade from being applied twice while still
+allowing unrelated runtime modifiers to survive save/load.
 
 ### ProductionLine
 
-`ProductionLine` owns the ordered relationship between runtime stages. Machine
-objects do not know whether they belong to a line, graph, or future branch.
-The current factory builds one linear development line:
+The initial line is ordered:
 
 ```text
 Receiving Desk → Basic Scanner → Basic Sorter → Archive Intake
 ```
 
-Every stage is required. A disabled or zero-capacity stage stops the entire line.
-When running, throughput is the minimum positive effective capacity. The first
-stage matching that calculated minimum is reported as the bottleneck; no machine
-ID or stage position is special-cased.
+Its starting capacities are `1.25`, `1.00`, `0.75`, and `2.00` items per
+second. Every stage is required; disabling any stage stops the line. Throughput
+is the minimum effective capacity.
 
-Stage utilization is `line throughput / effective stage capacity`, clamped to
-0–100%. A stopped line, disabled stage, missing stage, or zero capacity reports
-0% and never divides by zero.
+Bottleneck ties are deterministic: `get_bottleneck()` scans the ordered stages
+and returns the first stage whose capacity equals the calculated minimum. After
+both initial motor upgrades, Receiving Desk and Basic Scanner are tied at
+`1.25/s`, so Receiving Desk is reported.
 
-### Fractional production
+`ProductionLine.simulate_elapsed()` keeps one fractional accumulator. Only
+complete items are returned, so large and small time steps preserve equivalent
+output without spawning item Nodes.
 
-`ProductionLine.simulate_elapsed()` adds `throughput × elapsed seconds` to one
-fractional accumulator. Only complete items are returned; the remainder stays
-in the line for later calls. One large elapsed interval and many smaller
-intervals therefore preserve equivalent output without spawning item Nodes.
+## Generic upgrades
 
-### Scanner upgrades
+`UpgradeDefinition` is a data Resource with:
 
-`ScannerUpgrades` is the small catalog for purchasable Scanner modifiers. The
-current Scanner Motor I costs 50 Credits and applies a `1.25×` capacity
-multiplier. `SimulationManager` owns purchased upgrade IDs, spends through
-`Economy`, applies the resulting multiplier to the Scanner `MachineRuntime`, and
-rejects duplicate or unaffordable purchases. Upgrade definitions and ownership
-do not live in UI code. Scanner upgrade ownership is authoritative for its
-capacity multiplier: the generic debug modifier API cannot change the Scanner,
-and loading normalizes the serialized derived multiplier from owned upgrade IDs.
-This prevents an upgrade from being applied twice or a Scanner capacity from
-changing across a save/load cycle.
+- stable ID;
+- display name and description;
+- target machine ID;
+- Credit cost;
+- capacity multiplier.
 
-### SimulationManager
+`UpgradeCatalog` loads the definitions from `data/upgrades/`. The current shop
+contains exactly:
 
-`SimulationManager` schedules fixed simulation ticks and delegates production
-math to `ProductionLine`. It commits completed item totals to `GameState` and
-credits through `Economy`. The temporary prototype output value of two credits
-per completed item lives here, outside all machine definitions.
+| ID | Upgrade | Target | Cost | Multiplier |
+| --- | --- | --- | ---: | ---: |
+| `sorter_motor_1` | Sorter Motor I | `basic_sorter` | 25 | ×2.00 |
+| `scanner_motor_1` | Scanner Motor I | `basic_scanner` | 50 | ×1.25 |
 
-Before a machine state change, upgrade purchase, or save, pending sub-tick time
-is simulated using the previous configuration. This prevents the scheduler
-remainder from being lost or retroactively processed with a new capacity.
+`SimulationManager` is the only owner of purchased IDs. The purchase sequence is:
 
-The manager does not calculate bottlenecks, utilization, machine configuration,
-or UI formatting.
+1. resolve and validate the requested definition;
+2. reject duplicate ownership or a missing target machine;
+3. check affordability through `Economy` without mutating state;
+4. flush pending simulation time under the old capacities;
+5. spend the exact price through `Economy`;
+6. append the ID once;
+7. derive all machine upgrade multipliers from the complete ownership list;
+8. emit production and upgrade change signals.
 
-## Saving
+The public debug modifier seam rejects machines managed by real upgrades. The
+old free Sorter x1/x2 dashboard controls were removed from player flow.
 
-Save schema version 2 stores a `production_line` dictionary:
+## Progression
+
+```text
+Start
+0.75 items/s — Basic Sorter bottleneck
+
+Buy Sorter Motor I
+1.00 items/s — Basic Scanner bottleneck
+
+Buy Scanner Motor I
+1.25 items/s — Receiving Desk reported for the Receiving/Scanner tie
+```
+
+Each completed item continues to award two Credits.
+
+## Saving and migration
+
+Save schema version 3 stores primitive production state:
 
 ```json
 {
   "fractional_progress": 0.5,
   "machines": {
-    "basic_scanner": {
+    "basic_sorter": {
       "enabled": true,
-      "capacity_multiplier": 1.25
+      "runtime_capacity_multiplier": 1.0
     }
   },
-  "scanner_upgrades": ["scanner_motor_1"]
+  "owned_upgrade_ids": ["sorter_motor_1", "scanner_motor_1"]
 }
 ```
 
-Only primitive data keyed by stable machine and upgrade IDs is serialized.
-Nodes, scenes, and Resource objects are never stored. The entire production
-payload is validated before live state changes. Version 1 development saves
-load with the new line's default runtime state.
+Upgrade-controlled multipliers are deliberately absent. After validation and
+restore, they are recomputed from `owned_upgrade_ids`. Duplicate or unknown IDs,
+malformed machine state, and unsupported versions are rejected before live
+state mutation.
 
-Two independently developed version-2 shapes existed before the production
-branches were reconciled. Loading accepts both the current `production_line`
-shape and the earlier Scanner-only `production` shape, then normalizes them to
-the current data-driven line. Existing current-main saves that predate upgrade
-ownership receive an empty upgrade list.
+Migration is deterministic:
 
-## Simulation and visuals
+- Version 1 saves receive the default production line and no upgrades.
+- Version 2 data-driven line saves preserve enabled states, fractional progress,
+  and unrelated machine modifiers. Existing `scanner_motor_1` ownership is
+  retained and the old redundant Scanner multiplier is normalized to runtime ×1.
+- An exact legacy Basic Sorter multiplier of ×2 maps to `sorter_motor_1`; its
+  runtime multiplier becomes ×1 so the new upgrade is applied exactly once.
+- A non-×2 legacy Sorter multiplier is treated as unrelated runtime state and is
+  preserved without granting Sorter Motor I.
+- The older version 2 Scanner-only shape retains Scanner enabled state,
+  fractional progress, and `scanner_motor_1` ownership. Its obsolete queued
+  incoming-item value has no equivalent in the current four-stage line and is
+  intentionally not restored.
 
-Simulation values are authoritative. Visual scenes may sample and illustrate
-them, but visible objects must never determine throughput, inventory, or income.
-Fifty rendered objects may represent millions of numerically processed items.
+## UI boundary
 
-The debug UI calls service APIs and reads domain results. It does not calculate
-throughput, bottlenecks, utilization, rewards, upgrade prices, or save data.
-
-## Future extension
-
-Branching belongs in a future production-network domain that can compose the
-same `MachineDefinition` and `MachineRuntime` objects. It should replace or sit
-beside the current linear relationship without adding graph assumptions to the
-machine types themselves.
+The dashboard builds its upgrade shop from domain definitions and calls the
+generic purchase API. It displays Credits, stage capacities, throughput,
+bottleneck, ownership, price, descriptions, purchase feedback, and a projected
+throughput/bottleneck preview. It does not calculate authoritative production,
+prices, ownership, or save data.
 
 ## Rules for future systems
 
@@ -138,7 +155,7 @@ machine types themselves.
 - Advance production with aggregate numbers, never one Node per processed item.
 - Keep rendering downstream of simulation results.
 - Add Autoloads only for truly session-wide single authorities.
-- Keep machine type configuration in data resources.
+- Keep machine and upgrade configuration in data Resources.
+- Derive upgrade effects from ownership; never serialize them as a second truth.
 - Version save changes and validate a complete payload before applying it.
-- Keep upgrade definitions out of UI and machine runtime state.
 - Add signals only when a current consumer benefits from decoupling.

@@ -30,7 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(720, 0)
+custom_minimum_size = Vector2(780, 0)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
@@ -58,7 +58,7 @@ columns = 2
 
 [node name="MoneyLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
 layout_mode = 2
-text = "Money:"
+text = "Credits:"
 
 [node name="MoneyValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
 unique_name_in_owner = true
@@ -178,45 +178,28 @@ layout_mode = 2
 text = "0.0000"
 horizontal_alignment = 2
 
-[node name="SorterControls" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="OwnedUpgradesLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+layout_mode = 2
+text = "Owned upgrades:"
+
+[node name="OwnedUpgradesValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "None"
+horizontal_alignment = 2
+
+[node name="UpgradeDivider" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+
+[node name="UpgradeTitle" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "UPGRADE SHOP"
+
+[node name="UpgradeRows" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8
-alignment = 1
-
-[node name="SorterControlLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls"]
-layout_mode = 2
-text = "Debug Sorter Capacity:"
-
-[node name="SorterX1Button" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Sorter x1"
-
-[node name="SorterX2Button" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Sorter x2"
-
-[node name="ScannerUpgradeControls" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="ScannerUpgradeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls"]
-layout_mode = 2
-text = "Scanner upgrade:"
-
-[node name="ScannerUpgradeValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(110, 0)
-layout_mode = 2
-text = "1.00x (Base)"
-
-[node name="ScannerUpgradeButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 0)
-layout_mode = 2
-text = "Buy Scanner Motor I — 50 Credits"
 
 [node name="TransactionButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
@@ -256,9 +239,6 @@ layout_mode = 2
 text = "Production systems ready."
 horizontal_alignment = 1
 
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls/SorterX1Button" to="." method="_on_sorter_x1_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls/SorterX2Button" to="." method="_on_sorter_x2_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls/ScannerUpgradeButton" to="." method="_on_scanner_upgrade_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/ProcessItemButton" to="." method="_on_process_item_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/AddCreditsButton" to="." method="_on_add_credits_button_pressed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/SpendCreditsButton" to="." method="_on_spend_credits_button_pressed"]
