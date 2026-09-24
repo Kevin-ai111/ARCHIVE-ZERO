@@ -132,11 +132,13 @@ func _build_stage_rows() -> void:
 		row.add_child(state_label)
 
 		var toggle_button: Button = Button.new()
+		toggle_button.name = "ToggleButton"
 		toggle_button.custom_minimum_size = Vector2(90.0, 0.0)
 		toggle_button.pressed.connect(_on_stage_toggle_pressed.bind(stage.get_id()))
 		row.add_child(toggle_button)
 
 		stage_rows.add_child(row)
+		row.name = String(stage.get_id())
 		_stage_views[String(stage.get_id())] = {
 			"capacity": capacity_label,
 			"utilization": utilization_label,
@@ -171,6 +173,7 @@ func _build_upgrade_rows() -> void:
 		header.add_child(ownership_label)
 
 		var purchase_button: Button = Button.new()
+		purchase_button.name = "PurchaseButton"
 		purchase_button.custom_minimum_size = Vector2(120.0, 0.0)
 		purchase_button.pressed.connect(_on_upgrade_purchase_pressed.bind(String(definition.id)))
 		header.add_child(purchase_button)
@@ -185,6 +188,7 @@ func _build_upgrade_rows() -> void:
 		card.add_child(impact_label)
 
 		upgrade_rows.add_child(card)
+		card.name = String(definition.id)
 		_upgrade_views[String(definition.id)] = {
 			"ownership": ownership_label,
 			"button": purchase_button,

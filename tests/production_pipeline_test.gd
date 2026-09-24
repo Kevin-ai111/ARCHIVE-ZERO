@@ -5,6 +5,7 @@ const RECEIVING_DESK_ID: StringName = &"receiving_desk"
 const BASIC_SCANNER_ID: StringName = &"basic_scanner"
 const BASIC_SORTER_ID: StringName = &"basic_sorter"
 const ARCHIVE_INTAKE_ID: StringName = &"archive_intake"
+const DASHBOARD_SCENE: PackedScene = preload("res://scenes/debug/debug_dashboard.tscn")
 
 var _failures: int = 0
 var _original_save_exists: bool = false
@@ -22,6 +23,7 @@ func _ready() -> void:
 		push_error("Required project Autoloads are unavailable to the test runner.")
 		get_tree().quit(1)
 		return
+	_simulation_manager.set_process(false)
 	call_deferred("_run_tests")
 
 
@@ -35,6 +37,7 @@ func _run_tests() -> void:
 	_test_runtime_state_round_trip()
 	_test_upgrade_definitions()
 	_test_upgrade_purchase_progression()
+	_test_pending_production_funds_purchase()
 	_test_purchase_rejections()
 	_test_upgrade_managed_machines_reject_free_overrides()
 	_test_save_load_round_trip()
@@ -44,6 +47,8 @@ func _run_tests() -> void:
 	_test_version_two_line_migration_preserves_unrelated_modifier()
 	_test_legacy_scanner_only_migration()
 	_test_version_one_save_migration()
+	await _test_dashboard_scroll_layout(Vector2i(960, 540))
+	await _test_dashboard_scroll_layout(Vector2i(960, 720))
 	_restore_save_backup()
 
 	if _failures == 0:
@@ -204,6 +209,178 @@ func _test_upgrade_purchase_progression() -> void:
 		RECEIVING_DESK_ID,
 		"Ordered first minimum wins deterministic Receiving/Scanner tie"
 	)
+
+
+func _test_pending_production_funds_purchase() -> void:
+	_reset_manager_state(24)
+	var production_data: Dictionary = _simulation_manager.get_default_production_save_data()
+	production_data["fractional_progress"] = 0.9
+	_expect_true(
+		_simulation_manager.restore_production_save_data(production_data),
+		"Pending-purchase fixture restores 0.9 fractional progress"
+	)
+	_expect_true(_simulation_manager.set_tick_interval(1.0), "Test tick interval is accepted")
+	_simulation_manager._process(0.2)
+
+	_expect_equal(_game_state.get_money(), 24, "Pending production is not committed before purchase")
+	_expect_close(
+		_simulation_manager.get_pending_simulation_seconds(),
+		0.2,
+		"Exactly 0.2 seconds are pending before purchase"
+	)
+	var purchase_result: int = _simulation_manager.purchase_upgrade(
+		UpgradeCatalog.SORTER_MOTOR_I_ID
+	)
+
+	_expect_equal(purchase_result, _purchase_result("SUCCESS"), "Pending Credits enable purchase")
+	_expect_equal(_game_state.get_money(), 1, "24 + 2 pending Credits - 25 cost leaves 1 Credit")
+	_expect_true(
+		_simulation_manager.owns_upgrade(UpgradeCatalog.SORTER_MOTOR_I_ID),
+		"Sorter upgrade is owned after pending-Credits purchase"
+	)
+	_expect_equal(_simulation_manager.get_owned_upgrade_ids().size(), 1, "Ownership records once")
+	_expect_close(
+		_simulation_manager.get_machine_upgrade_multiplier(BASIC_SORTER_ID),
+		2.0,
+		"Sorter multiplier applies exactly once"
+	)
+	_expect_close(
+		_simulation_manager.get_production_line().get_fractional_progress(),
+		0.05,
+		"Old 0.75 items/sec configuration leaves 0.05 fractional progress"
+	)
+	_expect_close(
+		_simulation_manager.get_pending_simulation_seconds(),
+		0.0,
+		"Pending time is fully consumed exactly once"
+	)
+	print(
+		"Pending purchase regression: balance=%d, owned=%s, multiplier=%.2f, fraction=%.5f, pending=%.2f"
+		% [
+			_game_state.get_money(),
+			_simulation_manager.owns_upgrade(UpgradeCatalog.SORTER_MOTOR_I_ID),
+			_simulation_manager.get_machine_upgrade_multiplier(BASIC_SORTER_ID),
+			_simulation_manager.get_production_line().get_fractional_progress(),
+			_simulation_manager.get_pending_simulation_seconds(),
+		]
+	)
+	_expect_true(
+		_simulation_manager.set_tick_interval(_simulation_manager.DEFAULT_TICK_INTERVAL),
+		"Default tick interval is restored"
+	)
+
+
+func _test_dashboard_scroll_layout(viewport_size: Vector2i) -> void:
+	_reset_manager_state()
+	var test_viewport: SubViewport = SubViewport.new()
+	test_viewport.size = viewport_size
+	test_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	add_child(test_viewport)
+	var dashboard: Control = DASHBOARD_SCENE.instantiate() as Control
+	test_viewport.add_child(dashboard)
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	var scroll_container: ScrollContainer = dashboard.get_node("DashboardScroll") as ScrollContainer
+	var content_center: CenterContainer = dashboard.get_node("DashboardScroll/ContentCenter") as CenterContainer
+	var panel: PanelContainer = dashboard.get_node("DashboardScroll/ContentCenter/PanelContainer") as PanelContainer
+	var stage_rows: VBoxContainer = dashboard.get_node(
+		"DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StageRows"
+	) as VBoxContainer
+	var upgrade_rows: VBoxContainer = dashboard.get_node(
+		"DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/UpgradeRows"
+	) as VBoxContainer
+	_expect_true(scroll_container != null, "%s uses a ScrollContainer" % viewport_size)
+	_expect_equal(
+		scroll_container.horizontal_scroll_mode,
+		ScrollContainer.SCROLL_MODE_DISABLED,
+		"%s disables horizontal scrolling" % viewport_size
+	)
+	_expect_equal(
+		scroll_container.vertical_scroll_mode,
+		ScrollContainer.SCROLL_MODE_AUTO,
+		"%s enables automatic vertical scrolling" % viewport_size
+	)
+	_expect_equal(stage_rows.get_child_count(), 4, "%s keeps all production rows" % viewport_size)
+	_expect_equal(upgrade_rows.get_child_count(), 2, "%s keeps both upgrade cards" % viewport_size)
+	_expect_close(panel.position.y, 0.0, "%s keeps dashboard content top-aligned" % viewport_size)
+	_expect_close(
+		panel.position.x,
+		(content_center.size.x - panel.size.x) * 0.5,
+		"%s keeps dashboard content horizontally centered" % viewport_size
+	)
+	_expect_true(
+		not scroll_container.get_h_scroll_bar().visible,
+		"%s has no horizontal scrollbar or clipping" % viewport_size
+	)
+	_expect_true(
+		scroll_container.get_v_scroll_bar().max_value
+			> scroll_container.get_v_scroll_bar().page,
+		"%s exposes vertical overflow through scrolling" % viewport_size
+	)
+	scroll_container.scroll_vertical = 0
+	var wheel_event: InputEventMouseButton = InputEventMouseButton.new()
+	wheel_event.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	wheel_event.pressed = true
+	wheel_event.position = scroll_container.get_global_rect().get_center()
+	wheel_event.global_position = wheel_event.position
+	test_viewport.push_input(wheel_event)
+	await get_tree().process_frame
+	_expect_true(
+		scroll_container.scroll_vertical > 0,
+		"%s responds to mouse-wheel scrolling" % viewport_size
+	)
+
+	var sorter_purchase_button: Button = upgrade_rows.get_child(0).find_child(
+		"PurchaseButton", true, false
+	) as Button
+	var scanner_purchase_button: Button = upgrade_rows.get_child(1).find_child(
+		"PurchaseButton", true, false
+	) as Button
+	var reachable_controls: Array[Control] = [
+		dashboard.get_node("DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/Title") as Control,
+		stage_rows,
+		upgrade_rows.get_child(0) as Control,
+		sorter_purchase_button,
+		upgrade_rows.get_child(1) as Control,
+		scanner_purchase_button,
+		dashboard.get_node(
+			"DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/TransactionButtons"
+		) as Control,
+		dashboard.get_node(
+			"DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/SaveButtons/SaveButton"
+		) as Control,
+		dashboard.get_node(
+			"DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/SaveButtons/LoadButton"
+		) as Control,
+		dashboard.get_node(
+			"DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StatusValue"
+		) as Control,
+	]
+	for control: Control in reachable_controls:
+		_expect_true(scroll_container.is_ancestor_of(control), "%s remains inside scrolling content" % control.name)
+		scroll_container.ensure_control_visible(control)
+		await get_tree().process_frame
+		_expect_true(
+			scroll_container.get_global_rect().intersects(control.get_global_rect()),
+			"%s is reachable at %s" % [control.name, viewport_size]
+		)
+
+	_game_state.restore_state(25, 25, 0, 0.0)
+	sorter_purchase_button.pressed.emit()
+	await get_tree().process_frame
+	_expect_true(
+		_simulation_manager.owns_upgrade(UpgradeCatalog.SORTER_MOTOR_I_ID),
+		"Sorter purchase button works at %s" % viewport_size
+	)
+	_expect_equal(_game_state.get_money(), 0, "Purchase button deducts cost at %s" % viewport_size)
+	_expect_true(
+		String(dashboard.get_node("%StatusValue").text).begins_with("Purchased Sorter Motor I"),
+		"Purchase status is visible at %s" % viewport_size
+	)
+
+	test_viewport.queue_free()
+	await get_tree().process_frame
 
 
 func _test_purchase_rejections() -> void:

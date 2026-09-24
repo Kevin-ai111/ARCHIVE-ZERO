@@ -77,10 +77,13 @@ func purchase_upgrade(upgrade_id: String) -> int:
 		return PurchaseResult.ALREADY_OWNED
 	if _production_line.get_stage(definition.target_machine_id) == null:
 		return PurchaseResult.TARGET_UNAVAILABLE
+
+	# Commit time earned with the old machine configuration before the purchase
+	# changes either affordability or production capacity.
+	flush_pending_simulation()
 	if not Economy.can_afford(definition.cost):
 		return PurchaseResult.INSUFFICIENT_FUNDS
 
-	flush_pending_simulation()
 	if not Economy.spend_money(definition.cost):
 		return PurchaseResult.INSUFFICIENT_FUNDS
 
@@ -177,6 +180,10 @@ func set_tick_interval(interval_seconds: float) -> bool:
 
 func get_tick_interval() -> float:
 	return _tick_interval
+
+
+func get_pending_simulation_seconds() -> float:
+	return _tick_accumulator
 
 
 func get_production_line() -> ProductionLine:
