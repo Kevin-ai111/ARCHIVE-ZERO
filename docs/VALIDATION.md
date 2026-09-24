@@ -2,16 +2,33 @@
 
 ## Automated domain test
 
-From the repository root, run:
+Use the official standard Godot 4.7 stable binary. On a fresh checkout, first
+run one headless editor import so Godot registers the project's global
+`class_name` types, then run the test scene:
 
 ```bash
+godot --version
+godot --headless --editor --path . --quit
 godot --headless --path . tests/production_pipeline_test.tscn
 ```
 
-The command must exit with code `0` and print `Production pipeline tests passed.`
+The version command must report `4.7.stable`; the final command must exit with
+code `0` and print `Production pipeline tests passed.`
 It validates initial throughput and utilization, dynamic bottlenecks, disabled
 stages, 100-second output, fractional continuity, runtime-state restoration,
-Scanner upgrade purchase rules, save/load, and legacy save migration.
+Scanner upgrade purchase rules, upgrade/multiplier consistency, save/load, and
+both supported legacy save migrations.
+
+The test temporarily uses `user://archive_zero_save.json`. It backs up and
+restores an existing file when the process completes normally. An interrupted
+or forcibly terminated test process cannot guarantee that cleanup. The suite
+validates numerical and persistence behavior headlessly; it does not validate
+rendering, final UI layout, platform exports, or Steam integration.
+
+Pull requests run the same two commands through
+`.github/workflows/godot-headless-validation.yml`. The workflow downloads the
+official Godot 4.7 stable Linux binary and verifies its pinned SHA-256 checksum
+before execution.
 
 ## Manual runtime check
 

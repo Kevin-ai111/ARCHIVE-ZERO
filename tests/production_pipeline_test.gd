@@ -32,8 +32,12 @@ func _run_tests() -> void:
 	_test_runtime_state_round_trip()
 	_test_scanner_upgrade_purchase()
 	_test_scanner_upgrade_rejections()
+	_test_scanner_multiplier_is_upgrade_owned()
 	_test_save_load_upgrade_state()
+	_test_current_save_normalizes_scanner_multiplier()
+	_test_duplicate_upgrade_save_is_rejected()
 	_test_legacy_feature_save_migration()
+	_test_version_one_save_migration()
 	_restore_save_backup()
 
 	if _failures == 0:
@@ -164,9 +168,23 @@ func _test_scanner_upgrade_rejections() -> void:
 	)
 
 
+func _test_scanner_multiplier_is_upgrade_owned() -> void:
+	_reset_manager_state()
+	_expect_true(
+		not _simulation_manager.set_machine_capacity_multiplier(BASIC_SCANNER_ID, 2.0),
+		"Generic modifier cannot override upgrade-managed Scanner capacity"
+	)
+	_expect_close(
+		_simulation_manager.get_scanner_throughput_multiplier(),
+		1.0,
+		"Rejected Scanner modifier leaves base capacity unchanged"
+	)
+
+
 func _test_save_load_upgrade_state() -> void:
 	_reset_manager_state(50)
 	_simulation_manager.purchase_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID)
+	_simulation_manager.simulate_elapsed(1.0)
 	_simulation_manager.set_machine_enabled(BASIC_SCANNER_ID, false)
 	_simulation_manager.set_machine_capacity_multiplier(BASIC_SORTER_ID, 2.0)
 	_expect_true(_save_manager.save_game(), "Production state saves")
@@ -186,6 +204,60 @@ func _test_save_load_upgrade_state() -> void:
 		2.0,
 		"Load preserves current-main machine state"
 	)
+	_expect_close(
+		_simulation_manager.get_production_line().get_fractional_progress(),
+		0.75,
+		"Load preserves fractional production progress"
+	)
+
+
+func _test_current_save_normalizes_scanner_multiplier() -> void:
+	var production_data: Dictionary = _simulation_manager.get_default_production_save_data()
+	production_data["scanner_upgrades"] = [ScannerUpgrades.MOTOR_I_ID]
+	production_data["machines"][String(BASIC_SCANNER_ID)]["capacity_multiplier"] = 4.0
+	production_data["machines"][String(BASIC_SORTER_ID)]["capacity_multiplier"] = 2.0
+	var save_data: Dictionary = _make_complete_save(production_data)
+	_expect_true(_write_save(save_data), "Current save with stale Scanner modifier can be prepared")
+
+	_reset_manager_state()
+	_expect_true(_save_manager.load_game(), "Current save normalizes its derived Scanner modifier")
+	_expect_true(
+		_simulation_manager.owns_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID),
+		"Normalized save preserves Scanner upgrade ownership"
+	)
+	_expect_close(
+		_simulation_manager.get_scanner_throughput_multiplier(),
+		1.25,
+		"Owned upgrades determine restored Scanner multiplier"
+	)
+	_expect_close(
+		_simulation_manager.get_production_line().get_stage(BASIC_SORTER_ID).get_capacity_multiplier(),
+		2.0,
+		"Normalization does not alter unrelated machine modifiers"
+	)
+
+
+func _test_duplicate_upgrade_save_is_rejected() -> void:
+	var production_data: Dictionary = _simulation_manager.get_default_production_save_data()
+	production_data["scanner_upgrades"] = [
+		ScannerUpgrades.MOTOR_I_ID,
+		ScannerUpgrades.MOTOR_I_ID,
+	]
+	var save_data: Dictionary = _make_complete_save(production_data)
+	_expect_true(_write_save(save_data), "Duplicate-upgrade save can be prepared")
+
+	_reset_manager_state(50)
+	_simulation_manager.purchase_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID)
+	_expect_true(not _save_manager.load_game(), "Duplicate-upgrade save is rejected")
+	_expect_true(
+		_simulation_manager.owns_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID),
+		"Rejected save leaves existing upgrade ownership unchanged"
+	)
+	_expect_close(
+		_simulation_manager.get_scanner_throughput_multiplier(),
+		1.25,
+		"Rejected save cannot apply the same upgrade twice"
+	)
 
 
 func _test_legacy_feature_save_migration() -> void:
@@ -203,12 +275,9 @@ func _test_legacy_feature_save_migration() -> void:
 			"processed_item_fraction": 0.5,
 		},
 	}
-	var save_file: FileAccess = FileAccess.open(_save_manager.SAVE_PATH, FileAccess.WRITE)
-	_expect_true(save_file != null, "Legacy feature save can be prepared")
-	if save_file == null:
+	if not _write_save(legacy_save):
+		_expect_true(false, "Legacy feature save can be prepared")
 		return
-	save_file.store_string(JSON.stringify(legacy_save))
-	save_file.close()
 
 	_reset_manager_state()
 	_expect_true(_save_manager.load_game(), "Legacy feature save migrates")
@@ -221,6 +290,44 @@ func _test_legacy_feature_save_migration() -> void:
 		_simulation_manager.get_production_line().get_fractional_progress(),
 		0.5,
 		"Migration preserves fractional progress"
+	)
+	_expect_close(
+		_simulation_manager.get_scanner_throughput_multiplier(),
+		1.25,
+		"Legacy ownership restores exactly one Scanner modifier"
+	)
+
+
+func _test_version_one_save_migration() -> void:
+	var legacy_save: Dictionary = {
+		"save_version": 1,
+		"money": 12,
+		"total_money_earned": 40,
+		"total_processed_items": 14,
+		"total_playtime": 8.0,
+		"save_timestamp": 1,
+	}
+	if not _write_save(legacy_save):
+		_expect_true(false, "Version-one save can be prepared")
+		return
+
+	_reset_manager_state(50)
+	_simulation_manager.purchase_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID)
+	_expect_true(_save_manager.load_game(), "Version-one save migrates to default production state")
+	_expect_equal(_game_state.get_money(), 12, "Version-one migration restores base game state")
+	_expect_true(
+		not _simulation_manager.owns_scanner_upgrade(ScannerUpgrades.MOTOR_I_ID),
+		"Version-one migration starts without Scanner upgrades"
+	)
+	_expect_close(
+		_simulation_manager.get_scanner_throughput_multiplier(),
+		1.0,
+		"Version-one migration restores base Scanner multiplier"
+	)
+	_expect_close(
+		_simulation_manager.get_effective_throughput(),
+		0.75,
+		"Version-one migration restores the default production line"
 	)
 
 
@@ -249,6 +356,28 @@ func _restore_save_backup() -> void:
 	if save_file != null:
 		save_file.store_string(_original_save_contents)
 		save_file.close()
+
+
+func _make_complete_save(production_data: Dictionary) -> Dictionary:
+	return {
+		"save_version": _save_manager.SAVE_VERSION,
+		"money": 0,
+		"total_money_earned": 0,
+		"total_processed_items": 0,
+		"total_playtime": 0.0,
+		"save_timestamp": 1,
+		"production_line": production_data,
+	}
+
+
+func _write_save(save_data: Dictionary) -> bool:
+	var save_file: FileAccess = FileAccess.open(_save_manager.SAVE_PATH, FileAccess.WRITE)
+	if save_file == null:
+		return false
+	save_file.store_string(JSON.stringify(save_data))
+	var write_error: Error = save_file.get_error()
+	save_file.close()
+	return write_error == OK
 
 
 func _expect_true(condition: bool, message: String) -> void:
