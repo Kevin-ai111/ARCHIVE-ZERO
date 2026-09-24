@@ -133,6 +133,10 @@ func set_machine_capacity_multiplier(machine_id: StringName, multiplier: float) 
 	var stage: MachineRuntime = _production_line.get_stage(machine_id)
 	if stage == null or not is_finite(multiplier) or multiplier < 0.0:
 		return false
+	# Scanner capacity is derived from owned upgrades. Allowing this generic debug
+	# seam to write it would create a state that changes after save/load.
+	if machine_id == BASIC_SCANNER_ID:
+		return false
 	if is_equal_approx(stage.get_capacity_multiplier(), multiplier):
 		return true
 
@@ -180,6 +184,8 @@ func migrate_production_save_data(save_data: Dictionary) -> Dictionary:
 		var current_data: Dictionary = save_data.duplicate(true)
 		if not current_data.has("scanner_upgrades"):
 			current_data["scanner_upgrades"] = []
+		if not _normalize_scanner_multiplier(current_data):
+			return {}
 		return current_data if is_valid_production_save_data(current_data) else {}
 
 	var legacy_fields: Array[String] = [
@@ -206,13 +212,20 @@ func migrate_production_save_data(save_data: Dictionary) -> Dictionary:
 func is_valid_production_save_data(save_data: Dictionary) -> bool:
 	if not _production_line.is_valid_save_data(save_data):
 		return false
-	if not save_data.has("scanner_upgrades") or typeof(save_data["scanner_upgrades"]) != TYPE_ARRAY:
+	if not save_data.has("scanner_upgrades"):
+		return false
+	if not _is_valid_scanner_upgrades(save_data["scanner_upgrades"]):
 		return false
 
-	for upgrade_id: Variant in save_data["scanner_upgrades"]:
-		if typeof(upgrade_id) != TYPE_STRING or not ScannerUpgrades.DEFINITIONS.has(upgrade_id):
-			return false
-	return true
+	var machines: Dictionary = save_data["machines"] as Dictionary
+	var scanner_key: String = String(BASIC_SCANNER_ID)
+	if not machines.has(scanner_key) or typeof(machines[scanner_key]) != TYPE_DICTIONARY:
+		return false
+	var scanner_state: Dictionary = machines[scanner_key] as Dictionary
+	var expected_multiplier: float = ScannerUpgrades.get_scanner_multiplier(
+		_array_to_strings(save_data["scanner_upgrades"])
+	)
+	return is_equal_approx(float(scanner_state["capacity_multiplier"]), expected_multiplier)
 
 
 func restore_production_save_data(save_data: Dictionary) -> bool:
@@ -234,6 +247,45 @@ func _apply_scanner_upgrades() -> void:
 		BASIC_SCANNER_ID,
 		ScannerUpgrades.get_scanner_multiplier(_owned_scanner_upgrades)
 	)
+
+
+func _normalize_scanner_multiplier(save_data: Dictionary) -> bool:
+	if typeof(save_data.get("machines")) != TYPE_DICTIONARY:
+		return false
+	if typeof(save_data.get("scanner_upgrades")) != TYPE_ARRAY:
+		return false
+	if not _is_valid_scanner_upgrades(save_data["scanner_upgrades"]):
+		return false
+
+	var serialized_upgrades: Array = save_data["scanner_upgrades"] as Array
+	var owned_upgrades: Array[String] = _array_to_strings(serialized_upgrades)
+
+	var machines: Dictionary = save_data["machines"] as Dictionary
+	var scanner_key: String = String(BASIC_SCANNER_ID)
+	if not machines.has(scanner_key) or typeof(machines[scanner_key]) != TYPE_DICTIONARY:
+		return false
+	var scanner_state: Dictionary = machines[scanner_key] as Dictionary
+	if not scanner_state.has("capacity_multiplier"):
+		return false
+
+	# Upgrade ownership is authoritative; normalize the redundant runtime field
+	# so reconciled saves cannot retain or apply the Scanner modifier separately.
+	scanner_state["capacity_multiplier"] = ScannerUpgrades.get_scanner_multiplier(owned_upgrades)
+	return true
+
+
+func _is_valid_scanner_upgrades(value: Variant) -> bool:
+	if typeof(value) != TYPE_ARRAY:
+		return false
+
+	var seen_upgrade_ids: Dictionary = {}
+	for upgrade_id: Variant in value:
+		if typeof(upgrade_id) != TYPE_STRING or not ScannerUpgrades.DEFINITIONS.has(upgrade_id):
+			return false
+		if seen_upgrade_ids.has(upgrade_id):
+			return false
+		seen_upgrade_ids[upgrade_id] = true
+	return true
 
 
 func _array_to_strings(value: Variant) -> Array[String]:

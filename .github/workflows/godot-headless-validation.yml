@@ -1,0 +1,39 @@
+name: Godot headless validation
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GODOT_VERSION: 4.7-stable
+      GODOT_SHA256: 0b1a6c54c2c619c12e169fe9241edda4b81080b519451cec2984bf0d2c6cb73c
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Godot
+        shell: bash
+        run: |
+          archive="$RUNNER_TEMP/godot.zip"
+          install_dir="$RUNNER_TEMP/godot"
+          curl --fail --location --retry 3 \
+            --output "$archive" \
+            "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          echo "${GODOT_SHA256}  ${archive}" | sha256sum --check
+          mkdir --parents "$install_dir"
+          unzip -q "$archive" -d "$install_dir"
+          echo "$install_dir" >> "$GITHUB_PATH"
+
+      - name: Import project and register global classes
+        run: Godot_v4.7-stable_linux.x86_64 --headless --editor --path . --quit
+
+      - name: Run production pipeline validation
+        run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/production_pipeline_test.tscn

@@ -30,10 +30,11 @@ saving, and a minimal debug dashboard.
 
 No third-party addons are required.
 
-Run the headless production and persistence validation from the repository root
-with:
+On a fresh checkout, import once and then run the headless production and
+persistence validation from the repository root:
 
 ```bash
+godot --headless --editor --path . --quit
 godot --headless --path . tests/production_pipeline_test.tscn
 ```
 

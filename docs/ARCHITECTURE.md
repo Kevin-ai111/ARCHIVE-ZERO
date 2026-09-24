@@ -68,7 +68,11 @@ current Scanner Motor I costs 50 Credits and applies a `1.25×` capacity
 multiplier. `SimulationManager` owns purchased upgrade IDs, spends through
 `Economy`, applies the resulting multiplier to the Scanner `MachineRuntime`, and
 rejects duplicate or unaffordable purchases. Upgrade definitions and ownership
-do not live in UI code.
+do not live in UI code. Scanner upgrade ownership is authoritative for its
+capacity multiplier: the generic debug modifier API cannot change the Scanner,
+and loading normalizes the serialized derived multiplier from owned upgrade IDs.
+This prevents an upgrade from being applied twice or a Scanner capacity from
+changing across a save/load cycle.
 
 ### SimulationManager
 
