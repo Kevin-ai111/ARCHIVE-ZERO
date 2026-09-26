@@ -21,246 +21,235 @@ grow_vertical = 2
 color = Color(0.025, 0.035, 0.05, 1)
 mouse_filter = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="DashboardScroll" type="ScrollContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(720, 0)
+[node name="ContentCenter" type="CenterContainer" parent="DashboardScroll"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DashboardScroll/ContentCenter"]
+custom_minimum_size = Vector2(780, 0)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="DashboardScroll/ContentCenter/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 20
 
-[node name="Content" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer"]
+[node name="Content" type="VBoxContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="Title" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="Title" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "ARCHIVE ZERO"
 horizontal_alignment = 1
 
-[node name="StateGrid" type="GridContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="StateGrid" type="GridContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 4
 columns = 2
 
-[node name="MoneyLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+[node name="MoneyLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StateGrid"]
 layout_mode = 2
-text = "Money:"
+text = "Credits:"
 
-[node name="MoneyValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+[node name="MoneyValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StateGrid"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="ProcessedItemsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+[node name="ProcessedItemsLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StateGrid"]
 layout_mode = 2
 text = "Processed Items:"
 
-[node name="ProcessedItemsValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+[node name="ProcessedItemsValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StateGrid"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="PlaytimeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+[node name="PlaytimeLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StateGrid"]
 layout_mode = 2
 text = "Playtime:"
 
-[node name="PlaytimeValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StateGrid"]
+[node name="PlaytimeValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StateGrid"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "00:00:00"
 horizontal_alignment = 2
 
-[node name="Divider" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="Divider" type="HSeparator" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 
-[node name="ProductionTitle" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="ProductionTitle" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "PRODUCTION LINE"
 
-[node name="StageHeader" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="StageHeader" type="HBoxContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="MachineHeader" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StageHeader"]
+[node name="MachineHeader" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StageHeader"]
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 text = "Machine"
 
-[node name="CapacityHeader" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StageHeader"]
+[node name="CapacityHeader" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StageHeader"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Capacity"
 horizontal_alignment = 2
 
-[node name="UtilizationHeader" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StageHeader"]
+[node name="UtilizationHeader" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StageHeader"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "Utilization"
 horizontal_alignment = 2
 
-[node name="StateHeader" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StageHeader"]
+[node name="StateHeader" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StageHeader"]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 text = "State"
 horizontal_alignment = 1
 
-[node name="ControlHeader" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/StageHeader"]
+[node name="ControlHeader" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/StageHeader"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "Enabled"
 horizontal_alignment = 1
 
-[node name="StageRows" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="StageRows" type="VBoxContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="ProductionStats" type="GridContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="ProductionStats" type="GridContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 theme_override_constants/h_separation = 24
 theme_override_constants/v_separation = 4
 columns = 2
 
-[node name="ThroughputLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="ThroughputLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 layout_mode = 2
 text = "Effective throughput:"
 
-[node name="ThroughputValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="ThroughputValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "0.75 items/sec"
 horizontal_alignment = 2
 
-[node name="CreditsPerSecondLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="CreditsPerSecondLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 layout_mode = 2
 text = "Credits/sec:"
 
-[node name="CreditsPerSecondValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="CreditsPerSecondValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "1.50"
 horizontal_alignment = 2
 
-[node name="BottleneckLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="BottleneckLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 layout_mode = 2
 text = "Bottleneck:"
 
-[node name="BottleneckValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="BottleneckValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Basic Sorter"
 horizontal_alignment = 2
 
-[node name="FractionalProgressLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="FractionalProgressLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 layout_mode = 2
 text = "Fractional progress:"
 
-[node name="FractionalProgressValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ProductionStats"]
+[node name="FractionalProgressValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "0.0000"
 horizontal_alignment = 2
 
-[node name="SorterControls" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="OwnedUpgradesLabel" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
+text = "Owned upgrades:"
 
-[node name="SorterControlLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls"]
-layout_mode = 2
-text = "Debug Sorter Capacity:"
-
-[node name="SorterX1Button" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Sorter x1"
-
-[node name="SorterX2Button" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Sorter x2"
-
-[node name="ScannerUpgradeControls" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="ScannerUpgradeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls"]
-layout_mode = 2
-text = "Scanner upgrade:"
-
-[node name="ScannerUpgradeValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls"]
+[node name="OwnedUpgradesValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/ProductionStats"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
-text = "1.00x (Base)"
+text = "None"
+horizontal_alignment = 2
 
-[node name="ScannerUpgradeButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls"]
+[node name="UpgradeDivider" type="HSeparator" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+
+[node name="UpgradeTitle" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "UPGRADE SHOP"
+
+[node name="UpgradeRows" type="VBoxContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-text = "Buy Scanner Motor I — 50 Credits"
+theme_override_constants/separation = 8
 
-[node name="TransactionButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="TransactionButtons" type="HBoxContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="ProcessItemButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons"]
+[node name="ProcessItemButton" type="Button" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/TransactionButtons"]
 layout_mode = 2
 text = "Process 1 Item"
 
-[node name="AddCreditsButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons"]
+[node name="AddCreditsButton" type="Button" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/TransactionButtons"]
 layout_mode = 2
 text = "Add 10 Credits"
 
-[node name="SpendCreditsButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons"]
+[node name="SpendCreditsButton" type="Button" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/TransactionButtons"]
 layout_mode = 2
 text = "Spend 5 Credits"
 
-[node name="SaveButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="SaveButtons" type="HBoxContainer" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="SaveButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons"]
+[node name="SaveButton" type="Button" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/SaveButtons"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Save"
 
-[node name="LoadButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons"]
+[node name="LoadButton" type="Button" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/SaveButtons"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Load"
 
-[node name="StatusValue" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/Content"]
+[node name="StatusValue" type="Label" parent="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Production systems ready."
 horizontal_alignment = 1
 
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls/SorterX1Button" to="." method="_on_sorter_x1_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SorterControls/SorterX2Button" to="." method="_on_sorter_x2_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/ScannerUpgradeControls/ScannerUpgradeButton" to="." method="_on_scanner_upgrade_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/ProcessItemButton" to="." method="_on_process_item_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/AddCreditsButton" to="." method="_on_add_credits_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/TransactionButtons/SpendCreditsButton" to="." method="_on_spend_credits_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons/SaveButton" to="." method="_on_save_button_pressed"]
-[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/Content/SaveButtons/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="pressed" from="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/TransactionButtons/ProcessItemButton" to="." method="_on_process_item_button_pressed"]
+[connection signal="pressed" from="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/TransactionButtons/AddCreditsButton" to="." method="_on_add_credits_button_pressed"]
+[connection signal="pressed" from="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/TransactionButtons/SpendCreditsButton" to="." method="_on_spend_credits_button_pressed"]
+[connection signal="pressed" from="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/SaveButtons/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="DashboardScroll/ContentCenter/PanelContainer/MarginContainer/Content/SaveButtons/LoadButton" to="." method="_on_load_button_pressed"]

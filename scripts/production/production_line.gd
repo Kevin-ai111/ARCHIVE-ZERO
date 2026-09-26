@@ -140,7 +140,7 @@ func restore_save_data(save_data: Dictionary) -> bool:
 	for stage: MachineRuntime in _stages:
 		var machine_state: Dictionary = machine_states[String(stage.get_id())] as Dictionary
 		stage.set_enabled(bool(machine_state["enabled"]))
-		stage.set_capacity_multiplier(float(machine_state["capacity_multiplier"]))
+		stage.set_runtime_capacity_multiplier(float(machine_state["runtime_capacity_multiplier"]))
 
 	_fractional_progress = float(save_data["fractional_progress"])
 	return true
@@ -173,13 +173,13 @@ func _is_valid_machine_state(value: Variant) -> bool:
 	var state: Dictionary = value as Dictionary
 	if not state.has("enabled") or typeof(state["enabled"]) != TYPE_BOOL:
 		return false
-	if not state.has("capacity_multiplier"):
+	if not state.has("runtime_capacity_multiplier"):
 		return false
 	if (
-		typeof(state["capacity_multiplier"]) != TYPE_INT
-		and typeof(state["capacity_multiplier"]) != TYPE_FLOAT
+		typeof(state["runtime_capacity_multiplier"]) != TYPE_INT
+		and typeof(state["runtime_capacity_multiplier"]) != TYPE_FLOAT
 	):
 		return false
 
-	var multiplier: float = float(state["capacity_multiplier"])
+	var multiplier: float = float(state["runtime_capacity_multiplier"])
 	return is_finite(multiplier) and multiplier >= 0.0
