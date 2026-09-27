@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/scanner_visual.gd" id="1_scanner"]
+[ext_resource type="Texture2D" path="res://assets/machines/basic_scanner/AZ_SCN_back_idle_2x.png" id="2_back"]
+[ext_resource type="Texture2D" path="res://assets/machines/basic_scanner/AZ_SCN_emissive_idle_2x.png" id="3_idle"]
+[ext_resource type="Texture2D" path="res://assets/machines/basic_scanner/AZ_SCN_scan_beam_2x.png" id="4_scan"]
+[ext_resource type="Texture2D" path="res://assets/machines/basic_scanner/AZ_SCN_front_mask_2x.png" id="5_front"]
+[ext_resource type="Texture2D" path="res://assets/machines/basic_scanner/AZ_SCN_upgrade_motor_2x.png" id="6_motor"]
+
+[node name="BasicScanner" type="Node2D"]
+z_index = 12
+z_as_relative = false
+texture_filter = 2
+script = ExtResource("1_scanner")
+
+[node name="ScannerBack" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 5
+z_as_relative = false
+position = Vector2(0, -208)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_back")
+
+[node name="IdleEmissive" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 7
+z_as_relative = false
+position = Vector2(0, -208)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_idle")
+
+[node name="ScanBeam" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 8
+z_as_relative = false
+position = Vector2(0, -208)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_scan")
+
+[node name="ScannerFront" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 10
+z_as_relative = false
+position = Vector2(0, -208)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_front")
+
+[node name="MotorUpgrade" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 11
+z_as_relative = false
+position = Vector2(0, -208)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_motor")

@@ -16,10 +16,17 @@ lines are domain objects rather than Nodes or additional Autoloads.
 ## Presentation boundary
 
 `scenes/world/archive_room.tscn` is the first player-facing presentation scene.
-Its fixed `Camera2D`, machine placeholders, conveyor, HUD, foreground, and effects
+Its fixed `Camera2D`, machine visuals, conveyor, HUD, foreground, and effects
 layer only read authoritative state from the Autoloads. Decorative conveyor
 items are derived from presentation time and throughput; they never call
 production, Economy, or Credit APIs.
+
+The Basic Scanner is the first layered production-art machine. Its rear casing,
+lighting, scan beam, front mask, and Motor I attachment share one bottom-centre
+pivot. Conveyor surface and parcel rendering are separate presentation nodes so
+parcels can pass between the rear casing and front mask without becoming part of
+the production model. The exact asset and Z-order contract is documented in
+`docs/BASIC_SCANNER_ART.md`.
 
 `scenes/ui/gameplay_hud.tscn` exposes Credits, throughput, the current
 bottleneck, fullscreen/windowed switching, and the two existing upgrades. The

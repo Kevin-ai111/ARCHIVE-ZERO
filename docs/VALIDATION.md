@@ -38,6 +38,10 @@ The visual foundation suite covers:
 - HUD values, two-upgrade shop, scroll policy, and physical readability floors;
 - 1920×1080, 1280×720, and 960×540 scale factors;
 - Scanner enabled, disabled, active, and Scanner Motor I states;
+- Scanner layer dimensions, bottom-centre alignment, and world pivot;
+- real front-mask transparency and rear-casing visibility through the opening;
+- conveyor surface → rear casing → parcel → front-frame occlusion order;
+- scan-line travel and independent Motor I visibility;
 - gameplay-HUD purchase wiring;
 - decorative conveyor movement without production-state mutation;
 - exact 100-second simulation equivalence with and without ArchiveRoom.
@@ -52,7 +56,32 @@ official Godot 4.7 stable Linux binary.
 
 ## Full-HD graphical validation
 
-The greybox was rendered with the official Godot 4.7.2 stable Windows build and
+### Basic Scanner production art
+
+The production-art Scanner was rendered with Godot 4.7.2 stable and the
+Compatibility renderer at all required physical targets:
+
+- [1920×1080 active scanner](screenshots/scanner-art-1920x1080.png)
+- [1280×720 active scanner](screenshots/scanner-art-1280x720.png)
+- [960×540 active scanner](screenshots/scanner-art-960x540.png)
+- [disabled state](screenshots/scanner-disabled-1280x720.png)
+- [Scanner Motor I state](screenshots/scanner-motor-i-1280x720.png)
+- [active scan animation](screenshots/basic-scanner-scan-animation-960x540.gif)
+
+The captures confirm that packages rest on the Y=703 conveyor surface, cross the
+Y=688 centreline through the scanner opening, remain visible over the rear
+casing, and are hidden by the front frame where appropriate. Machine pivots,
+the HUD, and the other three machines are unchanged.
+
+Linear filtering was retained after comparison with
+[nearest filtering at 1280×720](screenshots/scanner-filter-nearest-1280x720.png).
+The corresponding [linear capture](screenshots/scanner-filter-linear-1280x720.png)
+avoids uneven fractional pixel cadence at the supported 2/3 output scale. See
+`docs/BASIC_SCANNER_ART.md` for the exact configuration and compromise.
+
+### Foundation greybox
+
+The original greybox was rendered with the official Godot 4.7.2 stable Windows build and
 the Compatibility renderer at all three physical targets:
 
 - [1920×1080 Archive Room](screenshots/archive-room-1920x1080.png)
