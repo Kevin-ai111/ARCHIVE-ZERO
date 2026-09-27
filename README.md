@@ -19,8 +19,9 @@ researching, and containing increasingly impossible objects.
 The current build provides authoritative session state, transaction-safe
 currency handling, fixed-interval numerical simulation, a data-driven four-stage
 production line, a data-driven two-step motor upgrade loop, versioned JSON saving,
-an initial fixed-camera Archive Room, the first layered production-art Basic
-Scanner, a minimal gameplay HUD, and a separate development dashboard.
+an initial fixed-camera Archive Room with its first production environment and
+modular conveyor, the layered production-art Basic Scanner, a minimal gameplay
+HUD, and a separate development dashboard.
 
 ## Open locally
 

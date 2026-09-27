@@ -1,9 +1,18 @@
 class_name ConveyorPlaceholderVisual
 extends Node2D
 
+signal visuals_changed
+
 const PARCEL_SIZE := Vector2(42.0, 30.0)
 const BELT_TOP_OFFSET := 19.0
 const BELT_TOP_LINE_WIDTH := 8.0
+const BELT_ASSET_TOP_Y := 703.0
+const BELT_MODULE_XS := [436.0, 476.0, 604.0, 732.0, 860.0, 988.0, 1116.0, 1244.0, 1372.0, 1500.0, 1628.0]
+const BELT_MODULE_WIDTHS := [40.0, 128.0, 128.0, 128.0, 128.0, 128.0, 128.0, 128.0, 128.0, 128.0, 40.0]
+const SUPPORT_XS := [468.0, 637.0, 806.0, 976.0, 1145.0, 1314.0, 1483.0, 1644.0]
+const SUPPORT_TOP_Y := 770.0
+const SLAT_WINDOW := Rect2(476.0, 716.0, 1152.0, 44.0)
+const SLAT_SPEED := 90.0
 
 @export var path_start_x := 436.0
 @export var path_end_x := 1668.0
@@ -14,9 +23,12 @@ var is_running := true
 var displayed_throughput := 0.0
 var _visual_time := 0.0
 
+@onready var slat_overlay: ConveyorSlatsVisual = %SlatOverlay
+
 
 func _ready() -> void:
-	queue_redraw()
+	set_process(is_running)
+	_update_slat_overlay()
 
 
 func _process(delta: float) -> void:
@@ -26,13 +38,17 @@ func _process(delta: float) -> void:
 func set_visual_state(running: bool, throughput: float) -> void:
 	is_running = running
 	displayed_throughput = maxf(throughput, 0.0)
-	queue_redraw()
+	set_process(is_running)
+	_update_slat_overlay()
+	visuals_changed.emit()
 
 
 func advance_visuals(delta: float) -> void:
-	if is_running:
-		_visual_time += delta
-	queue_redraw()
+	if not is_running or delta <= 0.0:
+		return
+	_visual_time += delta
+	_update_slat_overlay()
+	visuals_changed.emit()
 
 
 func get_item_positions() -> PackedVector2Array:
@@ -51,6 +67,11 @@ func get_layout_snapshot() -> Dictionary:
 		"path_end_x": path_end_x,
 		"item_path_y": item_path_y,
 		"ground_baseline_y": ground_baseline_y,
+		"module_xs": BELT_MODULE_XS,
+		"module_widths": BELT_MODULE_WIDTHS,
+		"support_xs": SUPPORT_XS,
+		"support_top_y": SUPPORT_TOP_Y,
+		"slat_window": SLAT_WINDOW,
 	}
 
 
@@ -65,23 +86,23 @@ func get_draw_geometry_snapshot() -> Dictionary:
 		"belt_top_line_width": BELT_TOP_LINE_WIDTH,
 		"visible_belt_surface_y": visible_belt_surface_y,
 		"contact_gap": visible_belt_surface_y - parcel_bottom_y,
+		"asset_top_y": BELT_ASSET_TOP_Y,
+		"assembled_width": _sum_module_widths(),
+		"slat_offset": get_slat_offset(),
 	}
 
 
-func _draw() -> void:
-	var geometry := get_draw_geometry_snapshot()
-	var belt_top := float(geometry["belt_top_line_y"])
-	var belt_height := 62.0
-	draw_rect(Rect2(Vector2(path_start_x, belt_top), Vector2(path_end_x - path_start_x, belt_height)), Color("1a222c"), true)
-	draw_line(Vector2(path_start_x, belt_top), Vector2(path_end_x, belt_top), Color("b4873e"), BELT_TOP_LINE_WIDTH)
-	draw_line(Vector2(path_start_x, belt_top + belt_height), Vector2(path_end_x, belt_top + belt_height), Color("56616d"), 8.0)
+func get_slat_offset() -> float:
+	return fposmod(_visual_time * SLAT_SPEED, ConveyorSlatsVisual.TILE_DISPLAY_SIZE.x)
 
-	var slat_offset := fposmod(_visual_time * 90.0, 52.0) if is_running else 0.0
-	var slat_x := path_start_x - 52.0 + slat_offset
-	while slat_x <= path_end_x:
-		draw_line(Vector2(slat_x, belt_top + 8.0), Vector2(slat_x + 26.0, belt_top + belt_height - 8.0), Color("6a7682"), 5.0)
-		slat_x += 52.0
 
-	for support_x in range(int(path_start_x) + 80, int(path_end_x), 180):
-		draw_line(Vector2(support_x, belt_top + belt_height), Vector2(support_x, ground_baseline_y), Color("3d4853"), 15.0)
-		draw_line(Vector2(support_x - 34.0, ground_baseline_y), Vector2(support_x + 34.0, ground_baseline_y), Color("3d4853"), 11.0)
+func _update_slat_overlay() -> void:
+	if is_node_ready() and slat_overlay != null:
+		slat_overlay.set_scroll_offset(get_slat_offset())
+
+
+func _sum_module_widths() -> float:
+	var width := 0.0
+	for module_width in BELT_MODULE_WIDTHS:
+		width += module_width
+	return width

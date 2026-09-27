@@ -21,6 +21,8 @@ func _ready() -> void:
 func _run_tests() -> void:
 	_test_project_configuration()
 	var room := await _test_archive_room_layout_and_hud()
+	_test_environment_art_and_lighting(room)
+	_test_modular_conveyor(room)
 	await _test_scanner_asset_layers_and_occlusion(room)
 	await _test_scanner_visual_states(room)
 	await _test_gameplay_hud_purchase(room)
@@ -124,6 +126,88 @@ func _test_archive_room_layout_and_hud() -> Node2D:
 
 	hud.close_upgrade_shop()
 	return room
+
+
+func _test_environment_art_and_lighting(room: Node2D) -> void:
+	var environment := room.get_node("%EnvironmentArt") as ArchiveRoomEnvironmentVisual
+	var layout := environment.get_layout_snapshot()
+	_expect_equal(layout["runtime_texture_count"], 13, "Environment scene references all 13 non-conveyor runtime textures")
+	_expect_equal(layout["decoded_texture_bytes"], 6_985_816, "Documented package texture residency remains exact")
+	_expect_equal(layout["distant_z"], -100, "Distant archive uses absolute rear Z")
+	_expect_equal(layout["rear_wall_z"], -82, "Rear wall uses manifest Z")
+	_expect_equal(layout["catwalk_z"], -79, "Catwalk uses manifest Z")
+	_expect_equal(layout["roof_z"], -71, "Roof uses manifest Z")
+	_expect_equal(layout["pillars_z"], -70, "Pillars use manifest Z")
+	_expect_equal(layout["cables_z"], -69, "Cables use manifest Z")
+	_expect_equal(layout["decor_z"], -65, "Background decor uses manifest Z")
+	_expect_equal(layout["light_cones_z"], -52, "Transparent cones remain behind lamp housings")
+	_expect_equal(layout["lamp_housings_z"], -51, "Lamp housings retain independent draw order")
+	_expect_equal(layout["floor_z"], -10, "Floor starts at machine baseline layer")
+	_expect_equal(layout["floor_reflections_z"], -9, "Floor reflections remain independently layered")
+	_expect_equal(layout["wall_tile_count"], 16, "Rear wall repeats two rows of eight shared tiles")
+	_expect_equal(layout["catwalk_tile_count"], 8, "Catwalk fills the fixed camera width")
+	_expect_equal(layout["roof_tile_count"], 8, "Roof fills the fixed camera width")
+	_expect_equal(layout["floor_tile_count"], 8, "Floor fills the fixed camera width")
+	_expect_equal(layout["pillar_positions"], PackedVector2Array([Vector2(86, 162), Vector2(900, 162), Vector2(1710, 162)]), "Pillars follow placement manifest")
+	_expect_equal(layout["lamp_positions"], PackedVector2Array([Vector2(190, 146), Vector2(1020, 146), Vector2(1520, 146)]), "Lamp housings use top-left positions derived from manifest centres")
+	_expect_equal(layout["light_cone_positions"], PackedVector2Array([Vector2(104, 262), Vector2(934, 262), Vector2(1434, 262)]), "Light cones align independently below lamp centres")
+	_expect_equal(layout["floor_reflection_positions"], PackedVector2Array([Vector2(48, 920), Vector2(878, 920), Vector2(1378, 920)]), "Floor pools align to the ground baseline")
+
+	for placeholder_layer in ["DistantBackground", "ArchitecturalMidground", "PlayableGround", "Foreground"]:
+		var layer := room.get_node(placeholder_layer)
+		_expect_equal(layer.get_child_count(), 0, "%s no longer contains greybox ColorRect artwork" % placeholder_layer)
+
+	environment.set_light_cones_visible(false)
+	_expect_true(not environment.light_cones.visible and environment.lamp_housings.visible, "Light cones toggle independently from housings")
+	environment.set_floor_reflections_visible(false)
+	_expect_true(not environment.floor_reflections.visible and environment.lamp_housings.visible, "Floor reflections toggle independently from housings")
+	environment.set_light_housings_visible(false)
+	_expect_true(not environment.lamp_housings.visible and not environment.wall_sconces.visible, "Lamp housings and sconces share only their housing toggle")
+	environment.set_light_cones_visible(true)
+	environment.set_floor_reflections_visible(true)
+	environment.set_light_housings_visible(true)
+
+
+func _test_modular_conveyor(room: Node2D) -> void:
+	var conveyor := room.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var surface_modules := conveyor.get_node("%SurfaceModules") as Node2D
+	var supports := conveyor.get_node("Supports") as Node2D
+	var layout := conveyor.get_layout_snapshot()
+	var geometry := conveyor.get_draw_geometry_snapshot()
+	_expect_equal(surface_modules.get_child_count(), 11, "Conveyor uses one left cap, nine straights, and one right cap")
+	_expect_equal(supports.get_child_count(), 8, "Conveyor supports remain independent reusable modules")
+	_expect_equal(layout["module_xs"], ConveyorPlaceholderVisual.BELT_MODULE_XS, "Conveyor module origins follow the package manifest")
+	_expect_equal(layout["module_widths"], ConveyorPlaceholderVisual.BELT_MODULE_WIDTHS, "Conveyor module widths follow the package manifest")
+	_expect_equal(layout["support_xs"], ConveyorPlaceholderVisual.SUPPORT_XS, "Support positions follow the package manifest")
+	_expect_close(float(geometry["asset_top_y"]), 703.0, "Conveyor art begins at the approved contact surface")
+	_expect_close(float(geometry["assembled_width"]), 1232.0, "Modular conveyor assembles to exact approved width")
+
+	var expected_x := conveyor.path_start_x
+	for index in surface_modules.get_child_count():
+		var module := surface_modules.get_child(index) as Sprite2D
+		var expected_width := float(ConveyorPlaceholderVisual.BELT_MODULE_WIDTHS[index])
+		_expect_close(module.position.x, expected_x, "%s begins without a seam" % module.name)
+		_expect_close(module.position.y, 703.0, "%s shares exact contact Y" % module.name)
+		_expect_vector(module.scale, Vector2(0.5, 0.5), "%s uses the common 2x-to-logical transform" % module.name)
+		_expect_true(not module.centered and not module.z_as_relative and module.z_index == 4, "%s uses top-left absolute conveyor ordering" % module.name)
+		_expect_close(module.texture.get_width() * module.scale.x, expected_width, "%s displays at its manifest width" % module.name)
+		expected_x += expected_width
+	_expect_close(expected_x, conveyor.path_end_x, "Module edges finish at exact conveyor end without gaps")
+
+	var slats := conveyor.slat_overlay.get_geometry_snapshot()
+	_expect_vector(slats["texture_size"], Vector2(128, 88), "Animated slats use verified 2x runtime texture")
+	_expect_equal(slats["window"], Rect2(476, 716, 1152, 44), "Animated slats are clipped between conveyor caps")
+	_expect_vector(slats["tile_display_size"], Vector2(64, 44), "Animated slats use native logical tile size")
+	var moving_offset := conveyor.get_slat_offset()
+	conveyor.advance_visuals(0.25)
+	_expect_true(not is_equal_approx(conveyor.get_slat_offset(), moving_offset), "Existing presentation clock advances slat artwork")
+	conveyor.set_visual_state(false, 0.0)
+	var frozen_offset := conveyor.get_slat_offset()
+	conveyor.advance_visuals(2.0)
+	_expect_close(conveyor.get_slat_offset(), frozen_offset, "Stopped conveyor freezes slats without a second clock")
+	_expect_true(not conveyor.is_processing(), "Stopped conveyor avoids unnecessary continuous processing")
+	conveyor.set_visual_state(true, 0.75)
+	_expect_true(conveyor.is_processing(), "Running conveyor resumes the existing presentation process")
 
 
 func _test_scanner_visual_states(room: Node2D) -> void:
