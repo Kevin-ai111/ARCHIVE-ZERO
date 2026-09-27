@@ -73,6 +73,11 @@ func _test_archive_room_layout_and_hud() -> Node2D:
 	var conveyor_layout: Dictionary = layout["conveyor"] as Dictionary
 	_expect_close(float(conveyor_layout["item_path_y"]), 688.0, "Conveyor item path uses approved Y")
 	_expect_close(float(conveyor_layout["ground_baseline_y"]), 920.0, "Machines share approved ground baseline")
+	var conveyor: ConveyorPlaceholderVisual = room.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var draw_geometry := conveyor.get_draw_geometry_snapshot()
+	_expect_close(float(draw_geometry["parcel_bottom_y"]), 703.0, "Parcel drawing keeps the approved path-centered height")
+	_expect_close(float(draw_geometry["visible_belt_surface_y"]), 703.0, "Visible conveyor surface reaches the parcel bottom")
+	_expect_close(float(draw_geometry["contact_gap"]), 0.0, "Parcels meet the conveyor without floating or sinking")
 
 	var camera := room.get_node("RoomCamera") as Camera2D
 	_expect_true(camera.enabled, "Room camera is enabled")

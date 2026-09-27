@@ -1,6 +1,10 @@
 class_name ConveyorPlaceholderVisual
 extends Node2D
 
+const PARCEL_SIZE := Vector2(42.0, 30.0)
+const BELT_TOP_OFFSET := 19.0
+const BELT_TOP_LINE_WIDTH := 8.0
+
 @export var path_start_x := 436.0
 @export var path_end_x := 1668.0
 @export var item_path_y := 688.0
@@ -50,11 +54,26 @@ func get_layout_snapshot() -> Dictionary:
 	}
 
 
+func get_draw_geometry_snapshot() -> Dictionary:
+	var parcel_bottom_y := item_path_y + PARCEL_SIZE.y * 0.5
+	var belt_top_line_y := item_path_y + BELT_TOP_OFFSET
+	var visible_belt_surface_y := belt_top_line_y - BELT_TOP_LINE_WIDTH * 0.5
+	return {
+		"parcel_size": PARCEL_SIZE,
+		"parcel_bottom_y": parcel_bottom_y,
+		"belt_top_line_y": belt_top_line_y,
+		"belt_top_line_width": BELT_TOP_LINE_WIDTH,
+		"visible_belt_surface_y": visible_belt_surface_y,
+		"contact_gap": visible_belt_surface_y - parcel_bottom_y,
+	}
+
+
 func _draw() -> void:
-	var belt_top := item_path_y + 28.0
+	var geometry := get_draw_geometry_snapshot()
+	var belt_top := float(geometry["belt_top_line_y"])
 	var belt_height := 62.0
 	draw_rect(Rect2(Vector2(path_start_x, belt_top), Vector2(path_end_x - path_start_x, belt_height)), Color("1a222c"), true)
-	draw_line(Vector2(path_start_x, belt_top), Vector2(path_end_x, belt_top), Color("b4873e"), 8.0)
+	draw_line(Vector2(path_start_x, belt_top), Vector2(path_end_x, belt_top), Color("b4873e"), BELT_TOP_LINE_WIDTH)
 	draw_line(Vector2(path_start_x, belt_top + belt_height), Vector2(path_end_x, belt_top + belt_height), Color("56616d"), 8.0)
 
 	var slat_offset := fposmod(_visual_time * 90.0, 52.0) if is_running else 0.0
@@ -68,6 +87,7 @@ func _draw() -> void:
 		draw_line(Vector2(support_x - 34.0, ground_baseline_y), Vector2(support_x + 34.0, ground_baseline_y), Color("3d4853"), 11.0)
 
 	for item_position in get_item_positions():
-		draw_rect(Rect2(item_position - Vector2(21.0, 15.0), Vector2(42.0, 30.0)), Color("d2c39d"), true)
-		draw_rect(Rect2(item_position - Vector2(21.0, 15.0), Vector2(42.0, 30.0)), Color("5b4934"), false, 3.0)
+		var parcel_rect := Rect2(item_position - PARCEL_SIZE * 0.5, PARCEL_SIZE)
+		draw_rect(parcel_rect, Color("d2c39d"), true)
+		draw_rect(parcel_rect, Color("5b4934"), false, 3.0)
 		draw_line(item_position - Vector2(10.0, 2.0), item_position + Vector2(11.0, -2.0), Color("896c43"), 3.0)
