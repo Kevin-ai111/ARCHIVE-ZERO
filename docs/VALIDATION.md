@@ -42,6 +42,11 @@ The visual foundation suite covers:
 - real front-mask transparency and rear-casing visibility through the opening;
 - conveyor surface → rear casing → parcel → front-frame occlusion order;
 - scan-line travel and independent Motor I visibility;
+- Receiving Desk five-layer sizes, manifest offsets, 0.5 scale, and absolute Z;
+- Receiving Desk enabled, disabled, active, line-stopped, and bottleneck states;
+- independent idle lighting and feed-wheel rotation around `(116, -173)`;
+- real front-mask alpha transition at the X=436 conveyor outlet;
+- one shared parcel renderer through the Receiving Desk hand-off;
 - gameplay-HUD purchase wiring;
 - decorative conveyor movement without production-state mutation;
 - exact Phase 4E environment placements and absolute Z ordering;
@@ -60,6 +65,28 @@ Pull requests run the import and automated test commands through
 official Godot 4.7 stable Linux binary.
 
 ## Full-HD graphical validation
+
+### Phase 4F Receiving Desk production art
+
+Actual Godot 4.7.2 Compatibility-renderer evidence:
+
+- [1920×1080 active room](screenshots/receiving-desk-art-1920x1080.png)
+- [1280×720 active room](screenshots/receiving-desk-art-1280x720.png)
+- [960×540 active room](screenshots/receiving-desk-art-960x540.png)
+- [disabled Receiving Desk](screenshots/receiving-desk-disabled-1280x720.png)
+- [Receiving Desk bottleneck](screenshots/receiving-desk-bottleneck-1280x720.png)
+- [feed-wheel and conveyor motion](screenshots/receiving-desk-wheel-motion-960x540.gif)
+
+The captures confirm unchanged machine bounds and camera framing, a readable
+HUD at every target, correct X=436 parcel hand-off, Y=703 belt contact, front
+guard occlusion, independent idle lighting, stopped/disabled feedback, and a
+centered rotating feed wheel. Linear filtering was retained after direct
+[linear](screenshots/receiving-desk-filter-linear-1280x720.png) and
+[nearest](screenshots/receiving-desk-filter-nearest-1280x720.png) comparison at
+1280×720. Package verification, performance observations, and unresolved review
+limits are recorded in `docs/RECEIVING_DESK_ART.md`.
+
+This milestone remains pending final artistic approval.
 
 ### Phase 4E environment and modular conveyor
 

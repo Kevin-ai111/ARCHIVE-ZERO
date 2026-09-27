@@ -2,7 +2,7 @@ extends Node2D
 
 const SCANNER_MACHINE_ID := &"basic_scanner"
 
-@onready var receiving_desk: MachinePlaceholderVisual = %ReceivingDesk
+@onready var receiving_desk: ReceivingDeskVisual = %ReceivingDesk
 @onready var scanner: BasicScannerVisual = %BasicScanner
 @onready var sorter: MachinePlaceholderVisual = %BasicSorter
 @onready var archive_intake: MachinePlaceholderVisual = %ArchiveIntake
@@ -47,7 +47,11 @@ func _refresh_visual_state() -> void:
 	var sorter_stage := line.get_stage(&"basic_sorter")
 	var intake_stage := line.get_stage(&"archive_intake")
 
-	receiving_desk.apply_visual_state(receiving_stage.is_enabled(), bottleneck_id == receiving_desk.machine_id, false)
+	receiving_desk.apply_receiving_state(
+		receiving_stage.is_enabled(),
+		throughput > 0.0,
+		bottleneck_id == receiving_desk.machine_id
+	)
 	scanner.apply_visual_state(
 		scanner_stage.is_enabled(),
 		throughput > 0.0,

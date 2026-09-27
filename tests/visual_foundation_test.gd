@@ -23,6 +23,8 @@ func _run_tests() -> void:
 	var room := await _test_archive_room_layout_and_hud()
 	_test_environment_art_and_lighting(room)
 	_test_modular_conveyor(room)
+	_test_receiving_desk_asset_layers_and_handoff(room)
+	await _test_receiving_desk_visual_states(room)
 	await _test_scanner_asset_layers_and_occlusion(room)
 	await _test_scanner_visual_states(room)
 	await _test_gameplay_hud_purchase(room)
@@ -208,6 +210,109 @@ func _test_modular_conveyor(room: Node2D) -> void:
 	_expect_true(not conveyor.is_processing(), "Stopped conveyor avoids unnecessary continuous processing")
 	conveyor.set_visual_state(true, 0.75)
 	_expect_true(conveyor.is_processing(), "Running conveyor resumes the existing presentation process")
+
+
+func _test_receiving_desk_asset_layers_and_handoff(room: Node2D) -> void:
+	var desk := room.get_node("%ReceivingDesk") as ReceivingDeskVisual
+	var parcels := room.get_node("%DecorativeParcels") as DecorativeParcelVisual
+	var conveyor := room.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var geometry := desk.get_asset_geometry_snapshot()
+
+	_expect_vector(desk.position, Vector2(268.0, 920.0), "Receiving Desk art preserves approved world pivot")
+	_expect_vector(geometry["display_size"], Vector2(336.0, 352.0), "Receiving Desk keeps approved logical footprint")
+	_expect_vector(geometry["back_export_size"], Vector2(672.0, 704.0), "Rear casing uses verified 2x export")
+	_expect_vector(geometry["back_position"], Vector2(-168.0, -352.0), "Rear casing uses manifest top-left")
+	_expect_vector(geometry["back_scale"], Vector2(0.5, 0.5), "Rear casing resolves to logical size")
+	_expect_vector(geometry["paper_export_size"], Vector2(384.0, 100.0), "Paperwork uses verified cropped export")
+	_expect_vector(geometry["paper_position"], Vector2(-136.0, -244.0), "Paperwork uses manifest top-left")
+	_expect_vector(geometry["paper_scale"], Vector2(0.5, 0.5), "Paperwork resolves to logical size")
+	_expect_vector(geometry["emissive_export_size"], Vector2(576.0, 162.0), "Idle lighting uses verified cropped export")
+	_expect_vector(geometry["emissive_position"], Vector2(-120.0, -280.0), "Idle lighting uses manifest top-left")
+	_expect_vector(geometry["emissive_scale"], Vector2(0.5, 0.5), "Idle lighting resolves to logical size")
+	_expect_vector(geometry["wheel_export_size"], Vector2(96.0, 96.0), "Feed wheel uses verified cropped export")
+	_expect_vector(geometry["wheel_pivot"], Vector2(116.0, -173.0), "Feed wheel rotates around documented centre")
+	_expect_vector(geometry["wheel_scale"], Vector2(0.5, 0.5), "Feed wheel resolves to logical size")
+	_expect_true(bool(geometry["wheel_centered"]), "Feed wheel texture is centred on its rotation pivot")
+	_expect_vector(geometry["front_export_size"], Vector2(672.0, 704.0), "Front guard uses verified 2x export")
+	_expect_vector(geometry["front_position"], Vector2(-168.0, -352.0), "Front guard shares approved machine bounds")
+	_expect_vector(geometry["front_scale"], Vector2(0.5, 0.5), "Front guard resolves to logical size")
+	_expect_equal(desk.texture_filter, CanvasItem.TEXTURE_FILTER_LINEAR, "Receiving Desk matches scanner linear filtering")
+	_expect_equal(int(geometry["back_z"]), 5, "Rear casing keeps manifest absolute Z")
+	_expect_equal(int(geometry["paper_z"]), 5, "Paperwork keeps manifest absolute Z")
+	_expect_equal(int(geometry["emissive_z"]), 7, "Idle lighting keeps manifest absolute Z")
+	_expect_equal(int(geometry["wheel_z"]), 8, "Feed wheel keeps manifest absolute Z")
+	_expect_equal(int(geometry["front_z"]), 10, "Front guard keeps manifest absolute Z")
+
+	for layer: CanvasItem in [desk.rear_casing, desk.static_paperwork, desk.idle_emissive, desk.feed_wheel_pivot, desk.front_mask]:
+		_expect_true(not layer.z_as_relative, "%s avoids inherited Machines-node Z" % layer.name)
+	_expect_true(int(geometry["back_z"]) < parcels.z_index, "Parcels render in front of Receiving Desk rear casing")
+	_expect_true(parcels.z_index < int(geometry["emissive_z"]), "Receiving Desk lighting can illuminate passing parcels")
+	_expect_true(parcels.z_index < int(geometry["front_z"]), "Parcels render behind Receiving Desk front guard")
+	_expect_true(conveyor.z_index < parcels.z_index, "Receiving Desk hand-off keeps parcels separate from belt artwork")
+
+	_expect_close(desk.position.x + float(geometry["conveyor_handoff_local_x"]), 436.0, "Receiving Desk outlet meets conveyor at X=436")
+	_expect_close(desk.position.y + float(geometry["parcel_center_local_y"]), 688.0, "Receiving Desk outlet aligns to parcel centreline")
+	_expect_close(desk.position.y + float(geometry["conveyor_contact_local_y"]), 703.0, "Receiving Desk outlet aligns to conveyor contact surface")
+	_expect_close(conveyor.path_start_x, 436.0, "Existing decorative parcel path begins at the Receiving Desk hand-off")
+	_expect_close(conveyor.item_path_y, 688.0, "Existing decorative parcel path crosses the Receiving Desk outlet")
+	_expect_equal(parcels.get_item_positions(), conveyor.get_item_positions(), "Receiving Desk reuses the existing parcel renderer")
+	_expect_equal(room.find_children("*", "DecorativeParcelVisual", true, false).size(), 1, "ArchiveRoom contains no duplicate parcel renderer")
+
+	var front_image := desk.front_mask.texture.get_image()
+	var back_image := desk.rear_casing.texture.get_image()
+	_expect_close(front_image.get_pixel(656, 240).a, 0.0, "Front guard leaves the parcel approach transparent")
+	_expect_true(front_image.get_pixel(658, 240).a > 0.0, "Front guard begins occluding the parcel at the outlet edge")
+	_expect_true(back_image.get_pixel(656, 240).a > 0.0, "Rear casing remains visible behind the outlet parcel")
+
+
+func _test_receiving_desk_visual_states(room: Node2D) -> void:
+	_reset_simulation()
+	await get_tree().process_frame
+	var desk := room.get_node("%ReceivingDesk") as ReceivingDeskVisual
+	var state := desk.get_state_snapshot()
+	_expect_true(bool(state["enabled"]), "Receiving Desk visual starts enabled")
+	_expect_true(bool(state["active"]), "Receiving Desk responds to active production")
+	_expect_true(bool(state["idle_visible"]), "Enabled Receiving Desk shows independent idle lighting")
+	_expect_true(bool(state["wheel_visible"]), "Optional feed wheel remains independently layered")
+	_expect_true(bool(state["wheel_processing"]), "Feed wheel animates while the line runs")
+	_expect_true(not desk.has_upgrade, "Receiving Desk does not invent an upgrade")
+
+	desk.set_process(false)
+	var start_angle := float(desk.get_state_snapshot()["wheel_angle"])
+	desk.advance_visual_animation(0.5)
+	_expect_true(not is_equal_approx(float(desk.get_state_snapshot()["wheel_angle"]), start_angle), "Feed wheel advances around its documented centre")
+	desk.set_idle_lighting_enabled(false)
+	_expect_true(not bool(desk.get_state_snapshot()["idle_visible"]), "Idle lighting can be controlled independently")
+	desk.set_idle_lighting_enabled(true)
+	_expect_true(bool(desk.get_state_snapshot()["idle_visible"]), "Idle lighting restores independently")
+
+	SimulationManager.set_machine_enabled(&"basic_scanner", false)
+	await get_tree().process_frame
+	state = desk.get_state_snapshot()
+	_expect_true(bool(state["enabled"]) and not bool(state["active"]), "Receiving Desk stays enabled when a downstream stage stops the line")
+	_expect_true(not bool(state["wheel_processing"]), "Feed wheel stops when the production line is stopped")
+	var frozen_angle := float(state["wheel_angle"])
+	desk.advance_visual_animation(1.0)
+	_expect_close(float(desk.get_state_snapshot()["wheel_angle"]), frozen_angle, "Stopped feed wheel cannot advance through presentation calls")
+
+	SimulationManager.set_machine_enabled(&"basic_scanner", true)
+	SimulationManager.set_machine_enabled(&"receiving_desk", false)
+	await get_tree().process_frame
+	state = desk.get_state_snapshot()
+	_expect_true(not bool(state["enabled"]) and not bool(state["active"]), "Receiving Desk art responds to disabled state")
+	_expect_true(not bool(state["idle_visible"]), "Disabled Receiving Desk turns off idle lighting")
+	_expect_true(desk.rear_casing.self_modulate != Color.WHITE and desk.front_mask.self_modulate != Color.WHITE, "Disabled state dims both casing layers")
+
+	_reset_simulation(75)
+	SimulationManager.purchase_upgrade("sorter_motor_1")
+	SimulationManager.purchase_upgrade("scanner_motor_1")
+	await get_tree().process_frame
+	state = desk.get_state_snapshot()
+	_expect_true(bool(state["bottleneck"]), "Receiving Desk receives existing bottleneck feedback")
+	_expect_true(not desk.has_upgrade, "Bottleneck feedback does not create a Receiving Desk upgrade")
+
+	_reset_simulation()
+	await get_tree().process_frame
 
 
 func _test_scanner_visual_states(room: Node2D) -> void:
