@@ -34,6 +34,10 @@ func _on_process_item_button_pressed() -> void:
 	SimulationManager.process_manual_items(1)
 
 
+func _on_return_to_room_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/world/archive_room.tscn")
+
+
 func _on_add_credits_button_pressed() -> void:
 	Economy.add_money(10)
 
@@ -109,31 +113,31 @@ func _on_game_loaded() -> void:
 func _build_stage_rows() -> void:
 	for stage: MachineRuntime in SimulationManager.get_production_line().get_stages():
 		var row: HBoxContainer = HBoxContainer.new()
-		row.add_theme_constant_override("separation", 12)
+		row.add_theme_constant_override("separation", 24)
 
 		var name_label: Label = Label.new()
-		name_label.custom_minimum_size = Vector2(190.0, 0.0)
+		name_label.custom_minimum_size = Vector2(380.0, 0.0)
 		name_label.text = stage.get_definition().display_name
 		row.add_child(name_label)
 
 		var capacity_label: Label = Label.new()
-		capacity_label.custom_minimum_size = Vector2(100.0, 0.0)
+		capacity_label.custom_minimum_size = Vector2(200.0, 0.0)
 		capacity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(capacity_label)
 
 		var utilization_label: Label = Label.new()
-		utilization_label.custom_minimum_size = Vector2(90.0, 0.0)
+		utilization_label.custom_minimum_size = Vector2(180.0, 0.0)
 		utilization_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(utilization_label)
 
 		var state_label: Label = Label.new()
-		state_label.custom_minimum_size = Vector2(130.0, 0.0)
+		state_label.custom_minimum_size = Vector2(260.0, 0.0)
 		state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.add_child(state_label)
 
 		var toggle_button: Button = Button.new()
 		toggle_button.name = "ToggleButton"
-		toggle_button.custom_minimum_size = Vector2(90.0, 0.0)
+		toggle_button.custom_minimum_size = Vector2(180.0, 64.0)
 		toggle_button.pressed.connect(_on_stage_toggle_pressed.bind(stage.get_id()))
 		row.add_child(toggle_button)
 
@@ -150,19 +154,19 @@ func _build_stage_rows() -> void:
 func _build_upgrade_rows() -> void:
 	for definition: UpgradeDefinition in SimulationManager.get_upgrade_definitions():
 		var card: VBoxContainer = VBoxContainer.new()
-		card.add_theme_constant_override("separation", 2)
+		card.add_theme_constant_override("separation", 4)
 
 		var header: HBoxContainer = HBoxContainer.new()
-		header.add_theme_constant_override("separation", 10)
+		header.add_theme_constant_override("separation", 20)
 		card.add_child(header)
 
 		var name_label: Label = Label.new()
-		name_label.custom_minimum_size = Vector2(180.0, 0.0)
+		name_label.custom_minimum_size = Vector2(360.0, 0.0)
 		name_label.text = definition.display_name
 		header.add_child(name_label)
 
 		var price_label: Label = Label.new()
-		price_label.custom_minimum_size = Vector2(90.0, 0.0)
+		price_label.custom_minimum_size = Vector2(180.0, 0.0)
 		price_label.text = "%d Credits" % definition.cost
 		price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		header.add_child(price_label)
@@ -174,7 +178,7 @@ func _build_upgrade_rows() -> void:
 
 		var purchase_button: Button = Button.new()
 		purchase_button.name = "PurchaseButton"
-		purchase_button.custom_minimum_size = Vector2(120.0, 0.0)
+		purchase_button.custom_minimum_size = Vector2(240.0, 64.0)
 		purchase_button.pressed.connect(_on_upgrade_purchase_pressed.bind(String(definition.id)))
 		header.add_child(purchase_button)
 

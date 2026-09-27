@@ -13,6 +13,22 @@ Four session-wide services remain Autoloads:
 Machine definitions, installed machines, upgrade definitions, and production
 lines are domain objects rather than Nodes or additional Autoloads.
 
+## Presentation boundary
+
+`scenes/world/archive_room.tscn` is the first player-facing presentation scene.
+Its fixed `Camera2D`, machine placeholders, conveyor, HUD, foreground, and effects
+layer only read authoritative state from the Autoloads. Decorative conveyor
+items are derived from presentation time and throughput; they never call
+production, Economy, or Credit APIs.
+
+`scenes/ui/gameplay_hud.tscn` exposes Credits, throughput, the current
+bottleneck, fullscreen/windowed switching, and the two existing upgrades. The
+development dashboard remains a separate scene at
+`scenes/debug/debug_dashboard.tscn` and can be opened from the gameplay HUD.
+
+The presentation contract is regression-tested by comparing the exact result
+of a 100-second simulation with ArchiveRoom absent and present.
+
 ## Production domain
 
 ### MachineDefinition and MachineRuntime
