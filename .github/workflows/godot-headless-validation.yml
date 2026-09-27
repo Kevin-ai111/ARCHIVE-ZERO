@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  production-pipeline:
+  test-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -37,3 +37,9 @@ jobs:
 
       - name: Run production pipeline validation
         run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/production_pipeline_test.tscn
+
+      - name: Run Full-HD visual foundation validation
+        run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/visual_foundation_test.tscn
+
+      - name: Smoke-test the configured main scene
+        run: Godot_v4.7-stable_linux.x86_64 --headless --path . --quit-after 2

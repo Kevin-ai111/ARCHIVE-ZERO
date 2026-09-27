@@ -8,11 +8,13 @@ Use the official Godot 4.7 stable binary. From a fresh checkout, run exactly:
 godot --version
 godot --headless --editor --path . --quit
 godot --headless --path . tests/production_pipeline_test.tscn
+godot --headless --path . tests/visual_foundation_test.tscn
 godot --headless --path . --quit-after 2
 ```
 
 The version must report Godot 4.7 stable. Every command must exit with code `0`,
-and the test scene must print `Production pipeline tests passed.`
+and the test scenes must print `Production pipeline tests passed.` and
+`Visual foundation tests passed for 1920x1080, 1280x720, and 960x540.`
 
 The suite covers:
 
@@ -28,6 +30,18 @@ The suite covers:
 - version 1, version 2 line, and version 2 Scanner-only migrations;
 - exact legacy Sorter ×2 mapping without multiplier duplication.
 
+The visual foundation suite covers:
+
+- 1920×1080 logical canvas, `canvas_items`, keep-aspect, and fractional scaling;
+- approved machine pivots, dimensions, Y=688 item path, and Y=920 baseline;
+- fixed camera and complete room-layer structure;
+- HUD values, two-upgrade shop, scroll policy, and physical readability floors;
+- 1920×1080, 1280×720, and 960×540 scale factors;
+- Scanner enabled, disabled, active, and Scanner Motor I states;
+- gameplay-HUD purchase wiring;
+- decorative conveyor movement without production-state mutation;
+- exact 100-second simulation equivalence with and without ArchiveRoom.
+
 The test temporarily uses `user://archive_zero_save.json`. It backs up and
 restores an existing file when the process completes normally. A forcibly
 terminated process cannot guarantee cleanup.
@@ -35,6 +49,36 @@ terminated process cannot guarantee cleanup.
 Pull requests run the import and automated test commands through
 `.github/workflows/godot-headless-validation.yml`. The workflow uses the pinned
 official Godot 4.7 stable Linux binary.
+
+## Full-HD graphical validation
+
+The greybox was rendered with the official Godot 4.7.2 stable Windows build and
+the Compatibility renderer at all three physical targets:
+
+- [1920×1080 Archive Room](screenshots/archive-room-1920x1080.png)
+- [1280×720 Archive Room](screenshots/archive-room-1280x720.png)
+- [960×540 Archive Room](screenshots/archive-room-960x540.png)
+- [960×540 upgrade shop](screenshots/upgrade-shop-960x540.png)
+- [960×540 debug dashboard](screenshots/debug-dashboard-960x540.png)
+
+At 960×540, the minimum intended HUD/shop text resolves to 12 physical pixels,
+primary actions remain at least 120×32 pixels, all four machines remain visible,
+and the upgrade shop fits without horizontal clipping. The development dashboard
+uses Full-HD-sized type and controls so its content stays readable at half scale;
+its existing vertical `ScrollContainer` retains wheel access to the lower controls.
+
+Manual window check:
+
+1. Start in the default resizable 1280×720 window.
+2. Click **Fullscreen** and confirm the 16:9 scene remains centered without
+   horizontal camera movement.
+3. Click **Windowed** and confirm the window returns to 1280×720.
+4. Resize through 1920×1080, 1280×720, and 960×540. Confirm the HUD, machines,
+   conveyor, and bottom actions remain visible.
+5. Open **Machine Upgrades**, use the mouse wheel if content overflows, and buy
+   each upgrade with sufficient Credits.
+6. Open **Debug Dashboard**, scroll to the transaction, Save/Load, and status
+   controls, then return to the Archive Room.
 
 ## Manual gameplay check
 

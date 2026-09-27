@@ -19,14 +19,19 @@ researching, and containing increasingly impossible objects.
 The current build provides authoritative session state, transaction-safe
 currency handling, fixed-interval numerical simulation, a data-driven four-stage
 production line, a data-driven two-step motor upgrade loop, versioned JSON saving,
-and a minimal debug dashboard with an upgrade shop.
+an initial fixed-camera Archive Room greybox, a minimal gameplay HUD, and a
+separate development dashboard.
 
 ## Open locally
 
 1. Install a stable Godot 4.7.x release.
 2. Clone this repository.
 3. Import `project.godot` from the repository root in Godot Project Manager.
-4. Open the project and press **F6**/**F5** to run the configured debug scene.
+4. Open the project and press **F6**/**F5** to run the Archive Room.
+
+The project uses a 1920×1080 logical canvas and starts in a practical 1280×720
+window. Use the HUD button to switch fullscreen mode. The full development
+dashboard remains available from the bottom-left HUD button.
 
 No third-party addons are required.
 
@@ -36,6 +41,8 @@ persistence validation from the repository root:
 ```bash
 godot --headless --editor --path . --quit
 godot --headless --path . tests/production_pipeline_test.tscn
+godot --headless --path . tests/visual_foundation_test.tscn
+godot --headless --path . --quit-after 2
 ```
 
 Manual runtime checks are listed in

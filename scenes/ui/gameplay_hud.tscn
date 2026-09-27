@@ -1,0 +1,252 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/gameplay_hud.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="StyleTop"]
+bg_color = Color(0.035, 0.055, 0.075, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.23, 0.42, 0.53, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleShop"]
+bg_color = Color(0.035, 0.047, 0.063, 0.985)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.28, 0.62, 0.68, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="GameplayHUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="HUDRoot" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="MarginContainer" parent="HUDRoot"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 116.0
+grow_horizontal = 2
+
+[node name="TopRow" type="HBoxContainer" parent="HUDRoot/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="BottleneckPanel" type="PanelContainer" parent="HUDRoot/TopBar/TopRow"]
+custom_minimum_size = Vector2(420, 92)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleTop")
+
+[node name="Margin" type="MarginContainer" parent="HUDRoot/TopBar/TopRow/BottleneckPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="Copy" type="VBoxContainer" parent="HUDRoot/TopBar/TopRow/BottleneckPanel/Margin"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUDRoot/TopBar/TopRow/BottleneckPanel/Margin/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 22
+text = "CURRENT BOTTLENECK"
+
+[node name="BottleneckValue" type="Label" parent="HUDRoot/TopBar/TopRow/BottleneckPanel/Margin/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Basic Sorter"
+
+[node name="Spacer" type="Control" parent="HUDRoot/TopBar/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CreditsPanel" type="PanelContainer" parent="HUDRoot/TopBar/TopRow"]
+custom_minimum_size = Vector2(245, 92)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleTop")
+
+[node name="Margin" type="MarginContainer" parent="HUDRoot/TopBar/TopRow/CreditsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 10
+
+[node name="Copy" type="VBoxContainer" parent="HUDRoot/TopBar/TopRow/CreditsPanel/Margin"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUDRoot/TopBar/TopRow/CreditsPanel/Margin/Copy"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "CREDITS"
+
+[node name="CreditsValue" type="Label" parent="HUDRoot/TopBar/TopRow/CreditsPanel/Margin/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "0"
+
+[node name="ThroughputPanel" type="PanelContainer" parent="HUDRoot/TopBar/TopRow"]
+custom_minimum_size = Vector2(300, 92)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleTop")
+
+[node name="Margin" type="MarginContainer" parent="HUDRoot/TopBar/TopRow/ThroughputPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 10
+
+[node name="Copy" type="VBoxContainer" parent="HUDRoot/TopBar/TopRow/ThroughputPanel/Margin"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUDRoot/TopBar/TopRow/ThroughputPanel/Margin/Copy"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "THROUGHPUT"
+
+[node name="ThroughputValue" type="Label" parent="HUDRoot/TopBar/TopRow/ThroughputPanel/Margin/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "0.75 items/sec"
+
+[node name="DisplayModeButton" type="Button" parent="HUDRoot/TopBar/TopRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(176, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Fullscreen"
+
+[node name="BottomLeft" type="MarginContainer" parent="HUDRoot"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -90.0
+offset_right = 284.0
+offset_bottom = -24.0
+grow_vertical = 0
+
+[node name="DebugDashboardButton" type="Button" parent="HUDRoot/BottomLeft"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Debug Dashboard"
+
+[node name="BottomRight" type="MarginContainer" parent="HUDRoot"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -284.0
+offset_top = -90.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="UpgradeButton" type="Button" parent="HUDRoot/BottomRight"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Machine Upgrades"
+
+[node name="UpgradeOverlay" type="CenterContainer" parent="HUDRoot"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Dimmer" type="ColorRect" parent="HUDRoot/UpgradeOverlay"]
+layout_mode = 2
+color = Color(0, 0, 0, 0.68)
+mouse_filter = 2
+
+[node name="UpgradePanel" type="PanelContainer" parent="HUDRoot/UpgradeOverlay"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(920, 690)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleShop")
+
+[node name="Margin" type="MarginContainer" parent="HUDRoot/UpgradeOverlay/UpgradePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 24
+
+[node name="Content" type="VBoxContainer" parent="HUDRoot/UpgradeOverlay/UpgradePanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Header" type="HBoxContainer" parent="HUDRoot/UpgradeOverlay/UpgradePanel/Margin/Content"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUDRoot/UpgradeOverlay/UpgradePanel/Margin/Content/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 38
+text = "MACHINE UPGRADES"
+
+[node name="CloseShopButton" type="Button" parent="HUDRoot/UpgradeOverlay/UpgradePanel/Margin/Content/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Close"
+
+[node name="UpgradeScroll" type="ScrollContainer" parent="HUDRoot/UpgradeOverlay/UpgradePanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 490)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
+
+[node name="UpgradeRows" type="VBoxContainer" parent="HUDRoot/UpgradeOverlay/UpgradePanel/Margin/Content/UpgradeScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="ShopStatus" type="Label" parent="HUDRoot/UpgradeOverlay/UpgradePanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Select one of the two available machine upgrades."
+autowrap_mode = 2
