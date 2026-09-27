@@ -1,0 +1,177 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/conveyor_visual.gd" id="1_conveyor"]
+[ext_resource type="Script" path="res://scripts/presentation/conveyor_slats_visual.gd" id="2_slats_script"]
+[ext_resource type="Texture2D" path="res://assets/environment/conveyor/AZ_CV_left_cap_40x68_2x.png" id="3_left"]
+[ext_resource type="Texture2D" path="res://assets/environment/conveyor/AZ_CV_straight_128x68_2x.png" id="4_straight"]
+[ext_resource type="Texture2D" path="res://assets/environment/conveyor/AZ_CV_right_cap_40x68_2x.png" id="5_right"]
+[ext_resource type="Texture2D" path="res://assets/environment/conveyor/AZ_CV_support_34x150_2x.png" id="6_support"]
+[ext_resource type="Texture2D" path="res://assets/environment/conveyor/AZ_CV_slats_loop_64x44_2x.png" id="7_slats"]
+
+[node name="ModularConveyor" type="Node2D"]
+texture_filter = 2
+script = ExtResource("1_conveyor")
+
+[node name="Supports" type="Node2D" parent="."]
+
+[node name="Support_0" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(468, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="Support_1" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(637, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="Support_2" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(806, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="Support_3" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(976, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="Support_4" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1145, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="Support_5" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1314, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="Support_6" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1483, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="Support_7" type="Sprite2D" parent="Supports"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1644, 770)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("6_support")
+
+[node name="SurfaceModules" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="LeftCap" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(436, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("3_left")
+
+[node name="Straight_0" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(476, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_1" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(604, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_2" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(732, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_3" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(860, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_4" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(988, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_5" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1116, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_6" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1244, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_7" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1372, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="Straight_8" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1500, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("4_straight")
+
+[node name="RightCap" type="Sprite2D" parent="SurfaceModules"]
+z_index = 4
+z_as_relative = false
+position = Vector2(1628, 703)
+scale = Vector2(0.5, 0.5)
+centered = false
+texture = ExtResource("5_right")
+
+[node name="SlatOverlay" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = 4
+z_as_relative = false
+script = ExtResource("2_slats_script")
+slat_texture = ExtResource("7_slats")

@@ -1,0 +1,389 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/archive_room_environment.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/environment/background/AZ_BG_archive_distant_1920x792.png" id="2_distant"]
+[ext_resource type="Texture2D" path="res://assets/environment/background/AZ_BG_wall_tile_256x256.png" id="3_wall"]
+[ext_resource type="Texture2D" path="res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png" id="4_catwalk"]
+[ext_resource type="Texture2D" path="res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png" id="5_roof"]
+[ext_resource type="Texture2D" path="res://assets/environment/architecture/AZ_ENV_pillar_A_128x754.png" id="6_pillar"]
+[ext_resource type="Texture2D" path="res://assets/environment/architecture/AZ_ENV_ceiling_cable_320x146.png" id="7_cable"]
+[ext_resource type="Texture2D" path="res://assets/environment/architecture/AZ_ENV_pinboard_186x167.png" id="8_pinboard"]
+[ext_resource type="Texture2D" path="res://assets/environment/architecture/AZ_ENV_pipekit_128x192.png" id="9_pipe"]
+[ext_resource type="Texture2D" path="res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png" id="10_floor"]
+[ext_resource type="Texture2D" path="res://assets/environment/lighting/AZ_ENV_pendant_100x148.png" id="11_pendant"]
+[ext_resource type="Texture2D" path="res://assets/environment/lighting/AZ_FX_pendant_cone_272x352.png" id="12_cone"]
+[ext_resource type="Texture2D" path="res://assets/environment/lighting/AZ_FX_floor_light_pool_384x82.png" id="13_pool"]
+[ext_resource type="Texture2D" path="res://assets/environment/lighting/AZ_ENV_wall_sconce_42x96.png" id="14_sconce"]
+
+[node name="ArchiveRoomEnvironment" type="Node2D"]
+texture_filter = 2
+script = ExtResource("1_script")
+
+[node name="DistantArchive" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -100
+z_as_relative = false
+
+[node name="Backdrop" type="Sprite2D" parent="DistantArchive"]
+centered = false
+texture = ExtResource("2_distant")
+
+[node name="RearWallTiles" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -82
+z_as_relative = false
+
+[node name="Wall_490_0" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(0, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_490_1" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(256, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_490_2" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(512, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_490_3" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(768, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_490_4" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1024, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_490_5" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1280, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_490_6" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1536, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_490_7" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1792, 490)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_0" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(0, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_1" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(256, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_2" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(512, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_3" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(768, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_4" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1024, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_5" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1280, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_6" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1536, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="Wall_746_7" type="Sprite2D" parent="RearWallTiles"]
+position = Vector2(1792, 746)
+centered = false
+texture = ExtResource("3_wall")
+
+[node name="BackCatwalk" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -79
+z_as_relative = false
+
+[node name="Catwalk_0" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(0, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Catwalk_1" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(256, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Catwalk_2" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(512, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Catwalk_3" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(768, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Catwalk_4" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(1024, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Catwalk_5" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(1280, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Catwalk_6" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(1536, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Catwalk_7" type="Sprite2D" parent="BackCatwalk"]
+position = Vector2(1792, 330)
+centered = false
+texture = ExtResource("4_catwalk")
+
+[node name="Roof" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -71
+z_as_relative = false
+
+[node name="Roof_0" type="Sprite2D" parent="Roof"]
+position = Vector2(0, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Roof_1" type="Sprite2D" parent="Roof"]
+position = Vector2(256, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Roof_2" type="Sprite2D" parent="Roof"]
+position = Vector2(512, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Roof_3" type="Sprite2D" parent="Roof"]
+position = Vector2(768, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Roof_4" type="Sprite2D" parent="Roof"]
+position = Vector2(1024, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Roof_5" type="Sprite2D" parent="Roof"]
+position = Vector2(1280, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Roof_6" type="Sprite2D" parent="Roof"]
+position = Vector2(1536, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Roof_7" type="Sprite2D" parent="Roof"]
+position = Vector2(1792, 72)
+centered = false
+texture = ExtResource("5_roof")
+
+[node name="Pillars" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -70
+z_as_relative = false
+
+[node name="Pillar_0" type="Sprite2D" parent="Pillars"]
+position = Vector2(86, 162)
+centered = false
+texture = ExtResource("6_pillar")
+
+[node name="Pillar_1" type="Sprite2D" parent="Pillars"]
+position = Vector2(900, 162)
+centered = false
+texture = ExtResource("6_pillar")
+
+[node name="Pillar_2" type="Sprite2D" parent="Pillars"]
+position = Vector2(1710, 162)
+centered = false
+texture = ExtResource("6_pillar")
+
+[node name="CeilingCables" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -69
+z_as_relative = false
+
+[node name="Cable_0" type="Sprite2D" parent="CeilingCables"]
+position = Vector2(360, 175)
+centered = false
+texture = ExtResource("7_cable")
+
+[node name="Cable_1" type="Sprite2D" parent="CeilingCables"]
+position = Vector2(1190, 175)
+centered = false
+texture = ExtResource("7_cable")
+
+[node name="BackgroundDecor" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -65
+z_as_relative = false
+
+[node name="Pinboard" type="Sprite2D" parent="BackgroundDecor"]
+position = Vector2(124, 468)
+centered = false
+texture = ExtResource("8_pinboard")
+
+[node name="WallPipes" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -64
+z_as_relative = false
+
+[node name="Pipe_0" type="Sprite2D" parent="WallPipes"]
+position = Vector2(1407, 431)
+centered = false
+texture = ExtResource("9_pipe")
+
+[node name="Pipe_1" type="Sprite2D" parent="WallPipes"]
+position = Vector2(393, 450)
+centered = false
+texture = ExtResource("9_pipe")
+
+[node name="LightCones" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -52
+z_as_relative = false
+
+[node name="Cone_0" type="Sprite2D" parent="LightCones"]
+position = Vector2(104, 262)
+centered = false
+texture = ExtResource("12_cone")
+
+[node name="Cone_1" type="Sprite2D" parent="LightCones"]
+position = Vector2(934, 262)
+centered = false
+texture = ExtResource("12_cone")
+
+[node name="Cone_2" type="Sprite2D" parent="LightCones"]
+position = Vector2(1434, 262)
+centered = false
+texture = ExtResource("12_cone")
+
+[node name="LampHousings" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -51
+z_as_relative = false
+
+[node name="Pendant_0" type="Sprite2D" parent="LampHousings"]
+position = Vector2(190, 146)
+centered = false
+texture = ExtResource("11_pendant")
+
+[node name="Pendant_1" type="Sprite2D" parent="LampHousings"]
+position = Vector2(1020, 146)
+centered = false
+texture = ExtResource("11_pendant")
+
+[node name="Pendant_2" type="Sprite2D" parent="LampHousings"]
+position = Vector2(1520, 146)
+centered = false
+texture = ExtResource("11_pendant")
+
+[node name="WallSconces" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -50
+z_as_relative = false
+
+[node name="Sconce_0" type="Sprite2D" parent="WallSconces"]
+position = Vector2(112, 291)
+centered = false
+texture = ExtResource("14_sconce")
+
+[node name="Sconce_1" type="Sprite2D" parent="WallSconces"]
+position = Vector2(975, 460)
+centered = false
+texture = ExtResource("14_sconce")
+
+[node name="Sconce_2" type="Sprite2D" parent="WallSconces"]
+position = Vector2(1825, 277)
+centered = false
+texture = ExtResource("14_sconce")
+
+[node name="FloorTiles" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -10
+z_as_relative = false
+
+[node name="Floor_0" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(0, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="Floor_1" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(256, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="Floor_2" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(512, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="Floor_3" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(768, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="Floor_4" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(1024, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="Floor_5" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(1280, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="Floor_6" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(1536, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="Floor_7" type="Sprite2D" parent="FloorTiles"]
+position = Vector2(1792, 920)
+centered = false
+texture = ExtResource("10_floor")
+
+[node name="FloorReflections" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -9
+z_as_relative = false
+
+[node name="Pool_0" type="Sprite2D" parent="FloorReflections"]
+position = Vector2(48, 920)
+centered = false
+texture = ExtResource("13_pool")
+
+[node name="Pool_1" type="Sprite2D" parent="FloorReflections"]
+position = Vector2(878, 920)
+centered = false
+texture = ExtResource("13_pool")
+
+[node name="Pool_2" type="Sprite2D" parent="FloorReflections"]
+position = Vector2(1378, 920)
+centered = false
+texture = ExtResource("13_pool")

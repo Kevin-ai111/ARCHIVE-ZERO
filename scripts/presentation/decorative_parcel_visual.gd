@@ -9,12 +9,15 @@ extends Node2D
 func _ready() -> void:
 	if conveyor == null:
 		push_error("DecorativeParcelVisual requires a ConveyorPlaceholderVisual source.")
-	set_process(conveyor != null)
+	else:
+		conveyor.visuals_changed.connect(queue_redraw)
+	set_process(false)
 	queue_redraw()
 
 
-func _process(_delta: float) -> void:
-	queue_redraw()
+func _exit_tree() -> void:
+	if conveyor != null and conveyor.visuals_changed.is_connected(queue_redraw):
+		conveyor.visuals_changed.disconnect(queue_redraw)
 
 
 func get_item_positions() -> PackedVector2Array:

@@ -44,6 +44,11 @@ The visual foundation suite covers:
 - scan-line travel and independent Motor I visibility;
 - gameplay-HUD purchase wiring;
 - decorative conveyor movement without production-state mutation;
+- exact Phase 4E environment placements and absolute Z ordering;
+- independent lamp-housing, light-cone, and floor-reflection visibility;
+- 40 + 9×128 + 40 modular conveyor assembly without gaps;
+- slat clipping, movement, stopped-state freeze, and redraw policy;
+- removal of the obsolete ArchiveRoom ColorRect artwork;
 - exact 100-second simulation equivalence with and without ArchiveRoom.
 
 The test temporarily uses `user://archive_zero_save.json`. It backs up and
@@ -55,6 +60,26 @@ Pull requests run the import and automated test commands through
 official Godot 4.7 stable Linux binary.
 
 ## Full-HD graphical validation
+
+### Phase 4E environment and modular conveyor
+
+Actual Godot 4.7.2 Compatibility-renderer evidence:
+
+- [1920×1080 gameplay room](screenshots/environment-art-1920x1080.png)
+- [1280×720 gameplay room](screenshots/environment-art-1280x720.png)
+- [960×540 gameplay room](screenshots/environment-art-960x540.png)
+- [environment-only Full-HD render](screenshots/environment-only-1920x1080.png)
+- [Scanner Motor I](screenshots/environment-scanner-motor-i-1280x720.png)
+- [disabled Scanner](screenshots/environment-scanner-disabled-1280x720.png)
+- [conveyor and scan motion](screenshots/environment-conveyor-motion-960x540.gif)
+
+The renders confirm unchanged machine footprints, Y=920 floor alignment, an
+unbroken X=436..1668 belt, parcel contact at Y=703, preserved Scanner occlusion,
+and readable HUD controls at every target. See
+`docs/ARCHIVE_ROOM_ENVIRONMENT.md` for package verification, exact placement,
+performance observations, offline-preview comparison, and artistic limitations.
+
+This milestone remains pending artistic approval.
 
 ### Basic Scanner production art
 

@@ -28,6 +28,16 @@ parcels can pass between the rear casing and front mask without becoming part of
 the production model. The exact asset and Z-order contract is documented in
 `docs/BASIC_SCANNER_ART.md`.
 
+The static Phase 4E room is isolated in
+`scenes/world/archive_room_environment.tscn`. Repeated architectural Sprite2Ds
+share Texture2D resources and use explicit absolute Z layers. Lamp housings,
+light cones, and floor reflections remain separate presentation groups. The
+modular conveyor preserves the existing presentation clock and public geometry
+API while delegating clipped slat drawing to a child CanvasItem. Parcels redraw
+from a presentation signal and remain independent of the belt and numerical
+simulation. The complete placement and performance record is in
+`docs/ARCHIVE_ROOM_ENVIRONMENT.md`.
+
 `scenes/ui/gameplay_hud.tscn` exposes Credits, throughput, the current
 bottleneck, fullscreen/windowed switching, and the two existing upgrades. The
 development dashboard remains a separate scene at

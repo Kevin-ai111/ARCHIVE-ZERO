@@ -7,6 +7,7 @@ const SCANNER_MACHINE_ID := &"basic_scanner"
 @onready var sorter: MachinePlaceholderVisual = %BasicSorter
 @onready var archive_intake: MachinePlaceholderVisual = %ArchiveIntake
 @onready var conveyor: ConveyorPlaceholderVisual = %Conveyor
+@onready var environment_art: ArchiveRoomEnvironmentVisual = %EnvironmentArt
 
 
 func _ready() -> void:
@@ -70,4 +71,5 @@ func get_layout_snapshot() -> Dictionary:
 		"basic_sorter": {"pivot": sorter.position, "size": sorter.visual_size},
 		"archive_intake": {"pivot": archive_intake.position, "size": archive_intake.visual_size},
 		"conveyor": conveyor.get_layout_snapshot(),
+		"environment": environment_art.get_layout_snapshot(),
 	}
