@@ -3,7 +3,7 @@ extends Node2D
 const SCANNER_MACHINE_ID := &"basic_scanner"
 
 @onready var receiving_desk: MachinePlaceholderVisual = %ReceivingDesk
-@onready var scanner: ScannerPlaceholderVisual = %BasicScanner
+@onready var scanner: BasicScannerVisual = %BasicScanner
 @onready var sorter: MachinePlaceholderVisual = %BasicSorter
 @onready var archive_intake: MachinePlaceholderVisual = %ArchiveIntake
 @onready var conveyor: ConveyorPlaceholderVisual = %Conveyor

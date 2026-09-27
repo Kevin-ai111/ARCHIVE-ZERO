@@ -85,9 +85,3 @@ func _draw() -> void:
 	for support_x in range(int(path_start_x) + 80, int(path_end_x), 180):
 		draw_line(Vector2(support_x, belt_top + belt_height), Vector2(support_x, ground_baseline_y), Color("3d4853"), 15.0)
 		draw_line(Vector2(support_x - 34.0, ground_baseline_y), Vector2(support_x + 34.0, ground_baseline_y), Color("3d4853"), 11.0)
-
-	for item_position in get_item_positions():
-		var parcel_rect := Rect2(item_position - PARCEL_SIZE * 0.5, PARCEL_SIZE)
-		draw_rect(parcel_rect, Color("d2c39d"), true)
-		draw_rect(parcel_rect, Color("5b4934"), false, 3.0)
-		draw_line(item_position - Vector2(10.0, 2.0), item_position + Vector2(11.0, -2.0), Color("896c43"), 3.0)

@@ -21,6 +21,7 @@ func _ready() -> void:
 func _run_tests() -> void:
 	_test_project_configuration()
 	var room := await _test_archive_room_layout_and_hud()
+	await _test_scanner_asset_layers_and_occlusion(room)
 	await _test_scanner_visual_states(room)
 	await _test_gameplay_hud_purchase(room)
 	await _test_presentation_does_not_change_simulation(room)
@@ -128,16 +129,31 @@ func _test_archive_room_layout_and_hud() -> Node2D:
 func _test_scanner_visual_states(room: Node2D) -> void:
 	_reset_simulation()
 	await get_tree().process_frame
-	var scanner: ScannerPlaceholderVisual = room.get_node("%BasicScanner") as ScannerPlaceholderVisual
+	var scanner: BasicScannerVisual = room.get_node("%BasicScanner") as BasicScannerVisual
 	var state := scanner.get_state_snapshot()
 	_expect_true(bool(state["enabled"]), "Scanner visual starts enabled")
 	_expect_true(bool(state["active"]), "Scanner visual responds to active production")
 	_expect_true(not bool(state["upgraded"]), "Scanner visual starts without Motor I")
+	_expect_true(bool(state["idle_visible"]), "Enabled scanner shows its independent idle lighting")
+	_expect_true(bool(state["scan_visible"]), "Active production shows the cyan scan beam")
+	_expect_true(not bool(state["upgrade_visible"]), "Motor I layer starts hidden")
+
+	GameState.restore_state(25, 25, 0, 0.0)
+	SimulationManager.purchase_upgrade("sorter_motor_1")
+	await get_tree().process_frame
+	state = scanner.get_state_snapshot()
+	_expect_true(bool(state["bottleneck"]), "Scanner art receives bottleneck feedback after Sorter Motor I")
+
+	_reset_simulation()
+	await get_tree().process_frame
 
 	SimulationManager.set_machine_enabled(&"basic_scanner", false)
 	await get_tree().process_frame
 	state = scanner.get_state_snapshot()
 	_expect_true(not bool(state["enabled"]) and not bool(state["active"]), "Scanner visual responds to disabled state")
+	_expect_true(not bool(state["idle_visible"]) and not bool(state["scan_visible"]), "Disabled scanner turns off lighting and scan layers")
+	_expect_true(scanner.scanner_back.self_modulate != Color.WHITE, "Disabled scanner dims the rear casing")
+	_expect_true(scanner.scanner_front.self_modulate != Color.WHITE, "Disabled scanner dims the front frame")
 
 	SimulationManager.set_machine_enabled(&"basic_scanner", true)
 	GameState.restore_state(50, 50, 0, 0.0)
@@ -146,7 +162,74 @@ func _test_scanner_visual_states(room: Node2D) -> void:
 	state = scanner.get_state_snapshot()
 	_expect_equal(purchase_result, SimulationManager.PurchaseResult.SUCCESS, "Scanner upgrade purchase succeeds")
 	_expect_true(bool(state["upgraded"]), "Scanner visual displays owned Motor I")
+	_expect_true(bool(state["upgrade_visible"]), "Motor I owns an independently toggleable render layer")
 	_expect_true(bool(state["active"]), "Scanner remains active after upgrade")
+
+	SimulationManager.set_machine_enabled(&"basic_scanner", false)
+	await get_tree().process_frame
+	state = scanner.get_state_snapshot()
+	_expect_true(bool(state["upgrade_visible"]), "Motor I remains installed while scanner is disabled")
+	_expect_true(not bool(state["scan_visible"]), "Motor I visibility does not force active scanning")
+
+
+func _test_scanner_asset_layers_and_occlusion(room: Node2D) -> void:
+	var scanner: BasicScannerVisual = room.get_node("%BasicScanner") as BasicScannerVisual
+	var parcels: DecorativeParcelVisual = room.get_node("%DecorativeParcels") as DecorativeParcelVisual
+	var conveyor: ConveyorPlaceholderVisual = room.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var geometry := scanner.get_asset_geometry_snapshot()
+
+	_expect_vector(scanner.position, Vector2(708.0, 920.0), "Scanner art preserves approved world pivot")
+	_expect_vector(geometry["export_size"], Vector2(768.0, 832.0), "Scanner layers use the verified 768x832 export canvas")
+	_expect_vector(geometry["display_size"], Vector2(384.0, 416.0), "Scanner layers display at approved 384x416 size")
+	_expect_vector(geometry["layer_center"], Vector2(0.0, -208.0), "Scanner layer centre produces a bottom-centre pivot")
+	_expect_vector(geometry["layer_scale"], Vector2(0.5, 0.5), "Scanner 2x exports resolve to native logical size")
+	_expect_close(scanner.position.y + float(geometry["parcel_center_local_y"]), 688.0, "Scanner opening aligns to parcel centreline")
+	_expect_close(scanner.position.y + float(geometry["conveyor_contact_local_y"]), 703.0, "Scanner opening aligns to conveyor contact surface")
+	_expect_equal(scanner.texture_filter, CanvasItem.TEXTURE_FILTER_LINEAR, "Scanner uses linear filtering for fractional display scaling")
+
+	var layers: Array[Sprite2D] = [
+		scanner.scanner_back,
+		scanner.idle_emissive,
+		scanner.scan_beam,
+		scanner.scanner_front,
+		scanner.motor_upgrade,
+	]
+	for layer: Sprite2D in layers:
+		_expect_vector(layer.texture.get_size(), Vector2(768.0, 832.0), "%s keeps the shared export canvas" % layer.name)
+		_expect_vector(layer.scale, Vector2(0.5, 0.5), "%s keeps shared display scale" % layer.name)
+		_expect_true(not layer.z_as_relative, "%s uses explicit presentation-layer ordering" % layer.name)
+
+	_expect_true(int(geometry["back_z"]) < parcels.z_index, "Parcels render in front of scanner rear casing")
+	_expect_true(parcels.z_index < int(geometry["idle_z"]), "Scanner lighting can illuminate parcels")
+	_expect_true(parcels.z_index < int(geometry["front_z"]), "Parcels render behind scanner front frame")
+	_expect_true(int(geometry["front_z"]) < int(geometry["upgrade_z"]), "Motor I remains above the front frame")
+	_expect_true(room.get_node("Conveyors").z_index < parcels.z_index, "Parcels are separated from the conveyor surface layer")
+
+	var front_image := scanner.scanner_front.texture.get_image()
+	var back_image := scanner.scanner_back.texture.get_image()
+	var motor_image := scanner.motor_upgrade.texture.get_image()
+	_expect_close(front_image.get_pixel(384, 368).a, 0.0, "Front mask is transparent at parcel centre in the scanner opening")
+	_expect_true(front_image.get_pixel(150, 368).a > 0.0, "Front mask retains opaque side-frame occlusion")
+	_expect_true(back_image.get_pixel(384, 368).a > 0.0, "Rear casing provides the visible chamber behind parcels")
+	_expect_close(motor_image.get_pixel(384, 368).a, 0.0, "Motor I layer does not obstruct the scanner opening")
+
+	var parcel_inside_opening := false
+	for item_position: Vector2 in parcels.get_item_positions():
+		if item_position.x > 607.0 and item_position.x < 809.0 and is_equal_approx(item_position.y, 688.0):
+			parcel_inside_opening = true
+			break
+	_expect_true(parcel_inside_opening, "Decorative parcel path crosses the transparent scanner opening")
+	_expect_equal(parcels.get_item_positions(), conveyor.get_item_positions(), "Parcel renderer reads positions without owning simulation")
+
+	scanner.set_process(false)
+	scanner.set_scan_phase_for_preview(0.25)
+	var high_offset := float(scanner.get_state_snapshot()["scan_offset_y"])
+	scanner.set_scan_phase_for_preview(0.75)
+	var low_offset := float(scanner.get_state_snapshot()["scan_offset_y"])
+	_expect_close(high_offset, 47.0, "Active scan line reaches approved lower travel")
+	_expect_close(low_offset, -47.0, "Active scan line reaches approved upper travel")
+	scanner.set_scan_phase_for_preview(0.0)
+	scanner.set_process(true)
 
 
 func _test_gameplay_hud_purchase(room: Node2D) -> void:
