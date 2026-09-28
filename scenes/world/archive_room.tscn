@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/presentation/archive_room.gd" id="1_room"]
 [ext_resource type="Script" path="res://scripts/presentation/machine_placeholder.gd" id="2_machine"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/presentation/decorative_parcel_visual.gd" id="6_parcels"]
 [ext_resource type="PackedScene" path="res://scenes/world/archive_room_environment.tscn" id="7_environment"]
 [ext_resource type="PackedScene" path="res://scenes/machines/receiving_desk_visual.tscn" id="8_receiving"]
+[ext_resource type="PackedScene" path="res://scenes/machines/basic_sorter_visual.tscn" id="9_sorter"]
 
 [node name="ArchiveRoom" type="Node2D"]
 script = ExtResource("1_room")
@@ -44,15 +45,9 @@ position = Vector2(268, 920)
 unique_name_in_owner = true
 position = Vector2(708, 920)
 
-[node name="BasicSorter" type="Node2D" parent="Machines"]
+[node name="BasicSorter" parent="Machines" instance=ExtResource("9_sorter")]
 unique_name_in_owner = true
 position = Vector2(1204, 920)
-script = ExtResource("2_machine")
-machine_id = &"basic_sorter"
-display_name = "BASIC SORTER"
-visual_size = Vector2(480, 360)
-body_color = Color(0.3, 0.34, 0.35, 1)
-accent_color = Color(0.67, 0.53, 0.23, 1)
 
 [node name="ArchiveIntake" type="Node2D" parent="Machines"]
 unique_name_in_owner = true

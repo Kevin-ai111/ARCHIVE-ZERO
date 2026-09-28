@@ -25,6 +25,8 @@ func _run_tests() -> void:
 	_test_modular_conveyor(room)
 	_test_receiving_desk_asset_layers_and_handoff(room)
 	await _test_receiving_desk_visual_states(room)
+	_test_sorter_asset_layers_and_occlusion(room)
+	await _test_sorter_visual_states_and_restoration(room)
 	await _test_scanner_asset_layers_and_occlusion(room)
 	await _test_scanner_visual_states(room)
 	await _test_gameplay_hud_purchase(room)
@@ -315,6 +317,151 @@ func _test_receiving_desk_visual_states(room: Node2D) -> void:
 	await get_tree().process_frame
 
 
+func _test_sorter_asset_layers_and_occlusion(room: Node2D) -> void:
+	var sorter := room.get_node("%BasicSorter") as BasicSorterVisual
+	var parcels := room.get_node("%DecorativeParcels") as DecorativeParcelVisual
+	var conveyor := room.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var geometry := sorter.get_asset_geometry_snapshot()
+
+	_expect_vector(sorter.position, Vector2(1204.0, 920.0), "Basic Sorter art preserves approved world pivot")
+	_expect_vector(geometry["display_size"], Vector2(480.0, 360.0), "Basic Sorter keeps approved logical footprint")
+	_expect_vector(geometry["back_export_size"], Vector2(960.0, 720.0), "Sorter rear housing uses verified 2x export")
+	_expect_vector(geometry["back_position"], Vector2(-240.0, -360.0), "Sorter rear housing uses bottom-centre alignment")
+	_expect_vector(geometry["back_scale"], Vector2(0.5, 0.5), "Sorter rear housing resolves to logical size")
+	_expect_vector(geometry["header_export_size"], Vector2(728.0, 104.0), "Sorter header indicators use verified cropped export")
+	_expect_vector(geometry["header_position"], Vector2(-178.0, -288.0), "Sorter header indicators use manifest offset")
+	_expect_vector(geometry["header_scale"], Vector2(0.5, 0.5), "Sorter header indicators resolve to logical size")
+	_expect_vector(geometry["bays_export_size"], Vector2(538.0, 22.0), "Sorter bay indicators use verified cropped export")
+	_expect_vector(geometry["bays_position"], Vector2(-134.0, -183.0), "Sorter bay indicators use manifest offset")
+	_expect_vector(geometry["bays_scale"], Vector2(0.5, 0.5), "Sorter bay indicators resolve to logical size")
+	_expect_vector(geometry["gate_export_size"], Vector2(192.0, 192.0), "Sorting gate uses verified cropped export")
+	_expect_vector(geometry["gate_pivot"], Vector2(18.0, -266.0), "Sorting gate uses documented root-local pivot")
+	_expect_vector(geometry["gate_child_position"], Vector2(-42.0, -22.0), "Sorting gate texture offsets around its pivot")
+	_expect_vector(geometry["gate_scale"], Vector2(0.5, 0.5), "Sorting gate resolves to logical size")
+	_expect_true(not bool(geometry["gate_centered"]), "Sorting gate uses explicit top-left crop positioning")
+	_expect_vector(geometry["front_export_size"], Vector2(960.0, 720.0), "Sorter front frame uses verified 2x export")
+	_expect_vector(geometry["front_position"], Vector2(-240.0, -360.0), "Sorter front frame shares bottom-centre alignment")
+	_expect_vector(geometry["front_scale"], Vector2(0.5, 0.5), "Sorter front frame resolves to logical size")
+	_expect_vector(geometry["upgrade_export_size"], Vector2(188.0, 260.0), "Sorter Motor I uses verified cropped export")
+	_expect_vector(geometry["upgrade_position"], Vector2(125.0, -150.0), "Sorter Motor I uses manifest offset")
+	_expect_vector(geometry["upgrade_scale"], Vector2(0.5, 0.5), "Sorter Motor I resolves to logical size")
+	_expect_equal(sorter.texture_filter, CanvasItem.TEXTURE_FILTER_LINEAR, "Basic Sorter matches completed machines' linear filtering")
+
+	_expect_equal(int(geometry["back_z"]), 5, "Sorter rear housing keeps manifest absolute Z")
+	_expect_equal(int(geometry["header_z"]), 7, "Sorter header indicators keep manifest absolute Z")
+	_expect_equal(int(geometry["bays_z"]), 7, "Sorter bay indicators keep manifest absolute Z")
+	_expect_equal(int(geometry["gate_z"]), 8, "Sorting gate keeps manifest absolute Z")
+	_expect_equal(int(geometry["front_z"]), 10, "Sorter front frame keeps manifest absolute Z")
+	_expect_equal(int(geometry["upgrade_z"]), 11, "Sorter Motor I keeps manifest absolute Z")
+	for layer: CanvasItem in [sorter.rear_housing, sorter.header_emissive, sorter.bay_emissive, sorter.sorting_gate_pivot, sorter.front_mask, sorter.motor_upgrade]:
+		_expect_true(not layer.z_as_relative, "%s avoids inherited Machines-node Z" % layer.name)
+	_expect_true(conveyor.z_index < int(geometry["back_z"]), "Conveyor surface remains behind Sorter housing")
+	_expect_true(int(geometry["back_z"]) < parcels.z_index, "Parcels render in front of Sorter rear housing")
+	_expect_true(parcels.z_index < int(geometry["front_z"]), "Parcels render behind Sorter front frame")
+	_expect_true(int(geometry["front_z"]) < int(geometry["upgrade_z"]), "Sorter Motor I remains above the front frame")
+	_expect_close(sorter.position.y + float(geometry["parcel_center_local_y"]), 688.0, "Sorter passage aligns to parcel centreline")
+	_expect_close(sorter.position.y + float(geometry["conveyor_contact_local_y"]), 703.0, "Sorter passage aligns to conveyor contact surface")
+	_expect_equal(parcels.get_item_positions(), conveyor.get_item_positions(), "Sorter reuses the single decorative parcel renderer")
+	_expect_equal(room.find_children("*", "DecorativeParcelVisual", true, false).size(), 1, "Sorter integration adds no parcel renderer")
+
+	var layers: Array[Sprite2D] = [
+		sorter.rear_housing,
+		sorter.header_emissive,
+		sorter.bay_emissive,
+		sorter.sorting_gate,
+		sorter.front_mask,
+		sorter.motor_upgrade,
+	]
+	for layer: Sprite2D in layers:
+		var image := layer.texture.get_image()
+		_expect_true(image.get_used_rect() != Rect2i(Vector2i.ZERO, image.get_size()), "%s retains genuine transparent pixels" % layer.name)
+
+	var front_image := sorter.front_mask.texture.get_image()
+	var back_image := sorter.rear_housing.texture.get_image()
+	_expect_true(front_image.get_pixel(40, 256).a > 0.0, "Sorter entrance guard occludes passing parcel edges")
+	_expect_close(front_image.get_pixel(480, 256).a, 0.0, "Sorter interior remains open at parcel centre")
+	_expect_true(front_image.get_pixel(920, 256).a > 0.0, "Sorter exit guard occludes passing parcel edges")
+	_expect_true(back_image.get_pixel(480, 256).a > 0.0, "Sorter rear channel stays visible behind passing parcels")
+	_expect_close(front_image.get_pixel(480, 286).a, 0.0, "Sorter front frame stays clear through approved parcel contact height")
+	_expect_true(front_image.get_pixel(480, 290).a > 0.0, "Sorter lower rail begins below the parcel contact surface")
+
+
+func _test_sorter_visual_states_and_restoration(room: Node2D) -> void:
+	_reset_simulation()
+	await get_tree().process_frame
+	var sorter := room.get_node("%BasicSorter") as BasicSorterVisual
+	var state := sorter.get_state_snapshot()
+	_expect_true(bool(state["enabled"]), "Basic Sorter visual starts enabled")
+	_expect_true(bool(state["active"]), "Basic Sorter gate responds to active production")
+	_expect_true(bool(state["bottleneck"]), "Basic Sorter keeps initial bottleneck feedback")
+	_expect_true(bool(state["header_visible"]) and bool(state["bays_visible"]), "Enabled Sorter shows both indicator layers")
+	_expect_true(bool(state["gate_processing"]), "Sorting gate processes only while the line runs")
+	_expect_true(not bool(state["upgrade_visible"]), "Sorter Motor I starts hidden while unowned")
+
+	sorter.set_process(false)
+	sorter.set_gate_phase_for_preview(0.25)
+	_expect_close(float(sorter.get_state_snapshot()["gate_angle"]), BasicSorterVisual.GATE_MAX_ANGLE, "Sorting gate reaches documented positive swing")
+	sorter.set_gate_phase_for_preview(0.75)
+	_expect_close(float(sorter.get_state_snapshot()["gate_angle"]), -BasicSorterVisual.GATE_MAX_ANGLE, "Sorting gate reaches documented negative swing")
+	sorter.set_gate_phase_for_preview(0.0)
+	var neutral_angle := float(sorter.get_state_snapshot()["gate_angle"])
+	sorter.advance_visual_animation(0.25)
+	_expect_true(not is_equal_approx(float(sorter.get_state_snapshot()["gate_angle"]), neutral_angle), "Sorting gate advances from presentation time")
+	sorter.set_header_lighting_enabled(false)
+	_expect_true(not bool(sorter.get_state_snapshot()["header_visible"]) and bool(sorter.get_state_snapshot()["bays_visible"]), "Sorter header indicators toggle independently")
+	sorter.set_header_lighting_enabled(true)
+	sorter.set_bay_lighting_enabled(false)
+	_expect_true(bool(sorter.get_state_snapshot()["header_visible"]) and not bool(sorter.get_state_snapshot()["bays_visible"]), "Sorter bay indicators toggle independently")
+	sorter.set_bay_lighting_enabled(true)
+
+	SimulationManager.set_machine_enabled(&"basic_scanner", false)
+	await get_tree().process_frame
+	state = sorter.get_state_snapshot()
+	_expect_true(bool(state["enabled"]) and not bool(state["active"]), "Sorter remains enabled when a downstream stage stops the line")
+	_expect_true(not bool(state["gate_processing"]), "Sorting gate stops when the production line stops")
+	var frozen_angle := float(state["gate_angle"])
+	sorter.advance_visual_animation(1.0)
+	_expect_close(float(sorter.get_state_snapshot()["gate_angle"]), frozen_angle, "Stopped sorting gate cannot advance through presentation calls")
+	SimulationManager.set_machine_enabled(&"basic_scanner", true)
+	await get_tree().process_frame
+	_expect_true(bool(sorter.get_state_snapshot()["gate_processing"]), "Sorting gate resumes when production restarts")
+
+	GameState.restore_state(25, 25, 0, 0.0)
+	var purchase_result := SimulationManager.purchase_upgrade("sorter_motor_1")
+	await get_tree().process_frame
+	state = sorter.get_state_snapshot()
+	_expect_equal(purchase_result, SimulationManager.PurchaseResult.SUCCESS, "Existing Sorter Motor I purchase succeeds")
+	_expect_true(bool(state["upgraded"]) and bool(state["upgrade_visible"]), "Owned Sorter Motor I appears on the machine")
+
+	SimulationManager.set_machine_enabled(&"basic_sorter", false)
+	await get_tree().process_frame
+	state = sorter.get_state_snapshot()
+	_expect_true(not bool(state["enabled"]) and not bool(state["active"]), "Sorter art responds to disabled state")
+	_expect_true(not bool(state["header_visible"]) and not bool(state["bays_visible"]), "Disabled Sorter turns off both indicator layers")
+	_expect_true(not bool(state["gate_processing"]), "Disabled Sorter gate is frozen")
+	_expect_true(bool(state["upgrade_visible"]), "Sorter Motor I remains installed while disabled")
+	_expect_true(sorter.rear_housing.self_modulate != Color.WHITE and sorter.front_mask.self_modulate != Color.WHITE, "Disabled state dims both Sorter casing layers")
+	_expect_true(sorter.sorting_gate.self_modulate != Color.WHITE and sorter.motor_upgrade.self_modulate != Color.WHITE, "Disabled state dims gate and installed Motor I")
+
+	var saved_production := SimulationManager.get_production_save_data().duplicate(true)
+	_reset_simulation()
+	_expect_true(SimulationManager.restore_production_save_data(saved_production), "Sorter upgrade and disabled state restore from save data")
+	var restored_room := ARCHIVE_ROOM_SCENE.instantiate() as Node2D
+	add_child(restored_room)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var restored_sorter := restored_room.get_node("%BasicSorter") as BasicSorterVisual
+	var restored_state := restored_sorter.get_state_snapshot()
+	_expect_true(not bool(restored_state["enabled"]), "New ArchiveRoom reflects restored disabled Sorter state")
+	_expect_true(bool(restored_state["upgraded"]) and bool(restored_state["upgrade_visible"]), "New ArchiveRoom reflects restored Motor I ownership")
+	_expect_true(restored_sorter.motor_upgrade.self_modulate != Color.WHITE, "Restored disabled Motor I remains visibly dimmed")
+	restored_room.queue_free()
+	await get_tree().process_frame
+
+	_reset_simulation()
+	await get_tree().process_frame
+
+
 func _test_scanner_visual_states(room: Node2D) -> void:
 	_reset_simulation()
 	await get_tree().process_frame
@@ -449,11 +596,15 @@ func _test_presentation_does_not_change_simulation(room: Node2D) -> void:
 	add_child(room_with_visuals)
 	await get_tree().process_frame
 	var conveyor: ConveyorPlaceholderVisual = room_with_visuals.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var sorter: BasicSorterVisual = room_with_visuals.get_node("%BasicSorter") as BasicSorterVisual
 	var before_visual_advance := _simulation_snapshot()
 	var item_positions_before := conveyor.get_item_positions()
+	var gate_angle_before := float(sorter.get_state_snapshot()["gate_angle"])
 	conveyor.advance_visuals(12.0)
+	sorter.advance_visual_animation(0.25)
 	var item_positions_after := conveyor.get_item_positions()
 	_expect_true(item_positions_before != item_positions_after, "Decorative conveyor items animate")
+	_expect_true(not is_equal_approx(float(sorter.get_state_snapshot()["gate_angle"]), gate_angle_before), "Decorative sorting gate animates")
 	_expect_equal(_simulation_snapshot(), before_visual_advance, "Decorative animation cannot mutate production or Credits")
 	SimulationManager.simulate_elapsed(100.0)
 	var with_room := _simulation_snapshot()

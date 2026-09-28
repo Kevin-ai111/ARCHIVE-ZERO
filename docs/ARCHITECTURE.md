@@ -36,6 +36,14 @@ state API while suppressing only its own greybox drawing; unfinished machines
 continue to use the unchanged placeholder. Exact configuration and evidence are
 documented in `docs/RECEIVING_DESK_ART.md`.
 
+The Basic Sorter is a six-layer presentation adapter at the existing
+`(1204, 920)` pivot. Its independent indicator groups, gate pivot, front mask,
+and existing Motor I ownership layer surround the shared parcel renderer with
+absolute Z ordering. Gate activity reads the already calculated effective
+throughput and is never authoritative production state. The exact layer,
+occlusion, animation, and filtering contract is documented in
+`docs/BASIC_SORTER_ART.md`.
+
 The static Phase 4E room is isolated in
 `scenes/world/archive_room_environment.tscn`. Repeated architectural Sprite2Ds
 share Texture2D resources and use explicit absolute Z layers. Lamp housings,
