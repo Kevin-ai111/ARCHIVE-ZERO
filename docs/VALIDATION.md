@@ -47,6 +47,15 @@ The visual foundation suite covers:
 - independent idle lighting and feed-wheel rotation around `(116, -173)`;
 - real front-mask alpha transition at the X=436 conveyor outlet;
 - one shared parcel renderer through the Receiving Desk hand-off;
+- Basic Sorter six-layer sizes, cropped offsets, 0.5 scale, and absolute Z;
+- exact Sorter world pivot, 480×360 footprint, and gate pivot `(18, -266)`;
+- Sorter front-mask entrance/interior/exit alpha and lower-rail clearance;
+- actual-transform gate/parcel alpha clearance at −16°, 0°, +16°, and 13
+  coupled animation phases, including bilinear-filter edge support;
+- active gate motion, line-stopped freeze, restart, and disabled freeze;
+- independent header/bay indicators and simulation-driven bottleneck feedback;
+- Sorter Motor I hidden, installed, disabled-installed, save-restored, and
+  newly-instanced scene states;
 - gameplay-HUD purchase wiring;
 - decorative conveyor movement without production-state mutation;
 - exact Phase 4E environment placements and absolute Z ordering;
@@ -65,6 +74,40 @@ Pull requests run the import and automated test commands through
 official Godot 4.7 stable Linux binary.
 
 ## Full-HD graphical validation
+
+### Phase 4G Basic Sorter production art
+
+Actual Godot 4.7.2 Compatibility-renderer evidence:
+
+- [v1.1 Full-HD gate-clearance room](screenshots/basic-sorter-gate-v11-1920x1080.png)
+- [v1.1 1280×720 gate-clearance room](screenshots/basic-sorter-gate-v11-1280x720.png)
+- [v1.1 Full-HD 41-frame passage proof](screenshots/basic-sorter-gate-passages-v11-1920x1080.gif)
+- [v1.1 1280×720 41-frame passage proof](screenshots/basic-sorter-gate-passages-v11-1280x720.gif)
+
+- [1920×1080 standard Sorter](screenshots/basic-sorter-art-1920x1080.png)
+- [1280×720 standard Sorter](screenshots/basic-sorter-art-1280x720.png)
+- [960×540 standard Sorter](screenshots/basic-sorter-art-960x540.png)
+- [installed Sorter Motor I](screenshots/basic-sorter-motor-i-1280x720.png)
+- [disabled Sorter](screenshots/basic-sorter-disabled-1280x720.png)
+- [installed Motor I while disabled](screenshots/basic-sorter-motor-i-disabled-1280x720.png)
+- [enabled Sorter with stopped line](screenshots/basic-sorter-line-stopped-1280x720.png)
+- [moving gate and multiple parcel passages](screenshots/basic-sorter-gate-parcels-960x540.gif)
+
+The captures confirm unchanged machine bounds and camera framing, correct parcel
+contact and front-mask occlusion, gate freeze/resume behavior, installed Motor I
+state, and readable HUD presentation at every target. Linear filtering was
+retained after direct [linear](screenshots/basic-sorter-filter-linear-1280x720.png)
+and [nearest](screenshots/basic-sorter-filter-nearest-1280x720.png) comparison at
+1280×720. Package verification, state restoration, performance observations,
+and remaining artistic limitations are recorded in `docs/BASIC_SORTER_ART.md`.
+
+The v1.1 blocker proof adds 41 live frames over 12 seconds at each requested
+resolution. Five parcel passages remain visibly clear of the gate with no
+intersection or pop. The automated alpha regression reports zero overlap at
+all fixed angles and coupled phases; running the same test with the replaced
+v1.0 asset produces non-zero overlap in every fixed-angle case.
+
+This milestone remains pending final artistic approval.
 
 ### Phase 4F Receiving Desk production art
 

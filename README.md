@@ -21,7 +21,8 @@ currency handling, fixed-interval numerical simulation, a data-driven four-stage
 production line, a data-driven two-step motor upgrade loop, versioned JSON saving,
 an initial fixed-camera Archive Room with its first production environment and
 modular conveyor, the layered production-art Basic Scanner and Receiving Desk,
-a minimal gameplay HUD, and a separate development dashboard.
+the layered production-art Basic Sorter, a minimal gameplay HUD, and a separate
+development dashboard. Archive Intake remains the final machine greybox.
 
 ## Open locally
 
