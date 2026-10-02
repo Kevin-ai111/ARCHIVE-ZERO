@@ -31,6 +31,8 @@ func _run_tests() -> void:
 	await _test_receiving_desk_visual_states(room)
 	_test_sorter_asset_layers_and_occlusion(room)
 	await _test_sorter_visual_states_and_restoration(room)
+	_test_archive_intake_asset_layers_and_terminal_occlusion(room)
+	await _test_archive_intake_visual_states_and_restoration(room)
 	await _test_scanner_asset_layers_and_occlusion(room)
 	await _test_scanner_visual_states(room)
 	await _test_gameplay_hud_purchase(room)
@@ -551,6 +553,241 @@ func _point_is_inside_any_rect(point: Vector2, rects: Array[Rect2]) -> bool:
 	return false
 
 
+func _test_archive_intake_asset_layers_and_terminal_occlusion(room: Node2D) -> void:
+	var intake := room.get_node("%ArchiveIntake") as ArchiveIntakeVisual
+	var parcels := room.get_node("%DecorativeParcels") as DecorativeParcelVisual
+	var conveyor := room.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var geometry := intake.get_asset_geometry_snapshot()
+
+	_expect_vector(intake.position, Vector2(1668.0, 920.0), "Archive Intake art preserves approved world pivot")
+	_expect_vector(geometry["display_size"], Vector2(304.0, 464.0), "Archive Intake keeps approved logical footprint")
+	_expect_vector(geometry["back_export_size"], Vector2(608.0, 928.0), "Intake rear housing uses verified 2x export")
+	_expect_vector(geometry["back_position"], Vector2(-152.0, -464.0), "Intake rear housing uses bottom-centre top-left")
+	_expect_vector(geometry["back_scale"], Vector2(0.5, 0.5), "Intake rear housing resolves to logical size")
+	_expect_vector(geometry["emissive_export_size"], Vector2(492.0, 506.0), "Intake emissive uses verified cropped export")
+	_expect_vector(geometry["emissive_position"], Vector2(-115.0, -413.0), "Intake emissive uses manifest offset")
+	_expect_vector(geometry["emissive_scale"], Vector2(0.5, 0.5), "Intake emissive resolves to logical size")
+	_expect_vector(geometry["carrier_export_size"], Vector2(142.0, 206.0), "Intake lift carrier uses verified cropped export")
+	_expect_vector(geometry["carrier_pivot"], Vector2(74.0, -294.0), "Intake lift carrier uses documented translation pivot")
+	_expect_vector(geometry["carrier_child_position"], Vector2(-35.0, -54.0), "Intake lift carrier texture offsets around its pivot")
+	_expect_vector(geometry["carrier_scale"], Vector2(0.5, 0.5), "Intake lift carrier resolves to logical size")
+	_expect_true(not bool(geometry["carrier_centered"]), "Intake lift carrier uses explicit top-left crop positioning")
+	_expect_close(float(geometry["carrier_travel"]), 24.0, "Intake lift carrier keeps approved +/-24 px travel")
+	_expect_vector(geometry["front_export_size"], Vector2(608.0, 928.0), "Intake front mask uses verified 2x export")
+	_expect_vector(geometry["front_position"], Vector2(-152.0, -464.0), "Intake front mask shares approved machine bounds")
+	_expect_vector(geometry["front_scale"], Vector2(0.5, 0.5), "Intake front mask resolves to logical size")
+	_expect_equal(intake.texture_filter, CanvasItem.TEXTURE_FILTER_LINEAR, "Archive Intake matches completed machines' linear filtering")
+	_expect_equal(intake.front_mask.texture_filter, CanvasItem.TEXTURE_FILTER_NEAREST, "Intake front mask uses a terminal-occlusion-safe hard alpha edge")
+
+	_expect_equal(int(geometry["back_z"]), 5, "Intake rear housing keeps manifest absolute Z")
+	_expect_equal(int(geometry["emissive_z"]), 7, "Intake emissive keeps manifest absolute Z")
+	_expect_equal(int(geometry["carrier_z"]), 8, "Intake carrier keeps manifest absolute Z")
+	_expect_equal(int(geometry["front_z"]), 10, "Intake front mask keeps manifest absolute Z")
+	for layer: CanvasItem in [intake.rear_housing, intake.idle_emissive, intake.lift_carrier_pivot, intake.front_mask]:
+		_expect_true(not layer.z_as_relative, "%s avoids inherited Machines-node Z" % layer.name)
+	_expect_true(conveyor.z_index < int(geometry["back_z"]), "Conveyor surface remains behind Intake housing")
+	_expect_true(int(geometry["back_z"]) < parcels.z_index, "Parcels render in front of Intake rear housing")
+	_expect_true(parcels.z_index < int(geometry["emissive_z"]), "Intake emissive remains above passing parcels")
+	_expect_true(parcels.z_index < int(geometry["front_z"]), "Parcels disappear behind Intake front mask")
+
+	_expect_close(intake.position.y + float(geometry["parcel_center_local_y"]), 688.0, "Intake entrance aligns to parcel centreline")
+	_expect_close(intake.position.y + float(geometry["conveyor_contact_local_y"]), 703.0, "Intake entrance aligns to conveyor contact surface")
+	_expect_close(intake.position.x + float(geometry["conveyor_endpoint_local_x"]), 1668.0, "Intake entrance aligns to conveyor endpoint")
+	_expect_close(conveyor.path_end_x, 1668.0, "Existing conveyor endpoint remains locked for Intake occlusion")
+	_expect_equal(parcels.get_item_positions(), conveyor.get_item_positions(), "Archive Intake reuses the single decorative parcel renderer")
+	_expect_equal(room.find_children("*", "DecorativeParcelVisual", true, false).size(), 1, "ArchiveRoom contains exactly one parcel renderer after Intake integration")
+
+	for layer: Sprite2D in [intake.rear_housing, intake.idle_emissive, intake.lift_carrier, intake.front_mask]:
+		var image := layer.texture.get_image()
+		_expect_true(image.get_used_rect() != Rect2i(Vector2i.ZERO, image.get_size()), "%s retains genuine transparent pixels" % layer.name)
+
+	var parcel_centers := [1640.0, 1650.0, 1655.0, 1660.0, 1664.0, 1665.0, 1666.0, 1668.0]
+	var previous_visible_fraction := INF
+	for parcel_center_x: float in parcel_centers:
+		var visibility := _measure_intake_parcel_visibility(intake, Vector2(parcel_center_x, 688.0))
+		var visible_fraction := float(visibility["visible_fraction"])
+		var visible_samples := int(visibility["visible_samples"])
+		print(
+			"Archive Intake occlusion X=%.0f: visible_fraction=%.4f, visible_samples=%d, max_residual_alpha=%.5f"
+			% [parcel_center_x, visible_fraction, visible_samples, float(visibility["max_residual_alpha"])]
+		)
+		_expect_true(visible_fraction <= previous_visible_fraction + EPSILON, "Intake front mask hides parcels progressively without an early visibility pop at X=%.0f" % parcel_center_x)
+		previous_visible_fraction = visible_fraction
+		if parcel_center_x < 1665.0:
+			_expect_true(visible_samples > 0, "Parcel remains visibly present before terminal hiding point at X=%.0f" % parcel_center_x)
+		else:
+			_expect_equal(visible_samples, 0, "Parcel is fully hidden before presentation wrap at X=%.0f" % parcel_center_x)
+	_expect_true(previous_visible_fraction <= EPSILON, "Parcel remains fully hidden through the conveyor endpoint")
+	intake.front_mask.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var linear_terminal_visibility := _measure_intake_parcel_visibility(intake, Vector2(1665.0, 688.0))
+	print(
+		"Archive Intake all-linear terminal comparison X=1665: visible_fraction=%.4f, visible_samples=%d, max_residual_alpha=%.5f"
+		% [
+			float(linear_terminal_visibility["visible_fraction"]),
+			int(linear_terminal_visibility["visible_samples"]),
+			float(linear_terminal_visibility["max_residual_alpha"]),
+		]
+	)
+	_expect_true(int(linear_terminal_visibility["visible_samples"]) > 0, "All-linear comparison detects the terminal alpha fringe that selected filtering removes")
+	intake.front_mask.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
+	intake.set_carrier_phase_for_preview(0.25)
+	var carrier_lower_bounds := _sprite_alpha_world_bounds(intake.lift_carrier)
+	intake.set_carrier_phase_for_preview(0.75)
+	var carrier_upper_bounds := _sprite_alpha_world_bounds(intake.lift_carrier)
+	var endpoint_parcel_right := conveyor.path_end_x + ConveyorPlaceholderVisual.PARCEL_SIZE.x * 0.5
+	_expect_true(carrier_lower_bounds.position.x >= endpoint_parcel_right, "Lower carrier extreme stays horizontally clear of terminal parcel")
+	_expect_true(carrier_upper_bounds.position.x >= endpoint_parcel_right, "Upper carrier extreme stays horizontally clear of terminal parcel")
+	_expect_close(carrier_lower_bounds.position.x - endpoint_parcel_right, 20.0, "Carrier preserves documented 20 px horizontal parcel clearance")
+
+
+func _measure_intake_parcel_visibility(intake: ArchiveIntakeVisual, parcel_center: Vector2) -> Dictionary:
+	var front_image := intake.front_mask.texture.get_image()
+	var parcel_rect := Rect2(parcel_center - ConveyorPlaceholderVisual.PARCEL_SIZE * 0.5, ConveyorPlaceholderVisual.PARCEL_SIZE)
+	var x_samples := int(ceilf(parcel_rect.size.x / LINEAR_ALPHA_SAMPLE_STEP))
+	var y_samples := int(ceilf(parcel_rect.size.y / LINEAR_ALPHA_SAMPLE_STEP))
+	var visibility_sum := 0.0
+	var visible_samples := 0
+	var max_residual_alpha := 0.0
+	for y_index in range(y_samples):
+		for x_index in range(x_samples):
+			var world_point := parcel_rect.position + Vector2(
+				(float(x_index) + 0.5) * LINEAR_ALPHA_SAMPLE_STEP,
+				(float(y_index) + 0.5) * LINEAR_ALPHA_SAMPLE_STEP
+			)
+			var front_alpha := (
+				_sample_sprite_nearest_alpha(intake.front_mask, front_image, world_point)
+				if intake.front_mask.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST
+				else _sample_sprite_linear_alpha(intake.front_mask, front_image, world_point)
+			)
+			var residual_alpha := 1.0 - front_alpha
+			visibility_sum += residual_alpha
+			max_residual_alpha = maxf(max_residual_alpha, residual_alpha)
+			if residual_alpha > TRANSPARENT_MASK_ALPHA_LIMIT:
+				visible_samples += 1
+	return {
+		"visible_fraction": visibility_sum / float(x_samples * y_samples),
+		"visible_samples": visible_samples,
+		"max_residual_alpha": max_residual_alpha,
+	}
+
+
+func _sample_sprite_nearest_alpha(sprite: Sprite2D, image: Image, world_point: Vector2) -> float:
+	var texture_point := sprite.to_local(world_point) - sprite.offset
+	if sprite.centered:
+		texture_point += Vector2(image.get_size()) * 0.5
+	var x := floori(texture_point.x)
+	var y := floori(texture_point.y)
+	return _image_alpha_or_zero(image, x, y)
+
+
+func _sprite_alpha_world_bounds(sprite: Sprite2D) -> Rect2:
+	var image := sprite.texture.get_image()
+	var used_rect := Rect2(image.get_used_rect())
+	var top_left := sprite.offset + used_rect.position
+	if sprite.centered:
+		top_left -= Vector2(image.get_size()) * 0.5
+	var local_corners := [
+		top_left,
+		top_left + Vector2(used_rect.size.x, 0.0),
+		top_left + used_rect.size,
+		top_left + Vector2(0.0, used_rect.size.y),
+	]
+	var world_min := sprite.to_global(local_corners[0])
+	var world_max := world_min
+	for local_corner: Vector2 in local_corners:
+		var world_corner := sprite.to_global(local_corner)
+		world_min = Vector2(minf(world_min.x, world_corner.x), minf(world_min.y, world_corner.y))
+		world_max = Vector2(maxf(world_max.x, world_corner.x), maxf(world_max.y, world_corner.y))
+	return Rect2(world_min, world_max - world_min)
+
+
+func _test_archive_intake_visual_states_and_restoration(room: Node2D) -> void:
+	_reset_simulation()
+	await get_tree().process_frame
+	var intake := room.get_node("%ArchiveIntake") as ArchiveIntakeVisual
+	var state := intake.get_state_snapshot()
+	_expect_true(bool(state["enabled"]), "Archive Intake visual starts enabled")
+	_expect_true(bool(state["active"]), "Archive Intake carrier responds to active production")
+	_expect_true(bool(state["idle_visible"]), "Enabled Intake shows independent idle lighting")
+	_expect_true(bool(state["carrier_visible"]), "Intake lift carrier remains independently layered")
+	_expect_true(bool(state["carrier_processing"]), "Intake carrier processes only while the line runs")
+	_expect_true(not bool(state["has_upgrade"]), "Archive Intake does not invent an upgrade")
+
+	intake.set_process(false)
+	intake.set_carrier_phase_for_preview(0.25)
+	_expect_close(float(intake.get_state_snapshot()["carrier_offset_y"]), 24.0, "Intake carrier reaches documented lower travel extreme")
+	intake.set_carrier_phase_for_preview(0.75)
+	_expect_close(float(intake.get_state_snapshot()["carrier_offset_y"]), -24.0, "Intake carrier reaches documented upper travel extreme")
+	intake.set_carrier_phase_for_preview(0.0)
+	var neutral_offset := float(intake.get_state_snapshot()["carrier_offset_y"])
+	var simulation_before_animation := _simulation_snapshot()
+	intake.advance_visual_animation(0.25)
+	_expect_true(not is_equal_approx(float(intake.get_state_snapshot()["carrier_offset_y"]), neutral_offset), "Intake carrier advances from presentation time")
+	_expect_equal(_simulation_snapshot(), simulation_before_animation, "Intake carrier animation cannot mutate production or Credits")
+	intake.set_idle_lighting_enabled(false)
+	_expect_true(not bool(intake.get_state_snapshot()["idle_visible"]), "Intake emissive can be controlled independently")
+	intake.set_idle_lighting_enabled(true)
+
+	SimulationManager.set_machine_enabled(&"basic_scanner", false)
+	await get_tree().process_frame
+	state = intake.get_state_snapshot()
+	_expect_true(bool(state["enabled"]) and not bool(state["active"]), "Intake stays powered when a downstream stage stops the line")
+	_expect_true(bool(state["idle_visible"]), "Line-stopped Intake may remain visibly powered")
+	_expect_true(not bool(state["carrier_processing"]), "Line-stopped Intake freezes the carrier process callback")
+	var frozen_offset := float(state["carrier_offset_y"])
+	intake.advance_visual_animation(1.0)
+	_expect_close(float(intake.get_state_snapshot()["carrier_offset_y"]), frozen_offset, "Stopped Intake carrier cannot advance through presentation calls")
+
+	SimulationManager.set_machine_enabled(&"basic_scanner", true)
+	await get_tree().process_frame
+	_expect_true(bool(intake.get_state_snapshot()["carrier_processing"]), "Intake carrier resumes from its frozen presentation phase")
+	intake.set_process(false)
+	intake.advance_visual_animation(0.25)
+	_expect_true(not is_equal_approx(float(intake.get_state_snapshot()["carrier_offset_y"]), frozen_offset), "Resumed Intake carrier continues without resetting phase")
+
+	SimulationManager.set_machine_enabled(&"archive_intake", false)
+	await get_tree().process_frame
+	state = intake.get_state_snapshot()
+	_expect_true(not bool(state["enabled"]) and not bool(state["active"]), "Archive Intake art responds to disabled state")
+	_expect_true(not bool(state["idle_visible"]), "Disabled Intake turns off idle lighting")
+	_expect_true(not bool(state["carrier_processing"]), "Disabled Intake carrier is frozen")
+	_expect_true(intake.rear_housing.self_modulate != Color.WHITE and intake.front_mask.self_modulate != Color.WHITE, "Disabled Intake dims both housing layers")
+	_expect_true(intake.lift_carrier.self_modulate != Color.WHITE, "Disabled Intake dims the lift carrier")
+
+	var saved_production := SimulationManager.get_production_save_data().duplicate(true)
+	_reset_simulation()
+	_expect_true(SimulationManager.restore_production_save_data(saved_production), "Disabled Intake state restores from existing production save data")
+	var restored_room := ARCHIVE_ROOM_SCENE.instantiate() as Node2D
+	add_child(restored_room)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var restored_intake := restored_room.get_node("%ArchiveIntake") as ArchiveIntakeVisual
+	var restored_state := restored_intake.get_state_snapshot()
+	_expect_true(not bool(restored_state["enabled"]), "New ArchiveRoom reflects restored disabled Intake state")
+	_expect_true(not bool(restored_state["has_upgrade"]), "Restored Archive Intake still has no upgrade")
+	_expect_true(restored_intake.rear_housing.self_modulate != Color.WHITE, "Restored disabled Intake remains visibly dimmed")
+	restored_room.queue_free()
+	await get_tree().process_frame
+
+	_reset_simulation()
+	var line := SimulationManager.get_production_line()
+	line.get_stage(&"receiving_desk").set_runtime_capacity_multiplier(2.0)
+	line.get_stage(&"basic_scanner").set_runtime_capacity_multiplier(3.0)
+	line.get_stage(&"basic_sorter").set_runtime_capacity_multiplier(4.0)
+	room.call("_refresh_visual_state")
+	state = intake.get_state_snapshot()
+	_expect_true(bool(state["bottleneck"]), "Archive Intake receives existing bottleneck feedback when it is numerically limiting")
+	_expect_true(not bool(state["has_upgrade"]), "Intake bottleneck feedback does not create an upgrade")
+	_expect_equal(UpgradeCatalog.get_definitions().size(), 2, "Archive Intake integration leaves exactly the two existing upgrade definitions")
+	_expect_true(not UpgradeCatalog.has_upgrade_for_machine(&"archive_intake"), "Upgrade catalog has no Archive Intake purchase path")
+	for definition: UpgradeDefinition in UpgradeCatalog.get_definitions():
+		_expect_true(definition.target_machine_id != &"archive_intake", "No upgrade definition targets Archive Intake")
+
+	_reset_simulation()
+	await get_tree().process_frame
+
+
 func _test_sorter_visual_states_and_restoration(room: Node2D) -> void:
 	_reset_simulation()
 	await get_tree().process_frame
@@ -762,14 +999,18 @@ func _test_presentation_does_not_change_simulation(room: Node2D) -> void:
 	await get_tree().process_frame
 	var conveyor: ConveyorPlaceholderVisual = room_with_visuals.get_node("%Conveyor") as ConveyorPlaceholderVisual
 	var sorter: BasicSorterVisual = room_with_visuals.get_node("%BasicSorter") as BasicSorterVisual
+	var intake: ArchiveIntakeVisual = room_with_visuals.get_node("%ArchiveIntake") as ArchiveIntakeVisual
 	var before_visual_advance := _simulation_snapshot()
 	var item_positions_before := conveyor.get_item_positions()
 	var gate_angle_before := float(sorter.get_state_snapshot()["gate_angle"])
+	var carrier_offset_before := float(intake.get_state_snapshot()["carrier_offset_y"])
 	conveyor.advance_visuals(12.0)
 	sorter.advance_visual_animation(0.25)
+	intake.advance_visual_animation(0.25)
 	var item_positions_after := conveyor.get_item_positions()
 	_expect_true(item_positions_before != item_positions_after, "Decorative conveyor items animate")
 	_expect_true(not is_equal_approx(float(sorter.get_state_snapshot()["gate_angle"]), gate_angle_before), "Decorative sorting gate animates")
+	_expect_true(not is_equal_approx(float(intake.get_state_snapshot()["carrier_offset_y"]), carrier_offset_before), "Decorative Intake carrier animates")
 	_expect_equal(_simulation_snapshot(), before_visual_advance, "Decorative animation cannot mutate production or Credits")
 	SimulationManager.simulate_elapsed(100.0)
 	var with_room := _simulation_snapshot()

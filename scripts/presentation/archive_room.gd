@@ -5,7 +5,7 @@ const SCANNER_MACHINE_ID := &"basic_scanner"
 @onready var receiving_desk: ReceivingDeskVisual = %ReceivingDesk
 @onready var scanner: BasicScannerVisual = %BasicScanner
 @onready var sorter: BasicSorterVisual = %BasicSorter
-@onready var archive_intake: MachinePlaceholderVisual = %ArchiveIntake
+@onready var archive_intake: ArchiveIntakeVisual = %ArchiveIntake
 @onready var conveyor: ConveyorPlaceholderVisual = %Conveyor
 @onready var environment_art: ArchiveRoomEnvironmentVisual = %EnvironmentArt
 
@@ -64,7 +64,11 @@ func _refresh_visual_state() -> void:
 		SimulationManager.owns_upgrade("sorter_motor_1"),
 		bottleneck_id == sorter.machine_id
 	)
-	archive_intake.apply_visual_state(intake_stage.is_enabled(), bottleneck_id == archive_intake.machine_id, false)
+	archive_intake.apply_intake_state(
+		intake_stage.is_enabled(),
+		throughput > 0.0,
+		bottleneck_id == archive_intake.machine_id
+	)
 	conveyor.set_visual_state(throughput > 0.0, throughput)
 
 
