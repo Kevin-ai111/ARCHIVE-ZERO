@@ -2,28 +2,30 @@
 
 ## Accepted runtime package
 
-The Phase 4G integration uses the six runtime PNGs from
-`ARCHIVE_ZERO_Phase4G_Basic_Sorter_v1_PRODUCTION_REVIEW.zip`. The received ZIP
-has SHA-256
-`2BCF542116573753ADB7F8B4DC0D08321800263F02A235DA8C57D352E96F796C`.
+The Phase 4G integration began with the six runtime PNGs from the v1.0 package.
+The gate/parcel release blocker is corrected with
+`ARCHIVE_ZERO_Phase4G_Basic_Sorter_v1.1_RELEASE_BLOCKER_FIX.zip`, whose SHA-256
+is `748D8982983C219F95F4F00216A88DDA3D7E2CB69DB1236EB978255155D59F5B`.
 
-The original package was independently checked before integration:
+The corrected package was independently checked before integration:
 
-- all 23 entries in `SHA256_MANIFEST.txt` match their files;
+- all 26 entries in `SHA256_MANIFEST.txt` match their files;
 - all six runtime images decode as RGBA with genuine transparency, exact
   manifest dimensions, and exact nearest-neighbour 2× grids;
 - every downscaled runtime layer is pixel-identical to its documented crop in
   the six-layer OpenRaster source;
-- the default-hidden Motor I source layer and the gate pivot geometry match the
-  manifest;
-- assembling the five standard runtime layers reproduces the supplied RGBA
-  assembly exactly;
-- the existing Scanner, Receiving Desk, and original Phase 4E environment
-  reference hashes remain unchanged.
+- the default-hidden Motor I source layer, 192×192 gate canvas, crop pivot, and
+  gate installation geometry match the manifest;
+- the five non-gate runtime PNGs are byte-identical to v1.0;
+- the corrected gate is the only runtime delta: v1.0
+  `aef09f9733d9e4a75b1ddae4ac3937c1d6386956107aa373157d874df12bb082`
+  → v1.1 `4b41d28d49d26356458fd42d3c60883edba96c664d92ece5b0b230b45b9b32dc`.
 
-Only the six byte-identical runtime PNGs were copied into
-`assets/machines/basic_sorter/`. Editable source, build scripts, reports, and
-offline previews remain outside the game project.
+Only the corrected gate PNG was copied into `assets/machines/basic_sorter/`.
+Editable source, build scripts, reports, and offline previews remain outside
+the game project. A local source rebuild reproduced all decoded layer pixels
+and geometry checks; byte-level PNG hashes vary with the local encoder version,
+so the manifest-matching gate from the original ZIP is used directly.
 
 | Runtime layer | Export size | SHA-256 |
 | --- | ---: | --- |
@@ -31,7 +33,7 @@ offline previews remain outside the game project.
 | `AZ_SRT_front_mask_2x.png` | 960×720 | `873ddfbff06d46138b23892ab2b2dcbcd257aebcf6d3eb1d6280d0814637e421` |
 | `AZ_SRT_emissive_header_2x.png` | 728×104 | `baf13a3068da79802ae4d22f4030b6abaeaa09b37b23740bf80b1d4fab8eea76` |
 | `AZ_SRT_emissive_bays_2x.png` | 538×22 | `b87b9fd8aa1b8b0c9ba340a327c6f99dcc2593ba77940f17e01d73cbe5170d7f` |
-| `AZ_SRT_sorting_gate_2x.png` | 192×192 | `aef09f9733d9e4a75b1ddae4ac3937c1d6386956107aa373157d874df12bb082` |
+| `AZ_SRT_sorting_gate_2x.png` | 192×192 | `4b41d28d49d26356458fd42d3c60883edba96c664d92ece5b0b230b45b9b32dc` |
 | `AZ_SRT_upgrade_motor_2x.png` | 188×260 | `06d5e3b5cdc3c5b0a8b38e41cdf23c1ee98ba7a50ea69d70d5022fc7830524b7` |
 
 ## Runtime assembly
@@ -84,6 +86,22 @@ Header and bay indicator groups can be toggled independently. Gate time is
 presentation-only and derives from the room's existing effective-throughput
 state. It cannot create items, award Credits, or influence processing speed.
 
+## Gate clearance regression
+
+The regression test samples the real Godot node transforms, decoded gate and
+front-mask alpha, and bilinear-filter support on a 0.25 logical-pixel grid. The
+parcel rectangle is conservatively expanded by 0.5 logical pixels. It checks
+the invariant `visible gate alpha ∩ parcel rectangle ∩ transparent front mask =
+empty` at −16°, 0°, and +16°, plus 13 coupled gate/conveyor phases over 12
+seconds.
+
+The test was run against both assets. The blocked v1.0 gate produced
+8,640 / 11,187 / 12,109 overlap samples at −16° / 0° / +16°, and 25,129 samples
+across the coupled phases. The corrected v1.1 gate produces zero in every case.
+Its lowest linear-filtered visible reach is Y=664.25 / 664.00 / 668.00 at the
+three fixed angles; the conservatively expanded parcel top is Y=672.50, leaving
+a minimum measured clearance of 4.50 logical pixels.
+
 ## Filtering and graphical validation
 
 Linear filtering remains the runtime default, matching the Basic Scanner and
@@ -98,6 +116,12 @@ Actual Godot 4.7.2 Compatibility/OpenGL 3.3 captures were made in fullscreen at
 Ti. The animation proof contains 24 actual Godot frames and advances the existing
 conveyor presentation clock by 12 seconds, showing multiple complete parcel
 passages through the Sorter together with the independently moving gate.
+
+The v1.1 blocker recheck captured 41 additional live Godot frames at both
+1920×1080 and 1280×720 over the same 12-second interval. Five parcel passages
+cross the gate area at each resolution. Frame-by-frame inspection found no
+intersection, sinking, or appearance/disappearance pop; the compact gate keeps
+a visible air gap above the parcel tops throughout its full swing.
 
 ## Performance observations
 
@@ -114,6 +138,15 @@ Compatibility renderer exposed no reliable standalone GPU-time measurement in
 this run.
 
 ## Godot render evidence
+
+Targeted v1.1 blocker evidence:
+
+- [1920×1080 complete room](screenshots/basic-sorter-gate-v11-1920x1080.png)
+- [1280×720 complete room](screenshots/basic-sorter-gate-v11-1280x720.png)
+- [1920×1080 gate detail, 41 live frames](screenshots/basic-sorter-gate-passages-v11-1920x1080.gif)
+- [1280×720 gate detail, 41 live frames](screenshots/basic-sorter-gate-passages-v11-1280x720.gif)
+
+Original Phase 4G integration evidence:
 
 - [1920×1080 standard Sorter](screenshots/basic-sorter-art-1920x1080.png)
 - [1280×720 standard Sorter](screenshots/basic-sorter-art-1280x720.png)
@@ -134,7 +167,7 @@ differences are live runtime state: Godot starts at zero Credits, draws the
 actual HUD display-mode control and amber bottleneck outline, and uses live
 parcel positions and gate phase rather than the offline composite's fixed ones.
 
-No supplied artwork was regenerated or modified. Fractional resolutions remain
-mildly softened, Archive Intake remains an intentional greybox, and the three
-inspection bays have no gameplay function. This integration is not a claim of
-final artistic approval.
+No supplied artwork was regenerated or modified; the ART-provided v1.1 gate is
+used byte-for-byte. Fractional resolutions remain mildly softened, Archive
+Intake remains an intentional greybox, and the three inspection bays have no
+gameplay function. This integration is not a claim of final artistic approval.

@@ -7,6 +7,10 @@ const TARGET_RESOLUTIONS: Array[Vector2i] = [
 	Vector2i(1280, 720),
 	Vector2i(960, 540),
 ]
+const LINEAR_ALPHA_SAMPLE_STEP := 0.25
+const LINEAR_ALPHA_EPSILON := 1.0 / 65535.0
+const TRANSPARENT_MASK_ALPHA_LIMIT := 1.0 / 255.0
+const PARCEL_FILTER_EDGE_ALLOWANCE := 0.5
 const ARCHIVE_ROOM_SCENE: PackedScene = preload("res://scenes/world/archive_room.tscn")
 
 var _failures := 0
@@ -30,6 +34,7 @@ func _run_tests() -> void:
 	await _test_scanner_asset_layers_and_occlusion(room)
 	await _test_scanner_visual_states(room)
 	await _test_gameplay_hud_purchase(room)
+	_test_sorter_gate_parcel_clearance(room)
 	await _test_presentation_does_not_change_simulation(room)
 
 	if _failures == 0:
@@ -384,6 +389,166 @@ func _test_sorter_asset_layers_and_occlusion(room: Node2D) -> void:
 	_expect_true(back_image.get_pixel(480, 256).a > 0.0, "Sorter rear channel stays visible behind passing parcels")
 	_expect_close(front_image.get_pixel(480, 286).a, 0.0, "Sorter front frame stays clear through approved parcel contact height")
 	_expect_true(front_image.get_pixel(480, 290).a > 0.0, "Sorter lower rail begins below the parcel contact surface")
+
+
+func _test_sorter_gate_parcel_clearance(room: Node2D) -> void:
+	var sorter := room.get_node("%BasicSorter") as BasicSorterVisual
+	var parcels := room.get_node("%DecorativeParcels") as DecorativeParcelVisual
+	var conveyor := room.get_node("%Conveyor") as ConveyorPlaceholderVisual
+	var parcel_center_start := parcels.to_global(Vector2(conveyor.path_start_x, conveyor.item_path_y))
+	var parcel_center_end := parcels.to_global(Vector2(conveyor.path_end_x, conveyor.item_path_y))
+	var parcel_sweep := Rect2(
+		Vector2(minf(parcel_center_start.x, parcel_center_end.x), parcel_center_start.y) - ConveyorPlaceholderVisual.PARCEL_SIZE * 0.5,
+		Vector2(absf(parcel_center_end.x - parcel_center_start.x) + ConveyorPlaceholderVisual.PARCEL_SIZE.x, ConveyorPlaceholderVisual.PARCEL_SIZE.y)
+	).grow(PARCEL_FILTER_EDGE_ALLOWANCE)
+	var swept_parcel_rects: Array[Rect2] = [parcel_sweep]
+
+	sorter.set_process(false)
+	var fixed_angles := [
+		{"label": "-16 degrees", "phase": 0.75},
+		{"label": "0 degrees", "phase": 0.0},
+		{"label": "+16 degrees", "phase": 0.25},
+	]
+	for angle_case: Dictionary in fixed_angles:
+		sorter.set_gate_phase_for_preview(float(angle_case["phase"]))
+		var result := _measure_visible_gate_parcel_overlap(sorter, swept_parcel_rects)
+		print(
+			"Sorter gate clearance %s: overlap_samples=%d, lowest_visible_y=%.2f, parcel_top=%.2f"
+			% [
+				angle_case["label"],
+				int(result["overlap_samples"]),
+				float(result["lowest_visible_gate_y"]),
+				parcel_sweep.position.y,
+			]
+		)
+		_expect_equal(
+			int(result["overlap_samples"]),
+			0,
+			"Visible gate alpha stays out of the linear-filtered moving-parcel sweep at %s" % angle_case["label"]
+		)
+
+	var coupled_times := [0.0, 0.37, 0.83, 1.41, 2.05, 2.77, 3.62, 4.48, 5.31, 6.74, 8.19, 10.03, 12.0]
+	var previous_time := 0.0
+	var coupled_overlap_samples := 0
+	for coupled_time: float in coupled_times:
+		conveyor.advance_visuals(coupled_time - previous_time)
+		previous_time = coupled_time
+		sorter.set_gate_phase_for_preview(fposmod(coupled_time * BasicSorterVisual.GATE_ANGULAR_SPEED / TAU, 1.0))
+		var moving_parcel_rects: Array[Rect2] = []
+		for parcel_position: Vector2 in parcels.get_item_positions():
+			moving_parcel_rects.append(_parcel_world_rect(parcels, parcel_position).grow(PARCEL_FILTER_EDGE_ALLOWANCE))
+		var coupled_result := _measure_visible_gate_parcel_overlap(sorter, moving_parcel_rects)
+		coupled_overlap_samples += int(coupled_result["overlap_samples"])
+	print(
+		"Sorter gate coupled clearance: phases=%d, duration=%.2f, overlap_samples=%d"
+		% [coupled_times.size(), float(coupled_times[-1]), coupled_overlap_samples]
+	)
+	_expect_equal(
+		coupled_overlap_samples,
+		0,
+		"Visible gate alpha never intersects actual parcel rectangles across coupled gate/conveyor phases"
+	)
+
+
+func _measure_visible_gate_parcel_overlap(sorter: BasicSorterVisual, parcel_rects: Array[Rect2]) -> Dictionary:
+	var gate_image := sorter.sorting_gate.texture.get_image()
+	var front_image := sorter.front_mask.texture.get_image()
+	var gate_bounds := _sprite_world_bounds(sorter.sorting_gate)
+	var sample_min := Vector2(
+		floorf(gate_bounds.position.x / LINEAR_ALPHA_SAMPLE_STEP) * LINEAR_ALPHA_SAMPLE_STEP,
+		floorf(gate_bounds.position.y / LINEAR_ALPHA_SAMPLE_STEP) * LINEAR_ALPHA_SAMPLE_STEP
+	)
+	var sample_max := Vector2(
+		ceilf(gate_bounds.end.x / LINEAR_ALPHA_SAMPLE_STEP) * LINEAR_ALPHA_SAMPLE_STEP,
+		ceilf(gate_bounds.end.y / LINEAR_ALPHA_SAMPLE_STEP) * LINEAR_ALPHA_SAMPLE_STEP
+	)
+	var x_samples := int(roundf((sample_max.x - sample_min.x) / LINEAR_ALPHA_SAMPLE_STEP)) + 1
+	var y_samples := int(roundf((sample_max.y - sample_min.y) / LINEAR_ALPHA_SAMPLE_STEP)) + 1
+	var overlap_samples := 0
+	var lowest_visible_gate_y := -INF
+
+	for y_index in range(y_samples):
+		var world_y := sample_min.y + float(y_index) * LINEAR_ALPHA_SAMPLE_STEP
+		for x_index in range(x_samples):
+			var world_point := Vector2(sample_min.x + float(x_index) * LINEAR_ALPHA_SAMPLE_STEP, world_y)
+			var gate_alpha := _sample_sprite_linear_alpha(sorter.sorting_gate, gate_image, world_point)
+			if gate_alpha <= LINEAR_ALPHA_EPSILON:
+				continue
+			var front_alpha := _sample_sprite_linear_alpha(sorter.front_mask, front_image, world_point)
+			if front_alpha >= TRANSPARENT_MASK_ALPHA_LIMIT:
+				continue
+			lowest_visible_gate_y = maxf(lowest_visible_gate_y, world_y)
+			if _point_is_inside_any_rect(world_point, parcel_rects):
+				overlap_samples += 1
+
+	return {
+		"overlap_samples": overlap_samples,
+		"lowest_visible_gate_y": lowest_visible_gate_y,
+	}
+
+
+func _sample_sprite_linear_alpha(sprite: Sprite2D, image: Image, world_point: Vector2) -> float:
+	var texture_point := sprite.to_local(world_point) - sprite.offset
+	if sprite.centered:
+		texture_point += Vector2(image.get_size()) * 0.5
+	var sample_point := texture_point - Vector2(0.5, 0.5)
+	var x0 := floori(sample_point.x)
+	var y0 := floori(sample_point.y)
+	var x_mix := sample_point.x - float(x0)
+	var y_mix := sample_point.y - float(y0)
+	var top := lerpf(_image_alpha_or_zero(image, x0, y0), _image_alpha_or_zero(image, x0 + 1, y0), x_mix)
+	var bottom := lerpf(_image_alpha_or_zero(image, x0, y0 + 1), _image_alpha_or_zero(image, x0 + 1, y0 + 1), x_mix)
+	return lerpf(top, bottom, y_mix)
+
+
+func _image_alpha_or_zero(image: Image, x: int, y: int) -> float:
+	if x < 0 or y < 0 or x >= image.get_width() or y >= image.get_height():
+		return 0.0
+	return image.get_pixel(x, y).a
+
+
+func _sprite_world_bounds(sprite: Sprite2D) -> Rect2:
+	var texture_size := sprite.texture.get_size()
+	var top_left := sprite.offset
+	if sprite.centered:
+		top_left -= texture_size * 0.5
+	var local_corners := [
+		top_left,
+		top_left + Vector2(texture_size.x, 0.0),
+		top_left + texture_size,
+		top_left + Vector2(0.0, texture_size.y),
+	]
+	var world_min := sprite.to_global(local_corners[0])
+	var world_max := world_min
+	for local_corner: Vector2 in local_corners:
+		var world_corner := sprite.to_global(local_corner)
+		world_min = Vector2(minf(world_min.x, world_corner.x), minf(world_min.y, world_corner.y))
+		world_max = Vector2(maxf(world_max.x, world_corner.x), maxf(world_max.y, world_corner.y))
+	return Rect2(world_min, world_max - world_min)
+
+
+func _parcel_world_rect(parcels: DecorativeParcelVisual, local_center: Vector2) -> Rect2:
+	var half_size := ConveyorPlaceholderVisual.PARCEL_SIZE * 0.5
+	var local_corners := [
+		local_center - half_size,
+		local_center + Vector2(half_size.x, -half_size.y),
+		local_center + half_size,
+		local_center + Vector2(-half_size.x, half_size.y),
+	]
+	var world_min := parcels.to_global(local_corners[0])
+	var world_max := world_min
+	for local_corner: Vector2 in local_corners:
+		var world_corner := parcels.to_global(local_corner)
+		world_min = Vector2(minf(world_min.x, world_corner.x), minf(world_min.y, world_corner.y))
+		world_max = Vector2(maxf(world_max.x, world_corner.x), maxf(world_max.y, world_corner.y))
+	return Rect2(world_min, world_max - world_min)
+
+
+func _point_is_inside_any_rect(point: Vector2, rects: Array[Rect2]) -> bool:
+	for rect: Rect2 in rects:
+		if rect.has_point(point):
+			return true
+	return false
 
 
 func _test_sorter_visual_states_and_restoration(room: Node2D) -> void:
