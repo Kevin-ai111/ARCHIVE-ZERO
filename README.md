@@ -25,6 +25,11 @@ the layered production-art Basic Sorter and Archive Intake, a minimal gameplay
 HUD, and a separate development dashboard. All four current production stages
 now have dedicated presentation scenes.
 
+The Archive Room also includes the Phase 4I unified environment polish:
+cool archive depth, four worklights, institutional signage, and machine
+grounding. Integration evidence and exact asset provenance are documented in
+[`docs/ARCHIVE_ROOM_POLISH.md`](docs/ARCHIVE_ROOM_POLISH.md).
+
 ## Open locally
 
 1. Install a stable Godot 4.7.x release.

@@ -67,7 +67,12 @@ The visual foundation suite covers:
   geometric clearance;
 - gameplay-HUD purchase wiring;
 - decorative conveyor movement without production-state mutation;
-- exact Phase 4E environment placements and absolute Z ordering;
+- retained Phase 4E architecture and all nineteen Phase 4I environment texture placements;
+- 41 static polish instances, exact source hashes, scale, Z, and mipmap policy;
+- all 25 locked machine/conveyor asset hashes;
+- four-light replacement, optional legacy sconces, and ground/foreground bounds;
+- static environment controls preserving fractional and pending simulation time;
+- foreground rail separation from machine/parcel bounds and HUD CanvasLayer ordering;
 - independent lamp-housing, light-cone, and floor-reflection visibility;
 - 40 + 9×128 + 40 modular conveyor assembly without gaps;
 - slat clipping, movement, stopped-state freeze, and redraw policy;
@@ -83,6 +88,26 @@ Pull requests run the import and automated test commands through
 official Godot 4.7 stable Linux binary.
 
 ## Full-HD graphical validation
+
+### Phase 4I unified environment polish
+
+Actual Godot 4.7.2 Compatibility captures:
+
+- [1920×1080 room and HUD](screenshots/archive-room-polish-1920x1080.png)
+- [1280×720 room and HUD](screenshots/archive-room-polish-1280x720.png)
+- [960×540 room and HUD](screenshots/archive-room-polish-960x540.png)
+- [environment-only room](screenshots/archive-room-polish-environment-only-1920x1080.png)
+- [960×540 upgrade shop](screenshots/archive-room-polish-upgrade-shop-960x540.png)
+- [nearest comparison](screenshots/archive-room-polish-nearest-1280x720.png)
+- [filter detail comparison](screenshots/archive-room-polish-filter-detail-1280x720.png)
+- [121-frame parcel passage proof](screenshots/archive-room-polish-parcel-passages-1280x720.gif)
+
+The package hashes, geometry, old-lighting replacement, optional sconce policy,
+actual filtering review, offline-reference comparison, memory/draw monitors,
+and reproducible graphical commands are documented in
+[ARCHIVE_ROOM_POLISH.md](ARCHIVE_ROOM_POLISH.md). The final Phase 4I smoke test
+uses `--quit-after 120`; the existing CI workflow also runs its smoke step.
+Final artistic approval remains pending.
 
 ### Phase 4H Archive Intake production art
 

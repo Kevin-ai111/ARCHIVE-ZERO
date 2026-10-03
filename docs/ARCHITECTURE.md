@@ -60,6 +60,14 @@ from a presentation signal and remain independent of the belt and numerical
 simulation. The complete placement and performance record is in
 `docs/ARCHIVE_ROOM_ENVIRONMENT.md`.
 
+Phase 4I extends that same environment boundary with nineteen shared textures,
+absolute-Z midground, four worklights, signage, floor grounding, and sparse
+lower rails. It replaces the distant background and old three-light stack
+while retaining the base architecture and all machine/conveyor contracts.
+Environment nodes have no processing callbacks. The existing CanvasLayer HUD
+stays above the world foreground. Exact provenance, immutable asset hashes,
+filtering, captures, and performance are in `docs/ARCHIVE_ROOM_POLISH.md`.
+
 `scenes/ui/gameplay_hud.tscn` exposes Credits, throughput, the current
 bottleneck, fullscreen/windowed switching, and the two existing upgrades. The
 development dashboard remains a separate scene at

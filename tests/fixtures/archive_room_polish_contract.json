@@ -1,0 +1,792 @@
+{
+  "package_zip_sha256": "c78ba59b56edd1919847bfd735a96d759ae11a940512774cc5fa8a6509d57bcf",
+  "runtime_assets": [
+    {
+      "file": "runtime/background/AZ4I_BG_distant_archive_1920x792.png",
+      "native": [
+        1920,
+        792
+      ],
+      "export": [
+        1920,
+        792
+      ],
+      "display": [
+        1920,
+        792
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -100,
+      "mode": "RGB",
+      "static": true,
+      "instances": [
+        [
+          0,
+          0
+        ]
+      ],
+      "purpose": "Replacement distant archive background; cool low-contrast depth.",
+      "sha256": "f56c4491abcd455247ec87df4b15068c74c42f35fbc3cd103c9d2a0b53a17979",
+      "alpha_expectation": "opaque RGB",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/midground/AZ4I_MG_bay_recess_A_420x330.png",
+      "native": [
+        420,
+        330
+      ],
+      "export": [
+        420,
+        330
+      ],
+      "display": [
+        420,
+        330
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -78,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          248,
+          392
+        ],
+        [
+          1100,
+          392
+        ]
+      ],
+      "purpose": "Low-contrast recessed archive bay variation.",
+      "sha256": "e14187c4f5b4e888e6d0ca7e5c10fd2fafddd3f96d9e9f1675e9f739b13d10dd",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/midground/AZ4I_MG_bay_recess_B_440x330.png",
+      "native": [
+        440,
+        330
+      ],
+      "export": [
+        440,
+        330
+      ],
+      "display": [
+        440,
+        330
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -77,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          660,
+          392
+        ]
+      ],
+      "purpose": "Alternate archive bay variation behind production line.",
+      "sha256": "ac03ac853ae513d4bf974e8bed79b5320377380316734b481c06ead5843afece",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/midground/AZ4I_MG_service_door_176x290.png",
+      "native": [
+        176,
+        290
+      ],
+      "export": [
+        176,
+        290
+      ],
+      "display": [
+        176,
+        290
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -76,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          1462,
+          448
+        ]
+      ],
+      "purpose": "Dark service access; terminal infrastructure cue behind Intake zone.",
+      "sha256": "bc451bc07f1a5634be24a765d0637c54e00d16476b2b13802db855714c4e62e9",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/midground/AZ4I_MG_archive_shelving_320x230.png",
+      "native": [
+        320,
+        230
+      ],
+      "export": [
+        320,
+        230
+      ],
+      "display": [
+        320,
+        230
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -84,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          70,
+          205
+        ],
+        [
+          1225,
+          214
+        ]
+      ],
+      "purpose": "Subdued storage silhouettes to break repetition.",
+      "sha256": "f49b2e1043047c00030813d4e80b6c10b8ba07ea81919d2fca5495804d444328",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/overhead/AZ4I_OV_cable_run_1_560x180.png",
+      "native": [
+        560,
+        180
+      ],
+      "export": [
+        560,
+        180
+      ],
+      "display": [
+        560,
+        180
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -68,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          250,
+          118
+        ]
+      ],
+      "purpose": "Controlled service cable run.",
+      "sha256": "e8b451fdc67e2ca6d39095ff17b4e6a5ab573dc0775c553fa80134dd2edc7348",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/overhead/AZ4I_OV_cable_run_2_560x180.png",
+      "native": [
+        560,
+        180
+      ],
+      "export": [
+        560,
+        180
+      ],
+      "display": [
+        560,
+        180
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -68,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          1080,
+          110
+        ]
+      ],
+      "purpose": "Controlled service cable run variant.",
+      "sha256": "93903a109cf4340d5d9984e01fc939a31206cc0e1c0645c89f6b346d55ead14d",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/overhead/AZ4I_OV_pendant_100x148.png",
+      "native": [
+        100,
+        148
+      ],
+      "export": [
+        100,
+        148
+      ],
+      "display": [
+        100,
+        148
+      ],
+      "origin": "top-center",
+      "scale": [
+        1,
+        1
+      ],
+      "z": -50,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          245,
+          145
+        ],
+        [
+          716,
+          145
+        ],
+        [
+          1206,
+          145
+        ],
+        [
+          1652,
+          145
+        ]
+      ],
+      "purpose": "Four local work-light housings replacing the flatter three-light rhythm.",
+      "sha256": "13d32642e7ff82f2ab7c1c8713880f71f74aefe334caf20c133b9985439e44ba",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/lighting/AZ4I_FX_worklight_cone_300x360.png",
+      "native": [
+        300,
+        360
+      ],
+      "export": [
+        300,
+        360
+      ],
+      "display": [
+        300,
+        360
+      ],
+      "origin": "top-center",
+      "scale": [
+        1,
+        1
+      ],
+      "z": -52,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          245,
+          245
+        ],
+        [
+          716,
+          245
+        ],
+        [
+          1206,
+          245
+        ],
+        [
+          1652,
+          245
+        ]
+      ],
+      "purpose": "Independent warm work-light pools.",
+      "sha256": "981031e370c72df1e2fdf6bd6dfb42f5b2d4495df2e3067fc837d9a8f27cad49",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/lighting/AZ4I_FX_haze_strip_640x240.png",
+      "native": [
+        640,
+        240
+      ],
+      "export": [
+        640,
+        240
+      ],
+      "display": [
+        640,
+        240
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -80,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          180,
+          260
+        ],
+        [
+          1060,
+          270
+        ]
+      ],
+      "purpose": "Subtle cool atmospheric separation; additive/normal low alpha.",
+      "sha256": "8a192ac1ea79af74ed0e8de690cf769a4a813fe69545a5118cc1daba4cc44ee4",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/ground/AZ4I_GR_floor_wear_512x160.png",
+      "native": [
+        512,
+        160
+      ],
+      "export": [
+        512,
+        160
+      ],
+      "display": [
+        512,
+        160
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -8,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          0,
+          920
+        ],
+        [
+          512,
+          920
+        ],
+        [
+          1024,
+          920
+        ],
+        [
+          1536,
+          920
+        ]
+      ],
+      "purpose": "Reusable floor wear overlay.",
+      "sha256": "5845f62303bd955c52c668b8e2f0b896b997e0d331dee8228a9b65c81ee6b7dd",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/ground/AZ4I_GR_machine_shadow_512x96.png",
+      "native": [
+        512,
+        96
+      ],
+      "export": [
+        512,
+        96
+      ],
+      "display": [
+        512,
+        96
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -2,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          35,
+          866,
+          0.8,
+          1
+        ],
+        [
+          475,
+          866,
+          0.95,
+          1
+        ],
+        [
+          925,
+          866,
+          1.12,
+          1
+        ],
+        [
+          1450,
+          866,
+          0.74,
+          1
+        ]
+      ],
+      "purpose": "Reusable contact shadow, instance-scaled per machine footprint.",
+      "sha256": "75f817049070145abe89aea7326fa0eb7cd9c6b7d79f72fb8fdf83a230a873ab",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/ground/AZ4I_GR_service_markings_512x128.png",
+      "native": [
+        512,
+        128
+      ],
+      "export": [
+        512,
+        128
+      ],
+      "display": [
+        512,
+        128
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": -1,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          60,
+          900
+        ],
+        [
+          660,
+          900
+        ],
+        [
+          1220,
+          900
+        ]
+      ],
+      "purpose": "Restrained service-zone and routing markings.",
+      "sha256": "145c7827f70219e677bad590ecd4f9889544748f3281b1af641669d15c5b0f3b",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/lighting/AZ4I_FX_floor_pool_430x100.png",
+      "native": [
+        430,
+        100
+      ],
+      "export": [
+        430,
+        100
+      ],
+      "display": [
+        430,
+        100
+      ],
+      "origin": "top-center",
+      "scale": [
+        1,
+        1
+      ],
+      "z": -1,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          245,
+          876
+        ],
+        [
+          716,
+          876
+        ],
+        [
+          1206,
+          876
+        ],
+        [
+          1652,
+          876
+        ]
+      ],
+      "purpose": "Warm floor reflection pool.",
+      "sha256": "cba3892f763c06c64a0b297f897e7395d1c908b56871d7c8856237b066ebfd4b",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/lighting/AZ4I_FX_cyan_bounce_320x88.png",
+      "native": [
+        320,
+        88
+      ],
+      "export": [
+        320,
+        88
+      ],
+      "display": [
+        320,
+        88
+      ],
+      "origin": "top-center",
+      "scale": [
+        1,
+        1
+      ],
+      "z": -1,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          708,
+          886
+        ],
+        [
+          1668,
+          886
+        ]
+      ],
+      "purpose": "Very restrained cyan equipment bounce at Scanner/Intake.",
+      "sha256": "05c75ea2c12069f82c4c97382c5c3d3be084fd2b23c05b68d20f3e60aadf815f",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/signage/AZ4I_SG_sector_A1_96x128_2x.png",
+      "native": [
+        96,
+        128
+      ],
+      "export": [
+        192,
+        256
+      ],
+      "display": [
+        96,
+        128
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5
+      ],
+      "z": -62,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          76,
+          278
+        ]
+      ],
+      "purpose": "Institutional sector identity A1; exact 2x nearest export.",
+      "sha256": "2d762f76ac5e9c1f3126f15ca4478cd03044f96ceaf689dbe3326c858922d96f",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/signage/AZ4I_SG_sector_A2_96x128_2x.png",
+      "native": [
+        96,
+        128
+      ],
+      "export": [
+        192,
+        256
+      ],
+      "display": [
+        96,
+        128
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5
+      ],
+      "z": -62,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          1742,
+          278
+        ]
+      ],
+      "purpose": "Institutional sector identity A2; exact 2x nearest export.",
+      "sha256": "dcb2f072745c60d00cdfd319c76c942788fadad5616e95e916be55a45610132c",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/signage/AZ4I_SG_transfer_160x64_2x.png",
+      "native": [
+        160,
+        64
+      ],
+      "export": [
+        320,
+        128
+      ],
+      "display": [
+        160,
+        64
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5
+      ],
+      "z": -62,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          1492,
+          468
+        ]
+      ],
+      "purpose": "Non-story-critical transfer routing marker; exact 2x nearest export.",
+      "sha256": "29459f72b5dfcecaa624eafece6dca7bd20ec9e8d621505b9c369f15b733e3a4",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    },
+    {
+      "file": "runtime/foreground/AZ4I_FG_lower_rail_360x110.png",
+      "native": [
+        360,
+        110
+      ],
+      "export": [
+        360,
+        110
+      ],
+      "display": [
+        360,
+        110
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1
+      ],
+      "z": 20,
+      "mode": "RGBA",
+      "static": true,
+      "instances": [
+        [
+          0,
+          970
+        ],
+        [
+          1560,
+          970
+        ]
+      ],
+      "purpose": "Sparse dark foreground edge framing below gameplay silhouettes.",
+      "sha256": "8de580e1172b2ab01333affa76486f25d3dd3827c0740f19dcc58c5b6ead63b2",
+      "alpha_expectation": "genuine transparency",
+      "filtering": "Godot linear at runtime; authored source remains crisp; no mipmaps",
+      "animated": false
+    }
+  ]
+}

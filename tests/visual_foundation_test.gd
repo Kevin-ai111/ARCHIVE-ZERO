@@ -26,6 +26,8 @@ func _run_tests() -> void:
 	_test_project_configuration()
 	var room := await _test_archive_room_layout_and_hud()
 	_test_environment_art_and_lighting(room)
+	_test_polish_manifest_and_locked_assets(room)
+	_test_environment_authority_and_foreground(room)
 	_test_modular_conveyor(room)
 	_test_receiving_desk_asset_layers_and_handoff(room)
 	await _test_receiving_desk_visual_states(room)
@@ -142,8 +144,9 @@ func _test_archive_room_layout_and_hud() -> Node2D:
 func _test_environment_art_and_lighting(room: Node2D) -> void:
 	var environment := room.get_node("%EnvironmentArt") as ArchiveRoomEnvironmentVisual
 	var layout := environment.get_layout_snapshot()
-	_expect_equal(layout["runtime_texture_count"], 13, "Environment scene references all 13 non-conveyor runtime textures")
-	_expect_equal(layout["decoded_texture_bytes"], 6_985_816, "Documented package texture residency remains exact")
+	_expect_equal(layout["runtime_texture_count"], 28, "Environment reuses nine base textures and nineteen polish textures")
+	_expect_equal(layout["polish_decoded_texture_bytes"], 9_894_208, "Phase 4I decoded source bytes match verified package")
+	_expect_equal(layout["decoded_texture_bytes"], 11_397_016, "Combined environment decoded source bytes remain exact")
 	_expect_equal(layout["distant_z"], -100, "Distant archive uses absolute rear Z")
 	_expect_equal(layout["rear_wall_z"], -82, "Rear wall uses manifest Z")
 	_expect_equal(layout["catwalk_z"], -79, "Catwalk uses manifest Z")
@@ -152,17 +155,19 @@ func _test_environment_art_and_lighting(room: Node2D) -> void:
 	_expect_equal(layout["cables_z"], -69, "Cables use manifest Z")
 	_expect_equal(layout["decor_z"], -65, "Background decor uses manifest Z")
 	_expect_equal(layout["light_cones_z"], -52, "Transparent cones remain behind lamp housings")
-	_expect_equal(layout["lamp_housings_z"], -51, "Lamp housings retain independent draw order")
+	_expect_equal(layout["lamp_housings_z"], -50, "New housings use the approved absolute Z")
 	_expect_equal(layout["floor_z"], -10, "Floor starts at machine baseline layer")
-	_expect_equal(layout["floor_reflections_z"], -9, "Floor reflections remain independently layered")
+	_expect_equal(layout["floor_reflections_z"], -1, "New floor reflections remain behind production art")
 	_expect_equal(layout["wall_tile_count"], 16, "Rear wall repeats two rows of eight shared tiles")
 	_expect_equal(layout["catwalk_tile_count"], 8, "Catwalk fills the fixed camera width")
 	_expect_equal(layout["roof_tile_count"], 8, "Roof fills the fixed camera width")
 	_expect_equal(layout["floor_tile_count"], 8, "Floor fills the fixed camera width")
+	_expect_equal(environment.wall_sconces.z_index, -63, "Retained sconces stay behind the A1/A2 signage rather than obscuring text")
+	_expect_true(not environment.wall_sconces.visible, "Legacy sconces are optional and off in the four-worklight composition")
 	_expect_equal(layout["pillar_positions"], PackedVector2Array([Vector2(86, 162), Vector2(900, 162), Vector2(1710, 162)]), "Pillars follow placement manifest")
-	_expect_equal(layout["lamp_positions"], PackedVector2Array([Vector2(190, 146), Vector2(1020, 146), Vector2(1520, 146)]), "Lamp housings use top-left positions derived from manifest centres")
-	_expect_equal(layout["light_cone_positions"], PackedVector2Array([Vector2(104, 262), Vector2(934, 262), Vector2(1434, 262)]), "Light cones align independently below lamp centres")
-	_expect_equal(layout["floor_reflection_positions"], PackedVector2Array([Vector2(48, 920), Vector2(878, 920), Vector2(1378, 920)]), "Floor pools align to the ground baseline")
+	_expect_equal(layout["lamp_positions"], PackedVector2Array([Vector2(195, 145), Vector2(666, 145), Vector2(1156, 145), Vector2(1602, 145)]), "Four housings use top-left positions from approved top centres")
+	_expect_equal(layout["light_cone_positions"], PackedVector2Array([Vector2(95, 245), Vector2(566, 245), Vector2(1056, 245), Vector2(1502, 245)]), "Four cones align independently below the new lamp centres")
+	_expect_equal(layout["floor_reflection_positions"], PackedVector2Array([Vector2(30, 876), Vector2(501, 876), Vector2(991, 876), Vector2(1437, 876)]), "Four new floor pools use manifest top centres")
 
 	for placeholder_layer in ["DistantBackground", "ArchitecturalMidground", "PlayableGround", "Foreground"]:
 		var layer := room.get_node(placeholder_layer)
@@ -172,11 +177,111 @@ func _test_environment_art_and_lighting(room: Node2D) -> void:
 	_expect_true(not environment.light_cones.visible and environment.lamp_housings.visible, "Light cones toggle independently from housings")
 	environment.set_floor_reflections_visible(false)
 	_expect_true(not environment.floor_reflections.visible and environment.lamp_housings.visible, "Floor reflections toggle independently from housings")
+	_expect_true(not environment.get_node("CyanBounce").visible, "Floor reflection toggle includes independent cyan bounce group")
 	environment.set_light_housings_visible(false)
-	_expect_true(not environment.lamp_housings.visible and not environment.wall_sconces.visible, "Lamp housings and sconces share only their housing toggle")
+	_expect_true(not environment.lamp_housings.visible and not environment.wall_sconces.visible, "Housing control does not reenable superseded ambient fixtures")
 	environment.set_light_cones_visible(true)
 	environment.set_floor_reflections_visible(true)
 	environment.set_light_housings_visible(true)
+	environment.set_wall_sconces_visible(false)
+	_expect_true(not environment.wall_sconces.visible and environment.lamp_housings.visible, "Retained wall sconces remain independently controllable")
+	environment.set_wall_sconces_visible(true)
+	_expect_true(environment.wall_sconces.visible, "Legacy sconce debug control is still available")
+	environment.set_wall_sconces_visible(false)
+	environment.set_haze_visible(false)
+	_expect_true(not environment.get_node("Haze").visible and environment.light_cones.visible, "Haze remains independently controllable")
+	environment.set_haze_visible(true)
+
+
+func _test_polish_manifest_and_locked_assets(room: Node2D) -> void:
+	var environment := room.get_node("%EnvironmentArt") as ArchiveRoomEnvironmentVisual
+	var contract: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/archive_room_polish_contract.json"))
+	var sprites: Array = environment.get_layout_snapshot()["sprites"]
+	var instance_count := 0
+	var bytes := 0
+	for asset: Dictionary in contract["runtime_assets"]:
+		var path: String = "res://assets/environment/phase4i/" + String(asset["file"]).trim_prefix("runtime/")
+		var matches: Array[Dictionary] = []
+		for sprite: Dictionary in sprites:
+			if sprite["texture"] == path:
+				matches.append(sprite)
+		var instances: Array = asset["instances"]
+		_expect_equal(matches.size(), instances.size(), "%s repeats only the approved number of instances" % path)
+		_expect_equal(FileAccess.get_sha256(path), asset["sha256"], "%s is the unchanged ART PNG" % path)
+		var texture := load(path) as Texture2D
+		_expect_vector(texture.get_size(), Vector2(asset["export"][0], asset["export"][1]), "%s uses approved export dimensions" % path)
+		var image := texture.get_image()
+		_expect_true(not image.has_mipmaps(), "%s has no mipmaps" % path)
+		var channels := 3 if asset["mode"] == "RGB" else 4
+		bytes += texture.get_width() * texture.get_height() * channels
+		for index in mini(matches.size(), instances.size()):
+			var instance: Array = instances[index]
+			var scale := Vector2(asset["scale"][0], asset["scale"][1])
+			if instance.size() == 4:
+				scale = Vector2(instance[2], instance[3])
+			var position := Vector2(instance[0], instance[1])
+			if asset["origin"] is String and asset["origin"] == "top-center":
+				position.x -= texture.get_width() * scale.x * 0.5
+			var actual := matches[index]
+			_expect_vector(actual["position"], position, "%s instance %d preserves origin conversion" % [path, index])
+			_expect_vector(actual["scale"], scale, "%s instance %d preserves authored scale" % [path, index])
+			_expect_equal(actual["z"], int(asset["z"]), "%s uses the effective absolute manifest Z" % path)
+			_expect_true(not actual["centered"], "%s uses its documented top-left anchor" % path)
+			if not path.contains("/background/"):
+				_expect_true(actual["absolute_z"], "%s cannot inherit a gameplay parent Z" % path)
+		instance_count += matches.size()
+	_expect_equal(instance_count, 41, "All nineteen new textures assemble into exactly 41 static instances")
+	_expect_equal(bytes, 9_894_208, "Independent runtime source-size total matches ART")
+	for sprite: Dictionary in sprites:
+		for superseded in ["AZ_BG_archive_distant_", "AZ_ENV_pendant_", "AZ_FX_pendant_cone_", "AZ_FX_floor_light_pool_"]:
+			_expect_true(not String(sprite["texture"]).get_file().begins_with(superseded), "Superseded environment image is no longer drawn")
+	var locked: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/phase4i_locked_asset_hashes.json"))
+	for path: String in locked:
+		_expect_equal(FileAccess.get_sha256("res://" + path), locked[path], "%s remains byte-identical to the approved base" % path)
+	print("Phase 4I environment: textures=19, static_instances=%d, decoded_bytes=%d, locked_asset_hashes=%d PASS" % [instance_count, bytes, locked.size()])
+
+
+func _test_environment_authority_and_foreground(room: Node2D) -> void:
+	var environment := room.get_node("%EnvironmentArt") as ArchiveRoomEnvironmentVisual
+	_assert_static_environment(environment)
+	var rails := environment.get_node("ForegroundRails") as Node2D
+	var hud := room.get_node("GameplayHUD") as CanvasLayer
+	_expect_true(hud.layer > 0, "HUD CanvasLayer renders above all world-Z foreground rails")
+	for rail: Sprite2D in rails.get_children():
+		var bounds := _sprite_world_bounds(rail)
+		_expect_true(bounds.position.y >= 970 and rail.z_index == 20 and not rail.z_as_relative, "Rail stays in the approved lower-corner foreground")
+		for machine_name in ["ReceivingDesk", "BasicScanner", "BasicSorter", "ArchiveIntake"]:
+			var machine := room.get_node("%" + machine_name) as Node2D
+			var visual_size: Vector2 = machine.visual_size
+			var machine_rect := Rect2(machine.position - Vector2(visual_size.x * 0.5, visual_size.y), visual_size)
+			_expect_true(not bounds.intersects(machine_rect), "Rail never intersects %s silhouette" % machine_name)
+		_expect_true(not bounds.intersects(Rect2(415, 673, 1274, 30)), "Rail never intersects moving parcel path")
+	var debug_button := hud.get_node("%DebugDashboardButton") as Button
+	var upgrade_button := hud.get_node("%UpgradeButton") as Button
+	_expect_true(debug_button.visible and not debug_button.disabled and upgrade_button.visible and not upgrade_button.disabled, "World rails leave both lower HUD controls operable")
+	_reset_simulation()
+	SimulationManager.simulate_elapsed(0.8)
+	SimulationManager._process(0.2)
+	var before := _simulation_snapshot()
+	environment.set_light_housings_visible(false)
+	environment.set_light_cones_visible(false)
+	environment.set_floor_reflections_visible(false)
+	environment.set_haze_visible(false)
+	environment.get_layout_snapshot()
+	_expect_equal(_simulation_snapshot(), before, "Static environment inspection and controls preserve Credits, items, throughput, fractional and pending progress")
+	_expect_close(float(before["pending"]), 0.2, "Environment authority test includes uncommitted simulation time")
+	environment.set_light_housings_visible(true)
+	environment.set_light_cones_visible(true)
+	environment.set_floor_reflections_visible(true)
+	environment.set_haze_visible(true)
+	_reset_simulation()
+
+
+func _assert_static_environment(node: Node) -> void:
+	_expect_true(not node.is_processing() and not node.is_physics_processing(), "%s never continuously processes" % node.name)
+	_expect_true(not node is Control, "%s cannot capture HUD input" % node.name)
+	for child in node.get_children():
+		_assert_static_environment(child)
 
 
 func _test_modular_conveyor(room: Node2D) -> void:
@@ -1028,6 +1133,7 @@ func _simulation_snapshot() -> Dictionary:
 		"credits": GameState.get_money(),
 		"items": GameState.get_total_processed_items(),
 		"fraction": SimulationManager.get_production_line().get_fractional_progress(),
+		"pending": SimulationManager.get_pending_simulation_seconds(),
 		"throughput": SimulationManager.get_effective_throughput(),
 		"owned": SimulationManager.get_owned_upgrade_ids(),
 	}
