@@ -56,6 +56,15 @@ The visual foundation suite covers:
 - independent header/bay indicators and simulation-driven bottleneck feedback;
 - Sorter Motor I hidden, installed, disabled-installed, save-restored, and
   newly-instanced scene states;
+- Archive Intake four-layer sizes, manifest offsets, 0.5 scale, and absolute Z;
+- exact Intake pivot `(1668,920)`, 304×464 footprint, and carrier pivot
+  `(74,-294)` with child offset `(-35,-54)`;
+- real transformed front-mask alpha at X=1640, 1650, 1655, 1660, 1664, 1665,
+  1666, and 1668, including zero parcel visibility before wrap;
+- Intake carrier ±24-pixel travel, active processing, stopped/disabled freeze,
+  phase resume, dimming, independent emissive, and state restoration;
+- Intake bottleneck feedback, absence of an Intake upgrade, and carrier/parcel
+  geometric clearance;
 - gameplay-HUD purchase wiring;
 - decorative conveyor movement without production-state mutation;
 - exact Phase 4E environment placements and absolute Z ordering;
@@ -74,6 +83,31 @@ Pull requests run the import and automated test commands through
 official Godot 4.7 stable Linux binary.
 
 ## Full-HD graphical validation
+
+### Phase 4H Archive Intake production art
+
+Actual Godot 4.7.2 Compatibility-renderer evidence:
+
+- [1920×1080 active room](screenshots/archive-intake-art-1920x1080.png)
+- [1280×720 active room](screenshots/archive-intake-art-1280x720.png)
+- [960×540 active room](screenshots/archive-intake-art-960x540.png)
+- [line-stopped Intake](screenshots/archive-intake-line-stopped-1280x720.png)
+- [disabled Intake](screenshots/archive-intake-disabled-1280x720.png)
+- [121-frame parcel/carrier proof](screenshots/archive-intake-parcel-carrier-motion-1280x720.gif)
+
+The motion proof spans 18 seconds and more than six parcel entries. It confirms
+progressive occlusion, complete visual hiding before the X=1668 presentation
+wrap, and independent carrier movement. Line-stopped frames three seconds apart
+are pixel-identical. Direct 1280×720 [linear](screenshots/archive-intake-filter-linear-1280x720.png),
+[nearest](screenshots/archive-intake-filter-nearest-1280x720.png), and
+[selected mixed](screenshots/archive-intake-filter-selected-1280x720.png)
+captures support the documented filter choice: visible art stays linear while
+the front mask alone uses nearest sampling to guarantee zero residual parcel
+alpha from X=1665 onward.
+
+Package verification, exact visibility fractions, animation-state results,
+memory accounting, and review limits are recorded in
+`docs/ARCHIVE_INTAKE_ART.md`. Final artistic approval remains pending.
 
 ### Phase 4G Basic Sorter production art
 
