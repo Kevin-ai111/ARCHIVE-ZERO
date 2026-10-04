@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ArchiveItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/archive_item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = &"black_hotel_keycard"
+display_name = "Black Hotel Keycard"
+category_id = &"PERS"
+description = "A plain black hotel access card."

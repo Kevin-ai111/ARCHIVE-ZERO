@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ArchiveItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/archive_item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = &"canvas_tote_bag"
+display_name = "Canvas Tote Bag"
+category_id = &"BAG"
+description = "An unprinted canvas tote with two handles."

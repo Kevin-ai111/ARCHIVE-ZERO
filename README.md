@@ -44,10 +44,11 @@ dashboard remains available from the bottom-left HUD button.
 No third-party addons are required.
 
 On a fresh checkout, import once and then run the headless production and
-persistence validation from the repository root:
+persistence validation (including the independent case foundation) from the repository root:
 
 ```bash
 godot --headless --editor --path . --quit
+godot --headless --path . tests/case_foundation_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
 godot --headless --path . tests/visual_foundation_test.tscn
 godot --headless --path . --quit-after 2
@@ -61,3 +62,7 @@ Manual runtime checks are listed in
 The repository root is the Godot project root. Runtime simulation is numerical;
 visual objects must never be the authoritative source of production progress.
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) before adding systems.
+
+The concrete lost-property case foundation is documented in
+[`docs/CASE_SYSTEM.md`](docs/CASE_SYSTEM.md). Its queue starts empty, remains
+independent of aggregate production, and is not yet part of the live v3 save.

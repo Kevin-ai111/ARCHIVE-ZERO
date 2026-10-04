@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0008"
+item_id = &"tablet"
+found_location = "Central Station — Waiting Room"
+found_time_label = "23:21"
+condition_text = "Display intact / cover scratched"
+expected_category_id = &"ELEC"
+routing_policy = &"NORMAL"

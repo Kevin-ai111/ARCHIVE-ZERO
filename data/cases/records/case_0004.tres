@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0004"
+item_id = &"passport_wallet"
+found_location = "Central Station — Information Desk"
+found_time_label = "22:57"
+condition_text = "Closed / minor edge wear"
+expected_category_id = &"DOCS"
+routing_policy = &"NORMAL"
