@@ -1,0 +1,123 @@
+{
+  "godot": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "adapter": "NVIDIA GeForce RTX 3060 Ti",
+  "renderer": "gl_compatibility",
+  "motion_frames": 121,
+  "motion_duration_seconds": 18.0,
+  "motion_step_seconds": 0.15,
+  "motion_crop_physical_pixels": [
+    245,
+    360,
+    1250,
+    540
+  ],
+  "motion_draw_calls_range": [
+    81,
+    81
+  ],
+  "captures": {
+    "room-1920": {
+      "size": "(1920, 1080)",
+      "filter": "linear",
+      "variant": "room",
+      "frame": {
+        "draw_calls": 81,
+        "frame": 0,
+        "parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+        "primitives": 1728,
+        "texture_memory_bytes": 72314106,
+        "video_memory_bytes": 78778306
+      }
+    },
+    "room-1280": {
+      "size": "(1280, 720)",
+      "filter": "linear",
+      "variant": "room",
+      "frame": {
+        "draw_calls": 81,
+        "frame": 0,
+        "parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+        "primitives": 1728,
+        "texture_memory_bytes": 62399058,
+        "video_memory_bytes": 68863258
+      }
+    },
+    "room-960": {
+      "size": "(960, 540)",
+      "filter": "linear",
+      "variant": "room",
+      "frame": {
+        "draw_calls": 81,
+        "frame": 0,
+        "parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+        "primitives": 1728,
+        "texture_memory_bytes": 59173458,
+        "video_memory_bytes": 65637658
+      }
+    },
+    "nearest-1280": {
+      "size": "(1280, 720)",
+      "filter": "nearest",
+      "variant": "room",
+      "frame": {
+        "draw_calls": 81,
+        "frame": 0,
+        "parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+        "primitives": 1728,
+        "texture_memory_bytes": 62399058,
+        "video_memory_bytes": 68863258
+      }
+    },
+    "environment-1920": {
+      "size": "(1920, 1080)",
+      "filter": "linear",
+      "variant": "environment",
+      "frame": {
+        "draw_calls": 27,
+        "frame": 0,
+        "parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+        "primitives": 178,
+        "texture_memory_bytes": 72314106,
+        "video_memory_bytes": 78778306
+      }
+    },
+    "shop-960": {
+      "size": "(960, 540)",
+      "filter": "linear",
+      "variant": "shop",
+      "frame": {
+        "draw_calls": 97,
+        "frame": 0,
+        "parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+        "primitives": 2940,
+        "texture_memory_bytes": 59308622,
+        "video_memory_bytes": 65802774
+      }
+    },
+    "baseline-1920": {
+      "size": "(1920, 1080)",
+      "filter": "linear",
+      "variant": "room",
+      "frame": {
+        "draw_calls": 67,
+        "frame": 0,
+        "parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+        "primitives": 1672,
+        "texture_memory_bytes": 79153375,
+        "video_memory_bytes": 85617575
+      }
+    }
+  },
+  "baseline_memory_caveat": "Baseline swaps only the environment for draw-count comparison; new assets were preloaded, so baseline memory is not an isolated old-build measurement.",
+  "gpu_timing_caveat": "Frame pacing / capture time is not isolated GPU rendering cost."
+}
