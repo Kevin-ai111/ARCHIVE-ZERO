@@ -171,9 +171,11 @@ Local validation with official Godot `4.7.2.stable.official.ed1daf0bf` passed:
   stages enabled and **0.0/s** with Intake disabled. No live save is written by
   the new test scene. These are headless regressions, not new graphical captures.
 
-PR #15+ must deliberately decide playable First Shift initialization, UI and
-case-reward semantics. Live persistence must separately decide whether global
+PR #15 adds the presentation/input-only [manual case panel](MANUAL_CASE_PROCESSING_UI.md)
+and three immutable inspection strings on CaseDefinition. Runtime progress and
+case-save v1 remain unchanged. Later PRs must deliberately decide playable First
+Shift initialization and case-reward semantics. Live persistence must separately decide whether global
 save v4 is needed and migrate v3 saves by inserting default case state. Do not
-silently extend the existing v3 user save. Item artwork, commissioning, tutorial
-sequence and story behavior are deferred. Intake parcel-outline Issue #13 is
+silently extend the existing v3 user save. Commissioning, tutorial
+sequence and story behavior remain deferred. Intake parcel-outline Issue #13 is
 unrelated and untouched.

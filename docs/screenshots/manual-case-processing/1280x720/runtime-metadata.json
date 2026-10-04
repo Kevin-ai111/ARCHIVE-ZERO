@@ -1,0 +1,22 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3060 Ti",
+	"case_save_version": 1,
+	"draw_calls": 136.0,
+	"global_save_version": 3,
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"input_source": "Native Godot Viewport mouse events",
+	"logical_size": "(1920, 1080)",
+	"physical_size": "(1280, 720)",
+	"renderer": "gl_compatibility",
+	"texture_memory_bytes": 78896256.0
+}

@@ -30,6 +30,12 @@ into global SaveManager v3. Startup enqueues nothing. See `docs/CASE_SYSTEM.md`
 for APIs, signal semantics, strict atomic restore, authored cases and the later
 First Shift/live-save migration boundary.
 
+The Manual Case Panel is a native-Control CanvasLayer that only reads definitions
+and progress and forwards input to CaseManager. Its item texture mapping lives
+in presentation, not definitions or authority. Immutable inspection data is not
+saved as runtime progress. The main scene starts with an empty, hidden panel;
+explicit developer fixtures are separate. See `docs/MANUAL_CASE_PROCESSING_UI.md`.
+
 ## Presentation boundary
 
 `scenes/world/archive_room.tscn` is the first player-facing presentation scene.

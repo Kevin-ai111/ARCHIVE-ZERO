@@ -11,6 +11,9 @@ const MANUAL_REVIEW: StringName = &"MANUAL_REVIEW"
 @export_multiline var condition_text: String
 @export var expected_category_id: StringName
 @export var routing_policy: StringName = NORMAL
+@export var inspection_material: String
+@export var inspection_identifier: String
+@export var inspection_risk: String
 
 
 func is_valid() -> bool:
@@ -22,4 +25,7 @@ func is_valid() -> bool:
 		and not found_time_label.strip_edges().is_empty()
 		and not condition_text.strip_edges().is_empty()
 		and routing_policy in [NORMAL, MANUAL_REVIEW]
+		and not inspection_material.strip_edges().is_empty()
+		and not inspection_identifier.strip_edges().is_empty()
+		and not inspection_risk.strip_edges().is_empty()
 	)

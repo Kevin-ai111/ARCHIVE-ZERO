@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/case_panel.gd" id="1_panel"]
+
+[node name="CasePanel" type="CanvasLayer"]
+layer = 1
+script = ExtResource("1_panel")
+
+[node name="Panel" type="Control" parent="."]
+visible = false
+offset_left = 1028.0
+offset_top = 176.0
+offset_right = 1852.0
+offset_bottom = 884.0
+texture_filter = 2
+clip_contents = true

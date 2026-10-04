@@ -49,10 +49,16 @@ persistence validation (including the independent case foundation) from the repo
 ```bash
 godot --headless --editor --path . --quit
 godot --headless --path . tests/case_foundation_test.tscn
+godot --headless --path . tests/manual_case_processing_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
 godot --headless --path . tests/visual_foundation_test.tscn
-godot --headless --path . --quit-after 2
+godot --headless --path . --quit-after 120
 ```
+
+Manual Case UI and actual three-resolution runtime proofs are documented in
+[`docs/MANUAL_CASE_PROCESSING_UI.md`](docs/MANUAL_CASE_PROCESSING_UI.md).
+Run `tests/manual_case_processing_visual_test.tscn` for explicit developer QA;
+normal game startup still initializes no cases.
 
 Manual runtime checks are listed in
 [`docs/VALIDATION.md`](docs/VALIDATION.md).

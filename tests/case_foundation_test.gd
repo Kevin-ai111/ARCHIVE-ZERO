@@ -87,6 +87,9 @@ func _test_catalog() -> void:
 	definition.found_location = "Waiting Room"
 	definition.found_time_label = "12:00"
 	definition.condition_text = "Dry"
+	definition.inspection_material = "Wool"
+	definition.inspection_identifier = "None"
+	definition.inspection_risk = "Normal"
 	var extended := CaseCatalog.new([category], [item], [definition])
 	_check(extended.is_valid() and extended.has_category(&"CLOTH"), "New categories need no enum change")
 	item.display_name = "Changed input"
@@ -110,6 +113,11 @@ func _test_catalog() -> void:
 	definition.condition_text = " "
 	_check(not CaseCatalog.is_valid_catalog_data([category], [item], [definition]), "Blank metadata rejected")
 	definition.condition_text = "Dry"
+	for field: String in ["inspection_material", "inspection_identifier", "inspection_risk"]:
+		var original: String = definition.get(field)
+		definition.set(field, " ")
+		_check(not CaseCatalog.is_valid_catalog_data([category], [item], [definition]), "Blank authored inspection field rejected: " + field)
+		definition.set(field, original)
 	item.category_id = &"UNKNOWN"
 	_check(not CaseCatalog.is_valid_catalog_data([category], [item], [definition]), "Unknown item category rejected")
 	item.category_id = category.category_id
