@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0005"
+item_id = &"wireless_earbuds"
+found_location = "Tram Stop — Shelter"
+found_time_label = "23:03"
+condition_text = "Case closed / light surface marks"
+expected_category_id = &"ELEC"
+routing_policy = &"NORMAL"

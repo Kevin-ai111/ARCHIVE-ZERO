@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0010"
+item_id = &"black_hotel_keycard"
+found_location = "Archive Sector A1"
+found_time_label = "23:34"
+condition_text = "Dry / light edge wear"
+expected_category_id = &"PERS"
+routing_policy = &"MANUAL_REVIEW"

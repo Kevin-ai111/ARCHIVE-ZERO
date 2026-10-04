@@ -35,6 +35,9 @@ jobs:
       - name: Import project and register global classes
         run: Godot_v4.7-stable_linux.x86_64 --headless --editor --path . --quit
 
+      - name: Run case foundation validation
+        run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/case_foundation_test.tscn
+
       - name: Run production pipeline validation
         run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/production_pipeline_test.tscn
 

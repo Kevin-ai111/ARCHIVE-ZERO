@@ -14,6 +14,7 @@ GameState="*res://scripts/core/game_state.gd"
 Economy="*res://scripts/economy/economy.gd"
 SimulationManager="*res://scripts/simulation/simulation_manager.gd"
 SaveManager="*res://scripts/core/save_manager.gd"
+CaseManager="*res://scripts/cases/case_manager.gd"
 
 [display]
 

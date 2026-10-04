@@ -3,15 +3,32 @@
 ## Foundation
 
 ARCHIVE ZERO separates authoritative numerical simulation from presentation.
-Four session-wide services remain Autoloads:
+Five session-wide services are Autoloads:
 
 1. `GameState` owns session totals.
 2. `Economy` validates currency transactions.
 3. `SimulationManager` advances time, owns purchased upgrade IDs, and commits output.
 4. `SaveManager` persists and restores supported state.
+5. `CaseManager` owns concrete-case queue and progress, independently of output,
+   Credits and the live save file. It starts empty and does not advance time.
 
 Machine definitions, installed machines, upgrade definitions, and production
 lines are domain objects rather than Nodes or additional Autoloads.
+
+## Concrete case domain
+
+`ArchiveItemDefinition`, `CaseCategoryDefinition` and `CaseDefinition` are
+validated authored Resources in `data/cases/`. `CaseCatalog` owns detached
+definition copies. `CaseProgress` carries only mutable case ID/state/selection;
+CaseManager alone advances `QUEUED → ACTIVE → INSPECTED → CLASSIFIED → ARCHIVED`.
+Wrong but known classifications are representable and separately evaluable.
+
+A concrete case is not an aggregate ProductionLine item. CaseManager never
+calls `SimulationManager.process_manual_items()` or changes production, machine
+state, upgrades or money. Its independent case-save v1 contract is not integrated
+into global SaveManager v3. Startup enqueues nothing. See `docs/CASE_SYSTEM.md`
+for APIs, signal semantics, strict atomic restore, authored cases and the later
+First Shift/live-save migration boundary.
 
 ## Presentation boundary
 
