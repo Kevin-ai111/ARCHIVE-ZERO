@@ -3,10 +3,12 @@ extends Node
 # Explicit developer-only fixture. No automatic case creation in either scene.
 # Graphical evidence: -- --capture=true --size=1280x720 --out=C:/temp/case-proof
 const ROOM := preload("res://scenes/world/archive_room.tscn")
+const TEXT_METRICS := preload("res://tests/case_panel_text_metrics.gd")
 var _room: Node2D
 var _panel: ManualCasePanel
 var _toolbar: CanvasLayer
 var _options := {}
+var _text_results: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -63,6 +65,19 @@ func _capture() -> void:
 	_toolbar.hide()
 	var output := String(_options.get("out", "user://manual-case-proof"))
 	DirAccess.make_dir_recursive_absolute(output)
+	# All ten records are actually shaped, drawn and checked by the GPU fixture.
+	# Keep the five QA-blocking records in full-room captures, not ART composites.
+	for index: int in range(10):
+		var case_id := StringName("CASE_%04d" % (index + 1))
+		_activate(case_id)
+		await get_tree().process_frame
+		await _click(_panel.inspect_button)
+		await get_tree().process_frame
+		if CaseManager.get_active_case().get_state() != CaseProgress.State.INSPECTED or not _validate_text(case_id):
+			push_error("Rendered dynamic-text validation failed for " + String(case_id))
+			get_tree().quit(1)
+			return
+		await _shot(output, String(case_id).to_lower() + "-inspected")
 	_activate(&"CASE_0001")
 	await _shot(output, "active")
 	await _click(_panel.inspect_button)
@@ -95,10 +110,26 @@ func _capture() -> void:
 		get_tree().quit(1)
 		return
 	var metadata := {"godot": Engine.get_version_info(), "adapter": RenderingServer.get_video_adapter_name(), "renderer": RenderingServer.get_current_rendering_method(), "physical_size": str(get_window().size), "logical_size": str(get_window().content_scale_size), "input_source": "Native Godot Viewport mouse events", "case_save_version": CaseManager.CASE_SAVE_VERSION, "global_save_version": SaveManager.SAVE_VERSION, "draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), "texture_memory_bytes": Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED)}
+	metadata["dynamic_text_cases"] = _text_results
+	metadata["secondary_logical_font_size"] = 18
+	metadata["secondary_physical_font_size"] = 18.0 * get_window().size.x / 1920.0
+	metadata["panel_bounds"] = str(_panel.panel.get_rect())
 	var file := FileAccess.open(output.path_join("runtime-metadata.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(metadata, "\t"))
 	print("Actual Godot case-panel captures saved: " + output)
 	get_tree().quit(0)
+
+
+func _validate_text(case_id: StringName) -> bool:
+	var results := {}
+	var complete := true
+	for label: Label in TEXT_METRICS.dynamic_labels(_panel) + TEXT_METRICS.secondary_labels(_panel):
+		var metrics := TEXT_METRICS.measure(label)
+		results[String(label.get_path()).trim_prefix(String(_panel.get_path()) + "/")] = metrics
+		complete = complete and metrics.complete
+	_text_results.append({"case_id": String(case_id), "all_text_visible": complete, "labels": results})
+	print("Actual rendered %s at %s: FOUND %d/%d lines, all text visible=%s" % [case_id, get_window().size, _panel.found.get_visible_line_count(), _panel.found.get_line_count(), complete])
+	return complete
 
 
 func _click(button: Button) -> void:

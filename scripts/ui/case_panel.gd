@@ -156,38 +156,40 @@ func _build_controls() -> void:
 	close_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	close_button.pressed.connect(close_panel)
 	_surface(panel, "ItemFrame", Rect2(24, 84, 294, 294), "item_frame", Vector4(18, 18, 18, 18))
-	_label(panel, "ItemHeading", Rect2(38, 88, 266, 24), "LOST ITEM", 16, CYAN)
+	_label(panel, "ItemHeading", Rect2(38, 88, 266, 26), "LOST ITEM", 18, CYAN)
 	item_texture = _texture(panel, "ItemTexture", Rect2(43, 114, 256, 256), null)
-	_surface(panel, "InformationSurface", Rect2(338, 84, 462, 220), "section", Vector4(16, 16, 16, 16))
-	_label(panel, "InformationHeading", Rect2(352, 92, 434, 24), "CASE INFORMATION", 16, CYAN)
-	_label(panel, "ItemLabel", Rect2(354, 120, 104, 31), "ITEM", 16, CYAN)
+	_surface(panel, "InformationSurface", Rect2(338, 84, 462, 228), "section", Vector4(16, 16, 16, 16))
+	_label(panel, "InformationHeading", Rect2(352, 92, 434, 26), "CASE INFORMATION", 18, CYAN)
+	_label(panel, "ItemLabel", Rect2(354, 120, 104, 31), "ITEM", 18, CYAN)
 	item_name = _label(panel, "ItemName", Rect2(460, 120, 324, 31), "", 22)
 	item_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	_label(panel, "FoundLabel", Rect2(354, 151, 104, 63), "FOUND", 16, CYAN)
-	found = _label(panel, "Found", Rect2(460, 151, 324, 63), "", 22)
+	# Godot's shaped 22px text needs 31 + 3 line spacing + 31 = 65px.
+	# Leave 3px safety room; count visible lines in the regression, not just lines.
+	_label(panel, "FoundLabel", Rect2(354, 151, 104, 68), "FOUND", 18, CYAN)
+	found = _label(panel, "Found", Rect2(460, 151, 324, 68), "", 22)
 	found.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	found.max_lines_visible = 2
-	_label(panel, "TimeLabel", Rect2(354, 214, 104, 31), "TIME", 16, CYAN)
-	time = _label(panel, "Time", Rect2(460, 214, 324, 31), "", 22)
+	_label(panel, "TimeLabel", Rect2(354, 219, 104, 31), "TIME", 18, CYAN)
+	time = _label(panel, "Time", Rect2(460, 219, 324, 31), "", 22)
 	# The longest authored conditions need the full value width at body size 22.
 	# A stacked label/value preserves all text without shrinking typography.
-	_label(panel, "ConditionLabel", Rect2(354, 245, 432, 22), "CONDITION", 16, CYAN)
-	condition = _label(panel, "Condition", Rect2(354, 267, 432, 32), "", 22)
+	_label(panel, "ConditionLabel", Rect2(354, 250, 432, 26), "CONDITION", 18, CYAN)
+	condition = _label(panel, "Condition", Rect2(354, 276, 432, 32), "", 22)
 	_surface(panel, "ScanSurface", Rect2(338, 316, 462, 140), "section", Vector4(16, 16, 16, 16))
-	_label(panel, "ScanHeading", Rect2(352, 324, 434, 24), "SCAN DATA", 16, CYAN)
+	_label(panel, "ScanHeading", Rect2(352, 324, 434, 26), "SCAN DATA", 18, CYAN)
 	pending = _label(panel, "Pending", Rect2(354, 360, 424, 48), "PENDING", 22, MUTED)
-	_label(panel, "MaterialLabel", Rect2(354, 352, 108, 28), "MATERIAL", 16, CYAN)
+	_label(panel, "MaterialLabel", Rect2(354, 352, 108, 28), "MATERIAL", 18, CYAN)
 	material = _label(panel, "Material", Rect2(468, 352, 312, 28), "", 22)
-	_label(panel, "IdentifierLabel", Rect2(354, 384, 108, 28), "IDENTIFIER", 16, CYAN)
+	_label(panel, "IdentifierLabel", Rect2(354, 384, 108, 28), "IDENTIFIER", 18, CYAN)
 	identifier = _label(panel, "Identifier", Rect2(468, 384, 312, 28), "", 22)
-	_label(panel, "RiskLabel", Rect2(354, 416, 108, 28), "RISK", 16, CYAN)
+	_label(panel, "RiskLabel", Rect2(354, 416, 108, 28), "RISK", 18, CYAN)
 	risk = _label(panel, "Risk", Rect2(468, 416, 312, 28), "", 22)
 	inspection_check = _texture(panel, "InspectionCheck", Rect2(754, 324, 26, 26), load(ASSET_ROOT + "AZ_CASE_check_indicator_2x.png"))
 	inspection_check.tooltip_text = "Inspection complete"
 	inspect_button = _button("Inspect", Rect2(24, 396, 294, 60), "INSPECT ITEM", false)
 	inspect_button.pressed.connect(_inspect)
 	_surface(panel, "ClassificationSurface", Rect2(24, 464, 776, 156), "section", Vector4(16, 16, 16, 16))
-	_label(panel, "ClassificationHeading", Rect2(38, 474, 744, 24), "CLASSIFY ITEM", 16, CYAN)
+	_label(panel, "ClassificationHeading", Rect2(38, 474, 744, 26), "CLASSIFY ITEM", 18, CYAN)
 	for index: int in CATEGORY_IDS.size():
 		var category_id := CATEGORY_IDS[index]
 		var button := _button(String(category_id), Rect2(38 + index * 190, 504, 174, 104), "", true)
@@ -196,7 +198,7 @@ func _build_controls() -> void:
 		_texture(button, "Icon", Rect2(67, 8, 40, 40), load(ASSET_ROOT + "AZ_CASE_icon_%s_2x.png" % String(category_id).to_lower()))
 		var code := _label(button, "Code", Rect2(4, 48, 166, 28), String(category_id), 20)
 		code.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var subtitle := _label(button, "Subtitle", Rect2(4, 76, 166, 24), CATEGORY_NAMES[index], 16)
+		var subtitle := _label(button, "Subtitle", Rect2(4, 76, 166, 26), CATEGORY_NAMES[index], 18)
 		subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.pressed.connect(_classify.bind(category_id))
 	release_button = _button("Release", Rect2(24, 632, 776, 60), "RELEASE TO ARCHIVE", false)

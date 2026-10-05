@@ -36,12 +36,47 @@ Texture-pixel patch margins are twice the manifest's logical margins. Each
 NinePatch surface is drawn at 0.5 scale with twice its logical size, so both the
 corner sampling and the visible border thickness are correct. Text and hit
 targets are independent unscaled native Controls. Header/status/body/label/button/
-category-code/subtitle sizes remain **30/18/22/16/22/20/16**.
+category-code/subtitle sizes are now **30/18/22/18/22/20/18**. The correction
+raises only panel secondary typography; no font asset or global filtering changes.
 
-FOUND has two lines of space; item names ellipsize without reducing font size.
+FOUND has 68 logical pixels for two lines; item names retain their ellipsis
+policy without reducing font size (all ten current names fit in full).
 CONDITION uses a full-width value below its label so the longest authored values
 remain completely readable at body size 22. This is native layout adaptation,
 not altered or regenerated artwork.
+
+### PR #15 correction: actual wrapped-line visibility
+
+Previous reviewed head: `48d1dd9ad3851652989d2dfc4beca8ee94bef71b`.
+The original 63px FOUND region showed only **1 of 2** wrapped lines for
+CASE_0003/0004/0006/0008/0009 at every supported resolution. Before changing the
+panel, the new native measurement test reproduced exactly **15 failures**:
+five authored cases times three resolutions. All authored text is unchanged.
+
+Godot 4.7.2 measures each body-size-22 line at 31px plus 3px line spacing:
+**31 + 3 + 31 = 65px**. FOUND now uses 68px, leaving 3px safety margin.
+Its top/width stay y=151/324; TIME moves y=214→219, CONDITION label y=245→250
+and value y=267→276. The secondary CONDITION label has 26px height at font 18.
+The information surface alone grows 220→228px to keep 4px bottom padding;
+it still ends before the unchanged Scan Data section at y=316. Panel bounds,
+item size, buttons, colors, HUD and all other section positions remain unchanged.
+
+`tests/case_panel_text_metrics.gd` reads each live shaped Label's
+[`get_line_count()` and `get_visible_line_count()`](https://docs.godotengine.org/en/4.7/classes/class_label.html), measured per-line height,
+theme line spacing, width and visibility. The check requires all lines to be
+visible and the full measured text to fit; it does not substitute a node-bounds
+or nonempty-string assertion. It also checks TIME, CONDITION, item name and all
+three inspected values, plus every requested secondary label/category subtitle.
+The test checks all ten cases at all three resolutions. A negative control
+temporarily restores CASE_0003's actual Label to 63px at each resolution and
+requires **2 total / 1 visible** lines and a failed completeness measurement.
+Thus the previous implementation cannot silently pass the new regression.
+
+All requested secondary labels and category subtitles move **16→18 logical px**;
+their native text measurements fit without truncation, including Bags / Containers.
+Heading/subtitle heights grow 24→26px where necessary, within existing sections
+and unchanged category hit targets. Physical secondary font sizes are now
+**18 / 12 / 9px** at 1920×1080 / 1280×720 / 960×540. Source body text stays 22px.
 
 `CaseItemPresentationCatalog` maps item IDs to approved textures only in
 presentation. CaseManager contains no textures or UI state. CaseDefinition gains
@@ -118,11 +153,36 @@ godot --path . tests/manual_case_processing_visual_test.tscn -- --capture=true -
 [Archived/closed Full-HD proof](screenshots/manual-case-processing/1920x1080/archived-closed.png)
 and per-resolution runtime metadata accompany the images. Every target preserves
 the complete panel, centered item, readable top HUD and reachable lower controls.
-The smallest category subtitles are 16px / 10.7px / **8px** physically, respectively.
-960×540 meets the supplied minimum but remains visibly less comfortable than Full
-HD; fractional linear scaling softens fine pixel detail. No text was shrunk.
+The smallest panel secondary text is now 18px / 12px / **9px** physically,
+respectively. At 960×540 it is more legible than the former 8px treatment and all
+category subtitles fit. It remains smaller/softer than Full HD, so this is not a
+claim of accessibility for every user or display. Fractional linear scaling is
+unchanged. No text was shrunk.
 
-The Computer-Use skill's Windows capture helper failed with `FrameArrived timed
+### All-ten-case correction render proofs
+
+Each link below is a complete actual Godot runtime capture in INSPECTED state.
+Per-resolution metadata records native dynamic/secondary Label measurements for
+all ten cases. The dedicated capture scene uses real rendering and native mouse
+events, and fails with a nonzero exit code if any text is incomplete.
+All five QA-blocking cases were additionally inspected visually at every target;
+their second lines, TIME, CONDITION and scan values are complete and nonoverlapping.
+All ten cases were also visually inspected at the smallest 960×540 target.
+
+| Case | FOUND visible/total (all resolutions) | 1920×1080 | 1280×720 | 960×540 |
+| --- | --- | --- | --- | --- |
+| CASE_0001 | 1/1 | [image](screenshots/manual-case-processing/1920x1080/case_0001-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0001-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0001-inspected.png) |
+| CASE_0002 | 1/1 | [image](screenshots/manual-case-processing/1920x1080/case_0002-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0002-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0002-inspected.png) |
+| CASE_0003 | 2/2 | [image](screenshots/manual-case-processing/1920x1080/case_0003-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0003-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0003-inspected.png) |
+| CASE_0004 | 2/2 | [image](screenshots/manual-case-processing/1920x1080/case_0004-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0004-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0004-inspected.png) |
+| CASE_0005 | 1/1 | [image](screenshots/manual-case-processing/1920x1080/case_0005-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0005-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0005-inspected.png) |
+| CASE_0006 | 2/2 | [image](screenshots/manual-case-processing/1920x1080/case_0006-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0006-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0006-inspected.png) |
+| CASE_0007 | 1/1 | [image](screenshots/manual-case-processing/1920x1080/case_0007-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0007-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0007-inspected.png) |
+| CASE_0008 | 2/2 | [image](screenshots/manual-case-processing/1920x1080/case_0008-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0008-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0008-inspected.png) |
+| CASE_0009 | 2/2 | [image](screenshots/manual-case-processing/1920x1080/case_0009-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0009-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0009-inspected.png) |
+| CASE_0010 | 1/1 | [image](screenshots/manual-case-processing/1920x1080/case_0010-inspected.png) | [image](screenshots/manual-case-processing/1280x720/case_0010-inspected.png) | [image](screenshots/manual-case-processing/960x540/case_0010-inspected.png) |
+
+During the original integration the Computer-Use skill's Windows capture helper failed with `FrameArrived timed
 out`, then `window capture timed out` on its recovery attempt. No OS-injected
 hands-on mouse proof is claimed. Actual OpenGL rendering and native Godot mouse/
 keyboard input regression testing succeeded independently; this limitation does
@@ -136,10 +196,11 @@ measurement. The case controller has no `_process`/continuous redraw loop.
 ## Automated validation and boundaries
 
 All six requested headless commands passed with official Godot 4.7.2. Case
-foundation: **477 checks** (79 corrupt-save payloads). Manual UI: **520 checks**,
+foundation: **477 checks** (79 corrupt-save payloads). Corrected Manual UI: **1873 checks**,
 also passed with the real OpenGL renderer. Tests include all 31 source hashes,
 original RGBA/dimensions/import parameters, all authored inspection values, full
-condition/scan text fit, exact state/button behavior, wrong choices, close/reopen,
+actual wrapped-line visibility (including the original-layout negative control),
+condition/item/time/scan and secondary text fit, exact state/button behavior, wrong choices, close/reopen,
 fresh-instance reconstruction, read-only restore, native mouse hit testing,
 Tab/Enter/Space/Escape, existing upgrade-shop access and all three layouts.
 

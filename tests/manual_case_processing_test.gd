@@ -1,6 +1,7 @@
 extends Node
 
 const ROOM := preload("res://scenes/world/archive_room.tscn")
+const TEXT_METRICS := preload("res://tests/case_panel_text_metrics.gd")
 var _checks := 0
 var _failures := 0
 var _room: Node2D
@@ -202,17 +203,40 @@ func _test_restore_and_manual_review() -> void:
 
 
 func _test_layout() -> void:
-	for index: int in range(10):
-		CaseManager.reset_cases()
-		CaseManager.enqueue_case(StringName("CASE_%04d" % (index + 1)))
-		CaseManager.activate_next_case()
-		await _settle()
-		_check(_panel.found.get_line_count() <= 2, "Every authored FOUND fits two lines")
-		_check(_panel.condition.get_theme_font("font").get_string_size(_panel.condition.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x <= _panel.condition.size.x, "Full authored CONDITION fits without cropping")
-		CaseManager.mark_active_case_inspected()
-		_check((_panel.category_buttons[&"PERS"] as Button).has_focus(), "Initial category focus is always PERS, independent of expected answer")
-		for label: Label in [_panel.material, _panel.identifier, _panel.risk]:
-			_check(label.get_theme_font("font").get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x <= label.size.x, "Authored inspection text fits without cropping")
+	for physical_size: Vector2i in [Vector2i(1920, 1080), Vector2i(1280, 720), Vector2i(960, 540)]:
+		get_window().size = physical_size
+		for index: int in range(10):
+			var case_id := StringName("CASE_%04d" % (index + 1))
+			CaseManager.reset_cases()
+			CaseManager.enqueue_case(case_id)
+			CaseManager.activate_next_case()
+			CaseManager.mark_active_case_inspected()
+			await _settle()
+			_check((_panel.category_buttons[&"PERS"] as Button).has_focus(), "Initial category focus independent of expected answer")
+			for label: Label in TEXT_METRICS.dynamic_labels(_panel):
+				var metrics := TEXT_METRICS.measure(label)
+				_check(metrics.complete, "%s %s at %s fully rendered: %s" % [case_id, label.name, physical_size, metrics])
+			for label: Label in TEXT_METRICS.secondary_labels(_panel):
+				_check(TEXT_METRICS.measure(label).complete, "Secondary label fully rendered: " + String(label.name))
+				_check(label.get_theme_font_size("font_size") >= 18, "Secondary text at least 18 logical pixels")
+			for category_id: StringName in ManualCasePanel.CATEGORY_IDS:
+				var button := _panel.category_buttons[category_id] as Button
+				_check(Rect2(Vector2.ZERO, button.size).encloses((button.get_node("Subtitle") as Label).get_rect()), "Subtitle stays within category hit target")
+			_check(_panel.found.get_line_count() <= 2 and _panel.found.text_overrun_behavior == TextServer.OVERRUN_NO_TRIMMING and _panel.found.get_theme_font_size("font_size") == 22, "Full FOUND remains unshortened at body size 22")
+			_check(_panel.found.position.y + _panel.found.size.y <= _panel.time.position.y, "FOUND does not overlap TIME")
+			_check(_panel.time.position.y + _panel.time.size.y <= (_panel.panel.get_node("ConditionLabel") as Label).position.y, "TIME does not overlap CONDITION label")
+			var information := _panel.panel.get_node("InformationSurface") as NinePatchRect
+			_check(_panel.condition.position.y + _panel.condition.size.y + 4 <= information.position.y + information.size.y * information.scale.y, "CONDITION retains bottom padding inside information section")
+			_check(_panel.condition.position.y + _panel.condition.size.y < (_panel.panel.get_node("ScanSurface") as Control).position.y, "CONDITION does not overlap Scan Data")
+			print("Dynamic text %s %dx%d: FOUND %d/%d lines, required %.0fpx, available %.0fpx" % [case_id, physical_size.x, physical_size.y, _panel.found.get_visible_line_count(), _panel.found.get_line_count(), TEXT_METRICS.measure(_panel.found).required_height, _panel.found.size.y])
+			if case_id == &"CASE_0003":
+				var corrected_size := _panel.found.size
+				_panel.found.size.y = 63
+				await _settle()
+				var clipped := TEXT_METRICS.measure(_panel.found)
+				_check(clipped.total_lines == 2 and clipped.visible_lines == 1 and not clipped.complete, "Negative control detects original 63px FOUND clipping at " + str(physical_size))
+				_panel.found.size = corrected_size
+				await _settle()
 	CaseManager.reset_cases()
 	CaseManager.enqueue_case(&"CASE_0001")
 	CaseManager.activate_next_case()
@@ -228,7 +252,7 @@ func _test_layout() -> void:
 		var scale := float(physical_size.x) / 1920.0
 		for button: Button in _panel.category_buttons.values():
 			_check(button.size.y * scale >= 52 and button.size.x * scale >= 87, "Large category hit targets")
-			_check((button.get_node("Subtitle") as Label).get_theme_font_size("font_size") * scale >= 8, "Category subtitle meets package minimum")
+			_check((button.get_node("Subtitle") as Label).get_theme_font_size("font_size") * scale >= 9, "Category subtitle meets improved 9px physical minimum")
 		for path: String in ["%CreditsValue", "%ThroughputValue", "%BottleneckValue", "%UpgradeButton", "%DebugDashboardButton"]:
 			var hud_control := _room.get_node("GameplayHUD").get_node(path) as Control
 			_check(not hud_control.get_global_rect().intersects(_panel.panel.get_global_rect()), "Panel does not overlap existing HUD: " + path)
@@ -238,7 +262,7 @@ func _test_layout() -> void:
 		_check(hud.upgrade_overlay.visible and _panel.panel.visible, "Existing shop usable without mutating case visibility")
 		hud.close_upgrade_shop()
 		_check(_panel.inspect_button.get_node(_panel.inspect_button.focus_next) == _panel.close_button, "ACTIVE deterministic focus skips disabled categories/release")
-		print("Manual UI layout %dx%d PASS: approved bounds, controls/HUD accessible, minimum physical subtitle %.1fpx" % [physical_size.x, physical_size.y, 16.0 * scale])
+		print("Manual UI layout %dx%d PASS: approved bounds, controls/HUD accessible, minimum physical subtitle %.1fpx" % [physical_size.x, physical_size.y, 18.0 * scale])
 	# Rebuild a second panel with an already classified authority: no UI cache needed.
 	CaseManager.mark_active_case_inspected()
 	CaseManager.classify_active_case(&"BAG")
