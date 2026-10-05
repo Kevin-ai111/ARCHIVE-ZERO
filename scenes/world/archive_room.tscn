@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/presentation/archive_room.gd" id="1_room"]
 [ext_resource type="PackedScene" path="res://scenes/machines/archive_intake_visual.tscn" id="2_intake"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/archive_room_environment.tscn" id="7_environment"]
 [ext_resource type="PackedScene" path="res://scenes/machines/receiving_desk_visual.tscn" id="8_receiving"]
 [ext_resource type="PackedScene" path="res://scenes/machines/basic_sorter_visual.tscn" id="9_sorter"]
+[ext_resource type="PackedScene" path="res://scenes/ui/case_panel.tscn" id="10_cases"]
 
 [node name="ArchiveRoom" type="Node2D"]
 script = ExtResource("1_room")
@@ -71,5 +72,7 @@ limit_top = 0
 limit_right = 1920
 limit_bottom = 1080
 position_smoothing_enabled = false
+
+[node name="CasePanel" parent="." instance=ExtResource("10_cases")]
 
 [node name="GameplayHUD" parent="." instance=ExtResource("5_hud")]

@@ -27,6 +27,7 @@ corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
 [node name="GameplayHUD" type="CanvasLayer"]
+layer = 2
 script = ExtResource("1_hud")
 
 [node name="HUDRoot" type="Control" parent="."]
@@ -36,6 +37,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="TopBar" type="MarginContainer" parent="HUDRoot"]
 layout_mode = 1

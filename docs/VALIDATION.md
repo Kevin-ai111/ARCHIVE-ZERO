@@ -2,19 +2,31 @@
 
 ## Automated validation
 
-Use the official Godot 4.7 stable binary. From a fresh checkout, run exactly:
+Use the official Godot 4.7.2 stable binary. From a fresh checkout, run exactly:
 
 ```bash
 godot --version
 godot --headless --editor --path . --quit
+godot --headless --path . tests/case_foundation_test.tscn
+godot --headless --path . tests/manual_case_processing_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
 godot --headless --path . tests/visual_foundation_test.tscn
-godot --headless --path . --quit-after 2
+godot --headless --path . --quit-after 120
 ```
 
-The version must report Godot 4.7 stable. Every command must exit with code `0`,
+The version must report Godot 4.7.2 stable. Every command must exit with code `0`,
 and the test scenes must print `Production pipeline tests passed.` and
 `Visual foundation tests passed for 1920x1080, 1280x720, and 960x540.`
+
+Case foundation prints 477 passing checks; manual Case integration prints 1873.
+The latter checks all ten authored cases at all three resolutions using native
+total-versus-visible line counts, measured font heights/spacing and width fit.
+Its 63px FOUND negative control must reproduce two total lines but only one
+visible line. Secondary labels/subtitles must fit at font size 18 or greater.
+Run `tests/manual_case_processing_visual_test.tscn` separately for interactive
+developer QA (empty startup, explicit CASE_0001/CASE_0010 and Reopen buttons).
+Runtime proofs, input coverage and limitations are in
+[`MANUAL_CASE_PROCESSING_UI.md`](MANUAL_CASE_PROCESSING_UI.md).
 
 The suite covers:
 

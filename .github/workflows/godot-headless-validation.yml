@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      GODOT_VERSION: 4.7-stable
-      GODOT_SHA256: 0b1a6c54c2c619c12e169fe9241edda4b81080b519451cec2984bf0d2c6cb73c
+      GODOT_VERSION: 4.7.2-stable
+      GODOT_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
 
     steps:
       - name: Check out repository
@@ -33,16 +33,19 @@ jobs:
           echo "$install_dir" >> "$GITHUB_PATH"
 
       - name: Import project and register global classes
-        run: Godot_v4.7-stable_linux.x86_64 --headless --editor --path . --quit
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --editor --path . --quit
 
       - name: Run case foundation validation
-        run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/case_foundation_test.tscn
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/case_foundation_test.tscn
+
+      - name: Run manual case processing integration
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/manual_case_processing_test.tscn
 
       - name: Run production pipeline validation
-        run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/production_pipeline_test.tscn
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/production_pipeline_test.tscn
 
       - name: Run Full-HD visual foundation validation
-        run: Godot_v4.7-stable_linux.x86_64 --headless --path . tests/visual_foundation_test.tscn
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/visual_foundation_test.tscn
 
       - name: Smoke-test the configured main scene
-        run: Godot_v4.7-stable_linux.x86_64 --headless --path . --quit-after 2
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . --quit-after 120

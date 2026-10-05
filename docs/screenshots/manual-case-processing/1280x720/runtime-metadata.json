@@ -1,0 +1,2287 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3060 Ti",
+	"case_save_version": 1,
+	"draw_calls": 136.0,
+	"dynamic_text_cases": [
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0001",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 185.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 305.0,
+					"visible_lines": 1
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 57.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 227.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 147.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0002",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 274.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 304.0,
+					"visible_lines": 1
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 134.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 132.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 186.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0003",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 184.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 65.0,
+					"total_lines": 2,
+					"unwrapped_width": 325.0,
+					"visible_lines": 2
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 127.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 101.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 182.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0004",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 271.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 65.0,
+					"total_lines": 2,
+					"unwrapped_width": 379.0,
+					"visible_lines": 2
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 140.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 166.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 164.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0005",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 346.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 219.0,
+					"visible_lines": 1
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 134.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 181.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 204.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0006",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 226.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 65.0,
+					"total_lines": 2,
+					"unwrapped_width": 325.0,
+					"visible_lines": 2
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 57.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 174.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 168.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0007",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 193.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 284.0,
+					"visible_lines": 1
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 57.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 122.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0008",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 332.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 65.0,
+					"total_lines": 2,
+					"unwrapped_width": 342.0,
+					"visible_lines": 2
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 134.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 66.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 186.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0009",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 216.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 65.0,
+					"total_lines": 2,
+					"unwrapped_width": 374.0,
+					"visible_lines": 2
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 145.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 184.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 195.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		},
+		{
+			"all_text_visible": true,
+			"case_id": "CASE_0010",
+			"labels": {
+				"Panel/BAG/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 153.0,
+					"visible_lines": 1
+				},
+				"Panel/ClassificationHeading": {
+					"available_height": 26.0,
+					"available_width": 744.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 126.0,
+					"visible_lines": 1
+				},
+				"Panel/Condition": {
+					"available_height": 32.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 220.0,
+					"visible_lines": 1
+				},
+				"Panel/ConditionLabel": {
+					"available_height": 26.0,
+					"available_width": 432.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 103.0,
+					"visible_lines": 1
+				},
+				"Panel/DOCS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/ELEC/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 95.0,
+					"visible_lines": 1
+				},
+				"Panel/Found": {
+					"available_height": 68.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 186.0,
+					"visible_lines": 1
+				},
+				"Panel/FoundLabel": {
+					"available_height": 68.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 65.0,
+					"visible_lines": 1
+				},
+				"Panel/Identifier": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 121.0,
+					"visible_lines": 1
+				},
+				"Panel/IdentifierLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 96.0,
+					"visible_lines": 1
+				},
+				"Panel/InformationHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 176.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemHeading": {
+					"available_height": 26.0,
+					"available_width": 266.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 91.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				},
+				"Panel/ItemName": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 211.0,
+					"visible_lines": 1
+				},
+				"Panel/Material": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 109.0,
+					"visible_lines": 1
+				},
+				"Panel/MaterialLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 88.0,
+					"visible_lines": 1
+				},
+				"Panel/PERS/Subtitle": {
+					"available_height": 26.0,
+					"available_width": 166.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 130.0,
+					"visible_lines": 1
+				},
+				"Panel/Risk": {
+					"available_height": 31.0,
+					"available_width": 312.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 80.0,
+					"visible_lines": 1
+				},
+				"Panel/RiskLabel": {
+					"available_height": 28.0,
+					"available_width": 108.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 39.0,
+					"visible_lines": 1
+				},
+				"Panel/ScanHeading": {
+					"available_height": 26.0,
+					"available_width": 434.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 100.0,
+					"visible_lines": 1
+				},
+				"Panel/Time": {
+					"available_height": 31.0,
+					"available_width": 324.0,
+					"complete": true,
+					"font_size": 22,
+					"required_height": 31.0,
+					"total_lines": 1,
+					"unwrapped_width": 56.0,
+					"visible_lines": 1
+				},
+				"Panel/TimeLabel": {
+					"available_height": 31.0,
+					"available_width": 104.0,
+					"complete": true,
+					"font_size": 18,
+					"required_height": 26.0,
+					"total_lines": 1,
+					"unwrapped_width": 43.0,
+					"visible_lines": 1
+				}
+			}
+		}
+	],
+	"global_save_version": 3,
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"input_source": "Native Godot Viewport mouse events",
+	"logical_size": "(1920, 1080)",
+	"panel_bounds": "[P: (1028.0, 176.0), S: (824.0, 708.0)]",
+	"physical_size": "(1280, 720)",
+	"renderer": "gl_compatibility",
+	"secondary_logical_font_size": 18,
+	"secondary_physical_font_size": 12.0,
+	"texture_memory_bytes": 78765184.0
+}

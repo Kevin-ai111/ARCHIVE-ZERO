@@ -1,0 +1,254 @@
+{
+  "package": "ARCHIVE ZERO Phase 5C-B Manual Case Processing UI v1.1",
+  "package_sha256": "8d07948e2fd15c9c098ace65220c281d14e67445d991a546c902230cd0222a1e",
+  "assets": [
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_panel_9patch_2x.png",
+      "sha256": "a81eba33c89582c3a3d89314527ab0deb2e23c0906d5825854d4583d0860fd3d",
+      "export_dimensions": [
+        192,
+        192
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_header_9patch_2x.png",
+      "sha256": "83fb8988c49d6d4b3e8027eb8081e8008b70443ddb1c29d0d0d4a6013a75c4a4",
+      "export_dimensions": [
+        256,
+        96
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_section_9patch_2x.png",
+      "sha256": "8f38568a763b58a663e3e83ecd9413837d2369883d300c0d9537901d89cdc586",
+      "export_dimensions": [
+        192,
+        192
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_item_frame_9patch_2x.png",
+      "sha256": "ce5cebd64217a6365216de10a0f1e801f8df14b95f629ddaa47929a0871016db",
+      "export_dimensions": [
+        192,
+        192
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_divider_h_2x.png",
+      "sha256": "e76aaa5e51299be2fe67bb2afa3890c13f96d6cc30b90369f98560daf75fc8dd",
+      "export_dimensions": [
+        256,
+        16
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_status_badge_9patch_2x.png",
+      "sha256": "94a4ad19db8bf7c12862aa545adbfe672cf835b2e72115581f11849db9b4670a",
+      "export_dimensions": [
+        192,
+        64
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_manual_review_strip_9patch_2x.png",
+      "sha256": "c6c14379f7e0c3600a5aa98e3283eb557024f8ee66b176c43d197094747e0923",
+      "export_dimensions": [
+        320,
+        72
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_base_9patch_2x.png",
+      "sha256": "a331dc2c3ec81d40392160a2d8bf6d63aada312de3b7a4425bfcc4110ff9e176",
+      "export_dimensions": [
+        192,
+        160
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_hover_9patch_2x.png",
+      "sha256": "49c3809a98c9bbc95a8bbc23189e33d863e2d58306035b8610c3d236e76f9d01",
+      "export_dimensions": [
+        192,
+        160
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_selected_9patch_2x.png",
+      "sha256": "b5ca5c07a96b76e7e883c66ddee0730ee52485d1389315c5f2b0503561a38917",
+      "export_dimensions": [
+        192,
+        160
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_disabled_9patch_2x.png",
+      "sha256": "a2bd0d9b59ee2aca9924eb32ce8048209c200271d984af0756fa0a453554f621",
+      "export_dimensions": [
+        192,
+        160
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_base_9patch_2x.png",
+      "sha256": "a611dceba7d1f3e95d86f4fba74184cdef155b83ff1e7ccd4ae0e75720f812c5",
+      "export_dimensions": [
+        320,
+        128
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_hover_9patch_2x.png",
+      "sha256": "d3880453f865336444dfa8e6e6119f1e28098244c4d0970ba983fa93f5912d7c",
+      "export_dimensions": [
+        320,
+        128
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_pressed_9patch_2x.png",
+      "sha256": "886419d98f583d0b234e5f24c5e17d3c1ad75f20445ad7e6b65a7dd8da0d3e03",
+      "export_dimensions": [
+        320,
+        128
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_disabled_9patch_2x.png",
+      "sha256": "898b4f19d44c7986f919777c5467c6e1a442a37fcdd1f6f18239ef27fb0a4595",
+      "export_dimensions": [
+        320,
+        128
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_close_button_2x.png",
+      "sha256": "1a5fdd67ad0df900521d6de7e646e0fa94e2df105009357724eada26de42db43",
+      "export_dimensions": [
+        80,
+        80
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_check_indicator_2x.png",
+      "sha256": "884dab38ced0cefc23e61b34d5d37692d0b1ac75ee713188aaff83f29017161c",
+      "export_dimensions": [
+        64,
+        64
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_pers_2x.png",
+      "sha256": "57c1a287df45a7ef81119c1cecbf4ebfdfc54400e618564e7843db4d64ce9da9",
+      "export_dimensions": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_elec_2x.png",
+      "sha256": "18124956187bb7fc34c1a9d7a46f2a8c16b5d3b14daf41653ad9ed584cc897ec",
+      "export_dimensions": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_docs_2x.png",
+      "sha256": "c8b54a533a3e8394528f2d166cd6baa01aeb4836f7d8ff4ab522577a9fa02cba",
+      "export_dimensions": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_bag_2x.png",
+      "sha256": "7df4ad4c49f83125fe29d8d7cbf353b3df0caecf64b2b449a77ea802c4a3380c",
+      "export_dimensions": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_red_folding_umbrella_2x.png",
+      "sha256": "0d2a634f6e2bc02e760bc7590ff725eabea46c2f1f4d0ac00c19167406a813b5",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_smartphone_2x.png",
+      "sha256": "a16c92084c6161e802e99e290d3dc5a72435e9f2ed41fe6809f5b12d74e5352d",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_backpack_2x.png",
+      "sha256": "8ad645055905deb5e5f3a854ec673a11afd289218973e4928f10042a57624448",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_passport_wallet_2x.png",
+      "sha256": "aeae5a2ef49e389ce74fc4ba3aa717d0de390662707fc79328536468a17e38d8",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_wireless_earbuds_2x.png",
+      "sha256": "e4a7a9a88810cc9e293d383f8ede7f784c5af1449bc31ce30b5f614c6fbaa0af",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_canvas_tote_bag_2x.png",
+      "sha256": "a0d1919141a4b999bd8912dd6aa52599a61e09cdc14cec7ac5176642334dcce5",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_house_keys_2x.png",
+      "sha256": "8c4902a6eba093907be2dd7a66c4774b9a4056b91eb651e8934275021aaecc8e",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_tablet_2x.png",
+      "sha256": "c5d6b3ae3ba981f1fdadf914ee72027752e35dfa0a43781fa2fc1270f7a923a6",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_document_folder_2x.png",
+      "sha256": "e3db21bf3cf6140aba9efbf3fb960f8c790a0abb2b09be1b6d351850294f6a4b",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_black_hotel_keycard_2x.png",
+      "sha256": "f9420aeba63e2bb1e381737f5589ed2073736a41983f7303ba44660e9e8fcb24",
+      "export_dimensions": [
+        512,
+        512
+      ]
+    }
+  ]
+}
