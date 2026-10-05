@@ -9,8 +9,10 @@ const CARRIER_TRAVEL := 24.0
 const CARRIER_ANGULAR_SPEED := 1.6
 const ENABLED_MODULATE := Color.WHITE
 const DISABLED_MODULATE := Color(0.42, 0.48, 0.52, 1.0)
+const DORMANT_MODULATE := Color(0.62, 0.68, 0.72, 1.0)
 
 var is_active := false
+var commissioned_for_presentation := true
 var idle_lighting_enabled := true
 var _animation_time := 0.0
 
@@ -36,10 +38,11 @@ func apply_visual_state(enabled: bool, bottleneck: bool, _upgraded: bool) -> voi
 	apply_intake_state(enabled, enabled, bottleneck)
 
 
-func apply_intake_state(enabled: bool, active: bool, bottleneck: bool) -> void:
+func apply_intake_state(enabled: bool, active: bool, bottleneck: bool, commissioned: bool = true) -> void:
 	machine_enabled = enabled
-	is_active = active and enabled
-	is_bottleneck = bottleneck
+	commissioned_for_presentation = commissioned
+	is_active = active and enabled and commissioned
+	is_bottleneck = bottleneck and commissioned
 	has_upgrade = false
 	if is_node_ready():
 		_apply_layer_state()
@@ -72,6 +75,9 @@ func set_texture_filter_mode(filter_mode: CanvasItem.TextureFilter) -> void:
 
 func get_state_snapshot() -> Dictionary:
 	return {
+		"commissioned": commissioned_for_presentation,
+		"casing_modulate": rear_housing.self_modulate,
+		"fault_visible": commissioned_for_presentation and not machine_enabled,
 		"enabled": machine_enabled,
 		"active": is_active,
 		"bottleneck": is_bottleneck,
@@ -113,11 +119,11 @@ func get_asset_geometry_snapshot() -> Dictionary:
 
 
 func _apply_layer_state() -> void:
-	var casing_modulate := ENABLED_MODULATE if machine_enabled else DISABLED_MODULATE
+	var casing_modulate := (ENABLED_MODULATE if machine_enabled else DISABLED_MODULATE) if commissioned_for_presentation else DORMANT_MODULATE
 	rear_housing.self_modulate = casing_modulate
 	front_mask.self_modulate = casing_modulate
 	lift_carrier.self_modulate = casing_modulate
-	idle_emissive.visible = machine_enabled and idle_lighting_enabled
+	idle_emissive.visible = machine_enabled and commissioned_for_presentation and idle_lighting_enabled
 
 
 func _update_animation() -> void:
@@ -126,6 +132,8 @@ func _update_animation() -> void:
 
 
 func _draw() -> void:
+	if not commissioned_for_presentation:
+		return
 	var rect := get_visual_rect()
 	if is_bottleneck:
 		draw_rect(rect.grow(5.0), Color(0.89, 0.67, 0.27, 0.92), false, 6.0)

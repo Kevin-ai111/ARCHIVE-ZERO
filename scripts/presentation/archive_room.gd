@@ -11,6 +11,7 @@ const SCANNER_MACHINE_ID := &"basic_scanner"
 
 
 func _ready() -> void:
+	CommissioningManager.commissioning_stage_changed.connect(_on_commissioning_stage_changed)
 	SimulationManager.production_line_changed.connect(_refresh_visual_state)
 	SimulationManager.upgrades_changed.connect(_refresh_visual_state)
 	SimulationManager.simulation_updated.connect(_on_simulation_updated)
@@ -19,6 +20,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if CommissioningManager.commissioning_stage_changed.is_connected(_on_commissioning_stage_changed):
+		CommissioningManager.commissioning_stage_changed.disconnect(_on_commissioning_stage_changed)
 	if SimulationManager.production_line_changed.is_connected(_refresh_visual_state):
 		SimulationManager.production_line_changed.disconnect(_refresh_visual_state)
 	if SimulationManager.upgrades_changed.is_connected(_refresh_visual_state):
@@ -30,6 +33,10 @@ func _exit_tree() -> void:
 
 
 func _on_simulation_updated(_items_processed: int, _credits_earned: int, _elapsed_seconds: float) -> void:
+	_refresh_visual_state()
+
+
+func _on_commissioning_stage_changed(_stage: int) -> void:
 	_refresh_visual_state()
 
 
@@ -56,20 +63,27 @@ func _refresh_visual_state() -> void:
 		scanner_stage.is_enabled(),
 		throughput > 0.0,
 		SimulationManager.owns_upgrade("scanner_motor_1"),
-		bottleneck_id == SCANNER_MACHINE_ID
+		bottleneck_id == SCANNER_MACHINE_ID,
+		CommissioningManager.is_machine_commissioned(SCANNER_MACHINE_ID)
 	)
 	sorter.apply_sorter_state(
 		sorter_stage.is_enabled(),
 		throughput > 0.0,
 		SimulationManager.owns_upgrade("sorter_motor_1"),
-		bottleneck_id == sorter.machine_id
+		bottleneck_id == sorter.machine_id,
+		CommissioningManager.is_machine_commissioned(sorter.machine_id)
 	)
 	archive_intake.apply_intake_state(
 		intake_stage.is_enabled(),
 		throughput > 0.0,
-		bottleneck_id == archive_intake.machine_id
+		bottleneck_id == archive_intake.machine_id,
+		CommissioningManager.is_machine_commissioned(archive_intake.machine_id)
 	)
-	conveyor.set_visual_state(throughput > 0.0, throughput)
+	var stage := CommissioningManager.get_stage()
+	# One continuous presentation clock: frozen in stages 1/2, runs in 3/4.
+	conveyor.set_visual_state(throughput > 0.0 and stage >= CommissioningManager.Stage.SORTER_ONLINE, throughput)
+	%DecorativeParcels.visible = stage == CommissioningManager.Stage.FULL_LINE_ONLINE
+	environment_art.apply_commissioning_stage(stage)
 
 
 func get_layout_snapshot() -> Dictionary:

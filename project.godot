@@ -15,6 +15,7 @@ Economy="*res://scripts/economy/economy.gd"
 SimulationManager="*res://scripts/simulation/simulation_manager.gd"
 SaveManager="*res://scripts/core/save_manager.gd"
 CaseManager="*res://scripts/cases/case_manager.gd"
+CommissioningManager="*res://scripts/commissioning/commissioning_manager.gd"
 
 [display]
 

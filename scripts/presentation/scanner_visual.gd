@@ -9,12 +9,14 @@ const SCAN_TRAVEL := 47.0
 const SCAN_ANGULAR_SPEED := 2.4
 const ENABLED_MODULATE := Color.WHITE
 const DISABLED_MODULATE := Color(0.42, 0.48, 0.52, 1.0)
+const DORMANT_MODULATE := Color(0.62, 0.68, 0.72, 1.0)
 
 @export var machine_id: StringName = &"basic_scanner"
 @export var display_name := "BASIC SCANNER"
 @export var visual_size := DISPLAY_SIZE
 
 var machine_enabled := true
+var commissioned_for_presentation := true
 var is_active := false
 var has_motor_upgrade := false
 var is_bottleneck := false
@@ -54,14 +56,16 @@ func set_texture_filter_mode(filter_mode: CanvasItem.TextureFilter) -> void:
 	texture_filter = filter_mode
 
 
-func apply_visual_state(enabled: bool, active: bool, upgraded: bool, bottleneck: bool) -> void:
+func apply_visual_state(enabled: bool, active: bool, upgraded: bool, bottleneck: bool, commissioned: bool = true) -> void:
 	machine_enabled = enabled
-	is_active = active and enabled
+	commissioned_for_presentation = commissioned
+	is_active = active and enabled and commissioned
 	has_motor_upgrade = upgraded
-	is_bottleneck = bottleneck
+	is_bottleneck = bottleneck and commissioned
 	if is_node_ready():
 		_apply_layer_state()
 		_update_animation()
+		set_process(is_active)
 	queue_redraw()
 
 
@@ -71,6 +75,9 @@ func get_visual_rect() -> Rect2:
 
 func get_state_snapshot() -> Dictionary:
 	return {
+		"commissioned": commissioned_for_presentation,
+		"casing_modulate": scanner_back.self_modulate,
+		"fault_visible": commissioned_for_presentation and not machine_enabled,
 		"enabled": machine_enabled,
 		"active": is_active,
 		"upgraded": has_motor_upgrade,
@@ -101,12 +108,12 @@ func get_asset_geometry_snapshot() -> Dictionary:
 
 
 func _apply_layer_state() -> void:
-	var casing_modulate := ENABLED_MODULATE if machine_enabled else DISABLED_MODULATE
+	var casing_modulate := (ENABLED_MODULATE if machine_enabled else DISABLED_MODULATE) if commissioned_for_presentation else DORMANT_MODULATE
 	scanner_back.self_modulate = casing_modulate
 	scanner_front.self_modulate = casing_modulate
-	idle_emissive.visible = machine_enabled
+	idle_emissive.visible = machine_enabled and commissioned_for_presentation
 	scan_beam.visible = is_active
-	motor_upgrade.visible = has_motor_upgrade
+	motor_upgrade.visible = has_motor_upgrade and commissioned_for_presentation
 	motor_upgrade.self_modulate = ENABLED_MODULATE if machine_enabled else DISABLED_MODULATE
 
 
@@ -121,6 +128,8 @@ func _update_animation() -> void:
 
 
 func _draw() -> void:
+	if not commissioned_for_presentation:
+		return
 	var rect := get_visual_rect()
 	if is_bottleneck:
 		draw_rect(rect.grow(5.0), Color(0.89, 0.67, 0.27, 0.92), false, 6.0)

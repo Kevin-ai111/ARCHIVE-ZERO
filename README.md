@@ -50,6 +50,8 @@ persistence validation (including the independent case foundation) from the repo
 godot --headless --editor --path . --quit
 godot --headless --path . tests/case_foundation_test.tscn
 godot --headless --path . tests/manual_case_processing_test.tscn
+godot --headless --path . tests/commissioning_test.tscn
+godot --headless --path . tests/progressive_room_states_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
 godot --headless --path . tests/visual_foundation_test.tscn
 godot --headless --path . --quit-after 120
@@ -59,6 +61,12 @@ Manual Case UI and actual three-resolution runtime proofs are documented in
 [`docs/MANUAL_CASE_PROCESSING_UI.md`](docs/MANUAL_CASE_PROCESSING_UI.md).
 Run `tests/manual_case_processing_visual_test.tscn` for explicit developer QA;
 normal game startup still initializes no cases.
+
+Progressive room commissioning is an independent stage domain. Normal startup
+remains fully commissioned; no First Shift gameplay is activated yet. Run
+`tests/progressive_room_states_visual_test.tscn` for explicit stage/Case QA.
+The contract, three-resolution runtime evidence and deferred gameplay boundary
+are in [`docs/PROGRESSIVE_ROOM_STATES.md`](docs/PROGRESSIVE_ROOM_STATES.md).
 
 Manual runtime checks are listed in
 [`docs/VALIDATION.md`](docs/VALIDATION.md).

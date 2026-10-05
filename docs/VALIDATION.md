@@ -9,6 +9,8 @@ godot --version
 godot --headless --editor --path . --quit
 godot --headless --path . tests/case_foundation_test.tscn
 godot --headless --path . tests/manual_case_processing_test.tscn
+godot --headless --path . tests/commissioning_test.tscn
+godot --headless --path . tests/progressive_room_states_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
 godot --headless --path . tests/visual_foundation_test.tscn
 godot --headless --path . --quit-after 120
@@ -19,6 +21,13 @@ and the test scenes must print `Production pipeline tests passed.` and
 `Visual foundation tests passed for 1920x1080, 1280x720, and 960x540.`
 
 Case foundation prints 477 passing checks; manual Case integration prints 1873.
+Commissioning prints 293 checks; progressive room presentation prints 2503.
+Those additions cover strict stage/save contracts, the complete approved matrix,
+dormant versus real-disabled behavior, repeated visual refresh composition,
+all 88 existing PNG hashes, and production/case isolation in running/stopped
+fixtures. Run the graphical progressive fixture separately; reproduction commands,
+actual renderer evidence and exact pre-PR Full-Line comparison are documented in
+[`PROGRESSIVE_ROOM_STATES.md`](PROGRESSIVE_ROOM_STATES.md).
 The latter checks all ten authored cases at all three resolutions using native
 total-versus-visible line counts, measured font heights/spacing and width fit.
 Its 63px FOUND negative control must reproduce two total lines but only one

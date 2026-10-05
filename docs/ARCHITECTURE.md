@@ -3,7 +3,7 @@
 ## Foundation
 
 ARCHIVE ZERO separates authoritative numerical simulation from presentation.
-Five session-wide services are Autoloads:
+Six session-wide services are Autoloads:
 
 1. `GameState` owns session totals.
 2. `Economy` validates currency transactions.
@@ -11,6 +11,9 @@ Five session-wide services are Autoloads:
 4. `SaveManager` persists and restores supported state.
 5. `CaseManager` owns concrete-case queue and progress, independently of output,
    Credits and the live save file. It starts empty and does not advance time.
+6. `CommissioningManager` owns only the ordered commissioning stage. It starts
+   fully commissioned, never writes production or cases, and has an independent
+   save-v1 contract not integrated into live SaveManager v3.
 
 Machine definitions, installed machines, upgrade definitions, and production
 lines are domain objects rather than Nodes or additional Autoloads.
@@ -37,6 +40,14 @@ saved as runtime progress. The main scene starts with an empty, hidden panel;
 explicit developer fixtures are separate. See `docs/MANUAL_CASE_PROCESSING_UI.md`.
 
 ## Presentation boundary
+
+ArchiveRoom composes CommissioningManager stage with existing runtime production
+on every visual refresh. Installed-but-dormant machines are distinct from actual
+runtime-disabled/fault machines. The complete 29-element environment matrix is
+applied only on stage changes, using cached named NodePaths; there is no new
+per-frame controller or JSON parsing. The single continuous conveyor clock is
+presentation-gated, never production-gated. See `docs/PROGRESSIVE_ROOM_STATES.md`
+for the exact contract and later First Shift boundary.
 
 `scenes/world/archive_room.tscn` is the first player-facing presentation scene.
 Its fixed `Camera2D`, machine visuals, conveyor, HUD, foreground, and effects

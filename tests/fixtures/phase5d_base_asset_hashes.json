@@ -1,0 +1,358 @@
+{
+  "png_count": 88,
+  "assets": [
+    {
+      "path": "assets/cases/items/AZ_ITEM_backpack_2x.png",
+      "sha256": "8ad645055905deb5e5f3a854ec673a11afd289218973e4928f10042a57624448"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_black_hotel_keycard_2x.png",
+      "sha256": "f9420aeba63e2bb1e381737f5589ed2073736a41983f7303ba44660e9e8fcb24"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_canvas_tote_bag_2x.png",
+      "sha256": "a0d1919141a4b999bd8912dd6aa52599a61e09cdc14cec7ac5176642334dcce5"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_document_folder_2x.png",
+      "sha256": "e3db21bf3cf6140aba9efbf3fb960f8c790a0abb2b09be1b6d351850294f6a4b"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_house_keys_2x.png",
+      "sha256": "8c4902a6eba093907be2dd7a66c4774b9a4056b91eb651e8934275021aaecc8e"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_passport_wallet_2x.png",
+      "sha256": "aeae5a2ef49e389ce74fc4ba3aa717d0de390662707fc79328536468a17e38d8"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_red_folding_umbrella_2x.png",
+      "sha256": "0d2a634f6e2bc02e760bc7590ff725eabea46c2f1f4d0ac00c19167406a813b5"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_smartphone_2x.png",
+      "sha256": "a16c92084c6161e802e99e290d3dc5a72435e9f2ed41fe6809f5b12d74e5352d"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_tablet_2x.png",
+      "sha256": "c5d6b3ae3ba981f1fdadf914ee72027752e35dfa0a43781fa2fc1270f7a923a6"
+    },
+    {
+      "path": "assets/cases/items/AZ_ITEM_wireless_earbuds_2x.png",
+      "sha256": "e4a7a9a88810cc9e293d383f8ede7f784c5af1449bc31ce30b5f614c6fbaa0af"
+    },
+    {
+      "path": "assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+      "sha256": "86f2c27579eaf6de29d4699885a91be86fec0a3ec40046b3071d4dfc643cc90e"
+    },
+    {
+      "path": "assets/environment/architecture/AZ_ENV_ceiling_cable_320x146.png",
+      "sha256": "a36f1b7128b75b9d43dc19df922136d39a262b462a70c64fb461ddf97f231bd3"
+    },
+    {
+      "path": "assets/environment/architecture/AZ_ENV_pillar_A_128x754.png",
+      "sha256": "791494646048cfb50f2cf0e091c64f095d90c8c9d537e161dfa34878cb2cc950"
+    },
+    {
+      "path": "assets/environment/architecture/AZ_ENV_pinboard_186x167.png",
+      "sha256": "41b6b6cfd51316dd6f308f4dec567a249932996a687b01936aa3e1496babe3d2"
+    },
+    {
+      "path": "assets/environment/architecture/AZ_ENV_pipekit_128x192.png",
+      "sha256": "98d406d1f04aa3cd34ac540e86971c0f37e7de9918ba756fe9b83466a0416ebb"
+    },
+    {
+      "path": "assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+      "sha256": "60397cd76f236d78c6d8d49892c1f7a8fcf325fc8bd98c9476d814150a33f8c2"
+    },
+    {
+      "path": "assets/environment/background/AZ_BG_archive_distant_1920x792.png",
+      "sha256": "a44f01fd2533b8e5e9e5135428066cbb5822291c44a08c4904d795b4f98c72b6"
+    },
+    {
+      "path": "assets/environment/background/AZ_BG_wall_tile_256x256.png",
+      "sha256": "0cf7c63024fac0d39c5a1bfae21f38b6c14a8e766688eb17e58db1f8e947e3f8"
+    },
+    {
+      "path": "assets/environment/conveyor/AZ_CV_left_cap_40x68_2x.png",
+      "sha256": "66089d0a9c5fd16ba1517f9a433092d1f6e4eef44893ebb1957f16638fd1c30a"
+    },
+    {
+      "path": "assets/environment/conveyor/AZ_CV_right_cap_40x68_2x.png",
+      "sha256": "322858eb1558758553ccea68097169b06ce33acfd834135d1d9a09e8d03495ac"
+    },
+    {
+      "path": "assets/environment/conveyor/AZ_CV_slats_loop_64x44_2x.png",
+      "sha256": "e04d45f1a408b5bce75d450936806d6d4b34b6e41cd4f98209f025fe617877e8"
+    },
+    {
+      "path": "assets/environment/conveyor/AZ_CV_straight_128x68_2x.png",
+      "sha256": "28aa7df44751e823cd4815a0352f341099cfbf8d91979530b5ba4709f6eb5b9c"
+    },
+    {
+      "path": "assets/environment/conveyor/AZ_CV_support_34x150_2x.png",
+      "sha256": "abc42baa738e0886670eaca51c12bc544d8c04837e090b06682f3fd7ae722d6a"
+    },
+    {
+      "path": "assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+      "sha256": "495b714fc00f4cd5eed1012d306d1de60c28ad4397a655950e4edb06b6f7a045"
+    },
+    {
+      "path": "assets/environment/lighting/AZ_ENV_pendant_100x148.png",
+      "sha256": "191fd5817c17f1b0b4f96ed2b9d9d3cedf9f0bfaf0e5354832f2b4f05f0c6327"
+    },
+    {
+      "path": "assets/environment/lighting/AZ_ENV_wall_sconce_42x96.png",
+      "sha256": "27d5eadf1af10c8610557128f01b80cf038b86f5a9ed8cde4864fa30df209a89"
+    },
+    {
+      "path": "assets/environment/lighting/AZ_FX_floor_light_pool_384x82.png",
+      "sha256": "ed71754a8bcebc0d3af15b1c9c88dd81ae017f62b7fdd3e29fbfcba8dc4e8632"
+    },
+    {
+      "path": "assets/environment/lighting/AZ_FX_pendant_cone_272x352.png",
+      "sha256": "2186df885c9e42df149e7d91a817dc84b3c1107ecb2dbd9deb97cdde80458996"
+    },
+    {
+      "path": "assets/environment/phase4i/background/AZ4I_BG_distant_archive_1920x792.png",
+      "sha256": "f56c4491abcd455247ec87df4b15068c74c42f35fbc3cd103c9d2a0b53a17979"
+    },
+    {
+      "path": "assets/environment/phase4i/foreground/AZ4I_FG_lower_rail_360x110.png",
+      "sha256": "8de580e1172b2ab01333affa76486f25d3dd3827c0740f19dcc58c5b6ead63b2"
+    },
+    {
+      "path": "assets/environment/phase4i/ground/AZ4I_GR_floor_wear_512x160.png",
+      "sha256": "5845f62303bd955c52c668b8e2f0b896b997e0d331dee8228a9b65c81ee6b7dd"
+    },
+    {
+      "path": "assets/environment/phase4i/ground/AZ4I_GR_machine_shadow_512x96.png",
+      "sha256": "75f817049070145abe89aea7326fa0eb7cd9c6b7d79f72fb8fdf83a230a873ab"
+    },
+    {
+      "path": "assets/environment/phase4i/ground/AZ4I_GR_service_markings_512x128.png",
+      "sha256": "145c7827f70219e677bad590ecd4f9889544748f3281b1af641669d15c5b0f3b"
+    },
+    {
+      "path": "assets/environment/phase4i/lighting/AZ4I_FX_cyan_bounce_320x88.png",
+      "sha256": "05c75ea2c12069f82c4c97382c5c3d3be084fd2b23c05b68d20f3e60aadf815f"
+    },
+    {
+      "path": "assets/environment/phase4i/lighting/AZ4I_FX_floor_pool_430x100.png",
+      "sha256": "cba3892f763c06c64a0b297f897e7395d1c908b56871d7c8856237b066ebfd4b"
+    },
+    {
+      "path": "assets/environment/phase4i/lighting/AZ4I_FX_haze_strip_640x240.png",
+      "sha256": "8a192ac1ea79af74ed0e8de690cf769a4a813fe69545a5118cc1daba4cc44ee4"
+    },
+    {
+      "path": "assets/environment/phase4i/lighting/AZ4I_FX_worklight_cone_300x360.png",
+      "sha256": "981031e370c72df1e2fdf6bd6dfb42f5b2d4495df2e3067fc837d9a8f27cad49"
+    },
+    {
+      "path": "assets/environment/phase4i/midground/AZ4I_MG_archive_shelving_320x230.png",
+      "sha256": "f49b2e1043047c00030813d4e80b6c10b8ba07ea81919d2fca5495804d444328"
+    },
+    {
+      "path": "assets/environment/phase4i/midground/AZ4I_MG_bay_recess_A_420x330.png",
+      "sha256": "e14187c4f5b4e888e6d0ca7e5c10fd2fafddd3f96d9e9f1675e9f739b13d10dd"
+    },
+    {
+      "path": "assets/environment/phase4i/midground/AZ4I_MG_bay_recess_B_440x330.png",
+      "sha256": "ac03ac853ae513d4bf974e8bed79b5320377380316734b481c06ead5843afece"
+    },
+    {
+      "path": "assets/environment/phase4i/midground/AZ4I_MG_service_door_176x290.png",
+      "sha256": "bc451bc07f1a5634be24a765d0637c54e00d16476b2b13802db855714c4e62e9"
+    },
+    {
+      "path": "assets/environment/phase4i/overhead/AZ4I_OV_cable_run_1_560x180.png",
+      "sha256": "e8b451fdc67e2ca6d39095ff17b4e6a5ab573dc0775c553fa80134dd2edc7348"
+    },
+    {
+      "path": "assets/environment/phase4i/overhead/AZ4I_OV_cable_run_2_560x180.png",
+      "sha256": "93903a109cf4340d5d9984e01fc939a31206cc0e1c0645c89f6b346d55ead14d"
+    },
+    {
+      "path": "assets/environment/phase4i/overhead/AZ4I_OV_pendant_100x148.png",
+      "sha256": "13d32642e7ff82f2ab7c1c8713880f71f74aefe334caf20c133b9985439e44ba"
+    },
+    {
+      "path": "assets/environment/phase4i/signage/AZ4I_SG_sector_A1_96x128_2x.png",
+      "sha256": "2d762f76ac5e9c1f3126f15ca4478cd03044f96ceaf689dbe3326c858922d96f"
+    },
+    {
+      "path": "assets/environment/phase4i/signage/AZ4I_SG_sector_A2_96x128_2x.png",
+      "sha256": "dcb2f072745c60d00cdfd319c76c942788fadad5616e95e916be55a45610132c"
+    },
+    {
+      "path": "assets/environment/phase4i/signage/AZ4I_SG_transfer_160x64_2x.png",
+      "sha256": "29459f72b5dfcecaa624eafece6dca7bd20ec9e8d621505b9c369f15b733e3a4"
+    },
+    {
+      "path": "assets/machines/archive_intake/AZ_INT_back_idle_2x.png",
+      "sha256": "f846fa9e081c36d85895d0f199b742ed4252fcaf8bb154cdb09fa7d934433a21"
+    },
+    {
+      "path": "assets/machines/archive_intake/AZ_INT_emissive_idle_2x.png",
+      "sha256": "d924c9ff040bdd0c9c6a88fee2b7cec5c1ec13b35bf076e762e685ca2bf656d5"
+    },
+    {
+      "path": "assets/machines/archive_intake/AZ_INT_front_mask_2x.png",
+      "sha256": "d6ccf5c3c325136c46f6c25f4fa6285c848e9ed720729953e7afc8b3220b097f"
+    },
+    {
+      "path": "assets/machines/archive_intake/AZ_INT_lift_carrier_2x.png",
+      "sha256": "4a7f6c1de85eec04bfc7626100a851251d323e620ba3638e3ea2af1be8ab5b97"
+    },
+    {
+      "path": "assets/machines/basic_scanner/AZ_SCN_back_idle_2x.png",
+      "sha256": "6362654181b3c62e6b9b3fc4c8be0e2c2ff6a7db87e52310078b8489f7db4c7b"
+    },
+    {
+      "path": "assets/machines/basic_scanner/AZ_SCN_emissive_idle_2x.png",
+      "sha256": "4c66eeeb71395dc888d8ea3142f8fe15871f5487ab43dd60401838b958a6acf5"
+    },
+    {
+      "path": "assets/machines/basic_scanner/AZ_SCN_front_mask_2x.png",
+      "sha256": "c7ace4ce5df3f438042d3ac2476f85f4f0bb11f120e68010b67bcd90c8e5addd"
+    },
+    {
+      "path": "assets/machines/basic_scanner/AZ_SCN_scan_beam_2x.png",
+      "sha256": "681a2374e6b465f394f0bb50e77ef7b0687536fce889615896959adfcd78b26f"
+    },
+    {
+      "path": "assets/machines/basic_scanner/AZ_SCN_upgrade_motor_2x.png",
+      "sha256": "e90c7d63d44c10b10b639bf5a356dec69d598db6dd7edf638777a13168fffa51"
+    },
+    {
+      "path": "assets/machines/basic_sorter/AZ_SRT_back_idle_2x.png",
+      "sha256": "88a248039ab2662294a6cc4cae43a82cfde85a2fdbf97afa8854d564f5b2d29b"
+    },
+    {
+      "path": "assets/machines/basic_sorter/AZ_SRT_emissive_bays_2x.png",
+      "sha256": "b87b9fd8aa1b8b0c9ba340a327c6f99dcc2593ba77940f17e01d73cbe5170d7f"
+    },
+    {
+      "path": "assets/machines/basic_sorter/AZ_SRT_emissive_header_2x.png",
+      "sha256": "baf13a3068da79802ae4d22f4030b6abaeaa09b37b23740bf80b1d4fab8eea76"
+    },
+    {
+      "path": "assets/machines/basic_sorter/AZ_SRT_front_mask_2x.png",
+      "sha256": "873ddfbff06d46138b23892ab2b2dcbcd257aebcf6d3eb1d6280d0814637e421"
+    },
+    {
+      "path": "assets/machines/basic_sorter/AZ_SRT_sorting_gate_2x.png",
+      "sha256": "4b41d28d49d26356458fd42d3c60883edba96c664d92ece5b0b230b45b9b32dc"
+    },
+    {
+      "path": "assets/machines/basic_sorter/AZ_SRT_upgrade_motor_2x.png",
+      "sha256": "06d5e3b5cdc3c5b0a8b38e41cdf23c1ee98ba7a50ea69d70d5022fc7830524b7"
+    },
+    {
+      "path": "assets/machines/receiving_desk/AZ_RCV_back_idle_2x.png",
+      "sha256": "9c6ad96b6f4447a3b7f8fd6a2076c02914bac0894b12dc11a4e552e70635570e"
+    },
+    {
+      "path": "assets/machines/receiving_desk/AZ_RCV_decor_receipts_2x.png",
+      "sha256": "84c61402c0d9e112a3ec1b1003893b3eab45069c6371bad508026e85c1e81252"
+    },
+    {
+      "path": "assets/machines/receiving_desk/AZ_RCV_emissive_idle_2x.png",
+      "sha256": "8e7ddd9ce0d3e72893acad1d9c8c6074f6bf554e76c757f3d234d406c548dc8a"
+    },
+    {
+      "path": "assets/machines/receiving_desk/AZ_RCV_feed_wheel_2x.png",
+      "sha256": "f0b53f8e9d199f99103bcf1f76fb51ff84babab4f6dd85046d5ed512fb9478d5"
+    },
+    {
+      "path": "assets/machines/receiving_desk/AZ_RCV_front_mask_2x.png",
+      "sha256": "77cf32c80a8a0602a4182d66872cfa393d29ef64f00b27fe4053888b1c373488"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_base_9patch_2x.png",
+      "sha256": "a331dc2c3ec81d40392160a2d8bf6d63aada312de3b7a4425bfcc4110ff9e176"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_disabled_9patch_2x.png",
+      "sha256": "a2bd0d9b59ee2aca9924eb32ce8048209c200271d984af0756fa0a453554f621"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_hover_9patch_2x.png",
+      "sha256": "49c3809a98c9bbc95a8bbc23189e33d863e2d58306035b8610c3d236e76f9d01"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_category_selected_9patch_2x.png",
+      "sha256": "b5ca5c07a96b76e7e883c66ddee0730ee52485d1389315c5f2b0503561a38917"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_check_indicator_2x.png",
+      "sha256": "884dab38ced0cefc23e61b34d5d37692d0b1ac75ee713188aaff83f29017161c"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_close_button_2x.png",
+      "sha256": "1a5fdd67ad0df900521d6de7e646e0fa94e2df105009357724eada26de42db43"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_divider_h_2x.png",
+      "sha256": "e76aaa5e51299be2fe67bb2afa3890c13f96d6cc30b90369f98560daf75fc8dd"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_header_9patch_2x.png",
+      "sha256": "83fb8988c49d6d4b3e8027eb8081e8008b70443ddb1c29d0d0d4a6013a75c4a4"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_bag_2x.png",
+      "sha256": "7df4ad4c49f83125fe29d8d7cbf353b3df0caecf64b2b449a77ea802c4a3380c"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_docs_2x.png",
+      "sha256": "c8b54a533a3e8394528f2d166cd6baa01aeb4836f7d8ff4ab522577a9fa02cba"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_elec_2x.png",
+      "sha256": "18124956187bb7fc34c1a9d7a46f2a8c16b5d3b14daf41653ad9ed584cc897ec"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_icon_pers_2x.png",
+      "sha256": "57c1a287df45a7ef81119c1cecbf4ebfdfc54400e618564e7843db4d64ce9da9"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_item_frame_9patch_2x.png",
+      "sha256": "ce5cebd64217a6365216de10a0f1e801f8df14b95f629ddaa47929a0871016db"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_manual_review_strip_9patch_2x.png",
+      "sha256": "c6c14379f7e0c3600a5aa98e3283eb557024f8ee66b176c43d197094747e0923"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_panel_9patch_2x.png",
+      "sha256": "a81eba33c89582c3a3d89314527ab0deb2e23c0906d5825854d4583d0860fd3d"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_base_9patch_2x.png",
+      "sha256": "a611dceba7d1f3e95d86f4fba74184cdef155b83ff1e7ccd4ae0e75720f812c5"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_disabled_9patch_2x.png",
+      "sha256": "898b4f19d44c7986f919777c5467c6e1a442a37fcdd1f6f18239ef27fb0a4595"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_hover_9patch_2x.png",
+      "sha256": "d3880453f865336444dfa8e6e6119f1e28098244c4d0970ba983fa93f5912d7c"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_primary_button_pressed_9patch_2x.png",
+      "sha256": "886419d98f583d0b234e5f24c5e17d3c1ad75f20445ad7e6b65a7dd8da0d3e03"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_section_9patch_2x.png",
+      "sha256": "8f38568a763b58a663e3e83ecd9413837d2369883d300c0d9537901d89cdc586"
+    },
+    {
+      "path": "assets/ui/case_panel/AZ_CASE_status_badge_9patch_2x.png",
+      "sha256": "94a4ad19db8bf7c12862aa545adbfe672cf835b2e72115581f11849db9b4670a"
+    }
+  ],
+  "base_sha": "4714f71f912e718818b5db4871bfe2eee18d05fb"
+}

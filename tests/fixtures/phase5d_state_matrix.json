@@ -1,0 +1,1675 @@
+{
+  "schema": "ARCHIVE_ZERO_PHASE5D_B_ENVIRONMENT_STATE_MATRIX_V1",
+  "implementation": "Existing Phase 4I layers only: visibility, modulate, alpha, animation/emissive switches. No new runtime texture.",
+  "states": [
+    "MANUAL_SHIFT",
+    "SCANNER_ONLINE",
+    "SORTER_ONLINE",
+    "FULL_LINE_ONLINE"
+  ],
+  "elements": {
+    "distant_background": {
+      "asset": "AZ4I_BG_distant_archive_1920x792.png",
+      "instances": [
+        [
+          0,
+          0
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.86,
+          "note": "Retain distant blue depth; never black out."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.9,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.96,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Exact Phase 4I target."
+        }
+      }
+    },
+    "shelving": {
+      "asset": "AZ4I_MG_archive_shelving_320x230.png",
+      "instances": [
+        [
+          70,
+          205
+        ],
+        [
+          1225,
+          214
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.72,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.8,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.9,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "haze": {
+      "asset": "AZ4I_FX_haze_strip_640x240.png",
+      "instances": [
+        [
+          180,
+          260
+        ],
+        [
+          1060,
+          270
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.22,
+          "note": "Only enough haze for depth separation."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.38,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.68,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "recess_lighting": {
+      "asset": "existing bay/recess practicals",
+      "instances": [
+        "left",
+        "scanner",
+        "sorter",
+        "intake"
+      ],
+      "authority": "existing Phase 4I/4E scene layers; no new texture",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.38,
+          "note": "Receiving-side practical is primary; downstream recess response is dormant."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.55,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.78,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "service_door": {
+      "asset": "AZ4I_MG_service_door_176x290.png",
+      "instances": [
+        [
+          1462,
+          448
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.58,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.62,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.76,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "cable_runs": {
+      "asset": "AZ4I_OV_cable_run_1/2_560x180.png",
+      "instances": [
+        [
+          250,
+          118
+        ],
+        [
+          1080,
+          110
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.72,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.8,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.9,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "signage": {
+      "asset": "AZ4I_SG_sector_A1/A2 + transfer.png",
+      "instances": [
+        [
+          76,
+          278
+        ],
+        [
+          1742,
+          278
+        ],
+        [
+          1492,
+          468
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.74,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.9,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "pendant_housing_1": {
+      "asset": "AZ4I_OV_pendant_100x148.png",
+      "instances": [
+        [
+          245,
+          145
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        }
+      }
+    },
+    "light_cone_1": {
+      "asset": "AZ4I_FX_worklight_cone_300x360.png",
+      "instances": [
+        [
+          245,
+          245
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Local light only; no global dark overlay."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Local light only; no global dark overlay."
+        }
+      }
+    },
+    "machine_shadow_1": {
+      "asset": "AZ4I_GR_machine_shadow_512x96.png",
+      "instances": [
+        [
+          245,
+          866
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        }
+      }
+    },
+    "floor_light_pool_1": {
+      "asset": "AZ4I_FX_floor_pool_430x100.png",
+      "instances": [
+        [
+          245,
+          876
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.78,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.78,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.78,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Warm floor response follows local commissioning state."
+        }
+      }
+    },
+    "pendant_housing_2": {
+      "asset": "AZ4I_OV_pendant_100x148.png",
+      "instances": [
+        [
+          716,
+          145
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.62,
+          "note": "Housing remains physically visible."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        }
+      }
+    },
+    "light_cone_2": {
+      "asset": "AZ4I_FX_worklight_cone_300x360.png",
+      "instances": [
+        [
+          716,
+          245
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Local light only; no global dark overlay."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Local light only; no global dark overlay."
+        }
+      }
+    },
+    "machine_shadow_2": {
+      "asset": "AZ4I_GR_machine_shadow_512x96.png",
+      "instances": [
+        [
+          716,
+          866
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        }
+      }
+    },
+    "floor_light_pool_2": {
+      "asset": "AZ4I_FX_floor_pool_430x100.png",
+      "instances": [
+        [
+          716,
+          876
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.78,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.78,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Warm floor response follows local commissioning state."
+        }
+      }
+    },
+    "pendant_housing_3": {
+      "asset": "AZ4I_OV_pendant_100x148.png",
+      "instances": [
+        [
+          1206,
+          145
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.62,
+          "note": "Housing remains physically visible."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.62,
+          "note": "Housing remains physically visible."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        }
+      }
+    },
+    "light_cone_3": {
+      "asset": "AZ4I_FX_worklight_cone_300x360.png",
+      "instances": [
+        [
+          1206,
+          245
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SCANNER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Local light only; no global dark overlay."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Local light only; no global dark overlay."
+        }
+      }
+    },
+    "machine_shadow_3": {
+      "asset": "AZ4I_GR_machine_shadow_512x96.png",
+      "instances": [
+        [
+          1206,
+          866
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        }
+      }
+    },
+    "floor_light_pool_3": {
+      "asset": "AZ4I_FX_floor_pool_430x100.png",
+      "instances": [
+        [
+          1206,
+          876
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SCANNER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.78,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Warm floor response follows local commissioning state."
+        }
+      }
+    },
+    "pendant_housing_4": {
+      "asset": "AZ4I_OV_pendant_100x148.png",
+      "instances": [
+        [
+          1652,
+          145
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.62,
+          "note": "Housing remains physically visible."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.62,
+          "note": "Housing remains physically visible."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.62,
+            0.68,
+            0.72,
+            1
+          ],
+          "alpha_multiplier": 0.62,
+          "note": "Housing remains physically visible."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Housing remains physically visible."
+        }
+      }
+    },
+    "light_cone_4": {
+      "asset": "AZ4I_FX_worklight_cone_300x360.png",
+      "instances": [
+        [
+          1652,
+          245
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SCANNER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Local light only; no global dark overlay."
+        },
+        "SORTER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Local light only; no global dark overlay."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Local light only; no global dark overlay."
+        }
+      }
+    },
+    "machine_shadow_4": {
+      "asset": "AZ4I_GR_machine_shadow_512x96.png",
+      "instances": [
+        [
+          1652,
+          866
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": "Contact shadow remains; only presentation response changes."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Contact shadow remains; only presentation response changes."
+        }
+      }
+    },
+    "floor_light_pool_4": {
+      "asset": "AZ4I_FX_floor_pool_430x100.png",
+      "instances": [
+        [
+          1652,
+          876
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SCANNER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "SORTER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Warm floor response follows local commissioning state."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": "Warm floor response follows local commissioning state."
+        }
+      }
+    },
+    "floor_wear": {
+      "asset": "AZ4I_GR_floor_wear_512x160.png",
+      "instances": [
+        [
+          0,
+          920
+        ],
+        [
+          512,
+          920
+        ],
+        [
+          1024,
+          920
+        ],
+        [
+          1536,
+          920
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.74,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.92,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "service_markings": {
+      "asset": "AZ4I_GR_service_markings_512x128.png",
+      "instances": [
+        [
+          60,
+          900
+        ],
+        [
+          660,
+          900
+        ],
+        [
+          1220,
+          900
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.55,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.68,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.84,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "scanner_cyan_bounce": {
+      "asset": "AZ4I_FX_cyan_bounce_320x88.png",
+      "instances": [
+        [
+          708,
+          886
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.95,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.52,
+          "note": "Restrained; secondary to Receiving Desk."
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.97,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.68,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "intake_cyan_bounce": {
+      "asset": "AZ4I_FX_cyan_bounce_320x88.png",
+      "instances": [
+        [
+          1668,
+          886
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    },
+    "optional_sconces": {
+      "asset": null,
+      "instances": [],
+      "authority": "no asset",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Not present in approved Phase 4I stack; do not add."
+        },
+        "SCANNER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Not present in approved Phase 4I stack; do not add."
+        },
+        "SORTER_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Not present in approved Phase 4I stack; do not add."
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": false,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 0.0,
+          "note": "Not present in approved Phase 4I stack; do not add."
+        }
+      }
+    },
+    "foreground_rails": {
+      "asset": "AZ4I_FG_lower_rail_360x110.png",
+      "instances": [
+        [
+          0,
+          970
+        ],
+        [
+          1560,
+          970
+        ]
+      ],
+      "authority": "existing Phase 4I runtime layer",
+      "states": {
+        "MANUAL_SHIFT": {
+          "visible": true,
+          "modulate_rgba": [
+            0.82,
+            0.88,
+            0.94,
+            1
+          ],
+          "alpha_multiplier": 0.82,
+          "note": ""
+        },
+        "SCANNER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.88,
+            0.92,
+            0.96,
+            1
+          ],
+          "alpha_multiplier": 0.88,
+          "note": ""
+        },
+        "SORTER_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            0.94,
+            0.96,
+            0.98,
+            1
+          ],
+          "alpha_multiplier": 0.94,
+          "note": ""
+        },
+        "FULL_LINE_ONLINE": {
+          "visible": true,
+          "modulate_rgba": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "alpha_multiplier": 1.0,
+          "note": ""
+        }
+      }
+    }
+  }
+}
