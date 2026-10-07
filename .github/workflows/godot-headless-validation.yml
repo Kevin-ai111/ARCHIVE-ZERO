@@ -47,6 +47,9 @@ jobs:
       - name: Run progressive room state validation
         run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/progressive_room_states_test.tscn
 
+      - name: Run Archive Room lighting correction validation
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/archive_room_lighting_test.tscn
+
       - name: Run production pipeline validation
         run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/production_pipeline_test.tscn
 

@@ -85,10 +85,10 @@ const VALUES := {
 		[true, Color(1, 1, 1, 1), 1],
 	],
 	"light_cone_1": [
+		[true, Color(1, 1, 1, 1), 0.76],
+		[true, Color(1, 1, 1, 1), 0.76],
 		[true, Color(1, 1, 1, 1), 0.82],
-		[true, Color(1, 1, 1, 1), 0.82],
-		[true, Color(1, 1, 1, 1), 0.82],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.88],
 	],
 	"machine_shadow_1": [
 		[true, Color(1, 1, 1, 1), 1],
@@ -97,10 +97,10 @@ const VALUES := {
 		[true, Color(1, 1, 1, 1), 1],
 	],
 	"floor_light_pool_1": [
-		[true, Color(1, 1, 1, 1), 0.78],
-		[true, Color(1, 1, 1, 1), 0.78],
-		[true, Color(1, 1, 1, 1), 0.78],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.52],
+		[true, Color(1, 1, 1, 1), 0.52],
+		[true, Color(1, 1, 1, 1), 0.58],
+		[true, Color(1, 1, 1, 1), 0.64],
 	],
 	"pendant_housing_2": [
 		[true, Color(0.62, 0.68, 0.72, 1), 0.62],
@@ -110,9 +110,9 @@ const VALUES := {
 	],
 	"light_cone_2": [
 		[false, Color(1, 1, 1, 1), 0],
+		[true, Color(1, 1, 1, 1), 0.76],
 		[true, Color(1, 1, 1, 1), 0.82],
-		[true, Color(1, 1, 1, 1), 0.82],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.88],
 	],
 	"machine_shadow_2": [
 		[true, Color(0.82, 0.88, 0.94, 1), 0.82],
@@ -122,9 +122,9 @@ const VALUES := {
 	],
 	"floor_light_pool_2": [
 		[false, Color(1, 1, 1, 1), 0],
-		[true, Color(1, 1, 1, 1), 0.78],
-		[true, Color(1, 1, 1, 1), 0.78],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.52],
+		[true, Color(1, 1, 1, 1), 0.58],
+		[true, Color(1, 1, 1, 1), 0.64],
 	],
 	"pendant_housing_3": [
 		[true, Color(0.62, 0.68, 0.72, 1), 0.62],
@@ -136,7 +136,7 @@ const VALUES := {
 		[false, Color(1, 1, 1, 1), 0],
 		[false, Color(1, 1, 1, 1), 0],
 		[true, Color(1, 1, 1, 1), 0.82],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.88],
 	],
 	"machine_shadow_3": [
 		[true, Color(0.82, 0.88, 0.94, 1), 0.82],
@@ -147,8 +147,8 @@ const VALUES := {
 	"floor_light_pool_3": [
 		[false, Color(1, 1, 1, 1), 0],
 		[false, Color(1, 1, 1, 1), 0],
-		[true, Color(1, 1, 1, 1), 0.78],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.58],
+		[true, Color(1, 1, 1, 1), 0.64],
 	],
 	"pendant_housing_4": [
 		[true, Color(0.62, 0.68, 0.72, 1), 0.62],
@@ -160,7 +160,7 @@ const VALUES := {
 		[false, Color(1, 1, 1, 1), 0],
 		[false, Color(1, 1, 1, 1), 0],
 		[false, Color(1, 1, 1, 1), 0],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.88],
 	],
 	"machine_shadow_4": [
 		[true, Color(0.82, 0.88, 0.94, 1), 0.82],
@@ -172,7 +172,7 @@ const VALUES := {
 		[false, Color(1, 1, 1, 1), 0],
 		[false, Color(1, 1, 1, 1), 0],
 		[false, Color(1, 1, 1, 1), 0],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(1, 1, 1, 1), 0.64],
 	],
 	"floor_wear": [
 		[true, Color(0.82, 0.88, 0.94, 1), 0.74],
@@ -181,10 +181,10 @@ const VALUES := {
 		[true, Color(1, 1, 1, 1), 1],
 	],
 	"service_markings": [
-		[true, Color(0.82, 0.88, 0.94, 1), 0.55],
-		[true, Color(0.88, 0.92, 0.96, 1), 0.68],
-		[true, Color(0.94, 0.96, 0.98, 1), 0.84],
-		[true, Color(1, 1, 1, 1), 1],
+		[true, Color(0.82, 0.88, 0.94, 1), 0.18],
+		[true, Color(0.88, 0.92, 0.96, 1), 0.23],
+		[true, Color(0.94, 0.96, 0.98, 1), 0.28],
+		[true, Color(1, 1, 1, 1), 0.35],
 	],
 	"scanner_cyan_bounce": [
 		[false, Color(1, 1, 1, 1), 0],

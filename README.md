@@ -68,6 +68,10 @@ remains fully commissioned; no First Shift gameplay is activated yet. Run
 The contract, three-resolution runtime evidence and deferred gameplay boundary
 are in [`docs/PROGRESSIVE_ROOM_STATES.md`](docs/PROGRESSIVE_ROOM_STATES.md).
 
+The targeted PR17 cone/pool and floor-marking correction, unchanged gameplay
+boundary, real renderer evidence and remaining locked cyan-bounce limitation
+are in [`docs/ARCHIVE_ROOM_LIGHTING_FIX.md`](docs/ARCHIVE_ROOM_LIGHTING_FIX.md).
+
 Manual runtime checks are listed in
 [`docs/VALIDATION.md`](docs/VALIDATION.md).
 

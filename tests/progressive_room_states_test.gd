@@ -2,6 +2,7 @@ extends Node
 
 const ROOM := preload("res://scenes/world/archive_room.tscn")
 const SUPPORT := preload("res://tests/commissioning_test_support.gd")
+const LIGHTING_FIX := preload("res://tests/lighting_fix_test_support.gd")
 var _checks := 0
 var _failures := 0
 var _room: Node2D
@@ -62,7 +63,7 @@ func _run() -> void:
 	_room.queue_free()
 	await _settle()
 	if _failures == 0:
-		print("Progressive room states tests passed: %d checks; 29 elements x 4 stages, 88 immutable PNGs." % _checks)
+		print("Progressive room states tests passed: %d checks; 29 elements x 4 stages, 86 immutable PNGs + 2 approved lighting replacements." % _checks)
 	else:
 		push_error("Progressive room states tests failed: %d/%d" % [_failures, _checks])
 	get_tree().quit(0 if _failures == 0 else 1)
@@ -73,6 +74,9 @@ func _test_environment(stage: int) -> void:
 	_check(snapshot.stage == stage and snapshot.elements.size() == _approved.elements.size() and snapshot.elements.size() == 29, "Complete approved environment matrix")
 	for element: String in _approved.elements:
 		var expected: Dictionary = _approved.elements[element].states[_approved.states[stage]]
+		# Only PR17's nine lighting alpha entries differ; original matrix is retained.
+		expected = expected.duplicate(true)
+		expected.alpha_multiplier = LIGHTING_FIX.expected_alpha(element, stage, expected.alpha_multiplier)
 		var rgba: Array = expected.modulate_rgba
 		var tint := Color(rgba[0], rgba[1], rgba[2], rgba[3] * expected.alpha_multiplier)
 		var actual: Dictionary = snapshot.elements[element]
@@ -82,7 +86,7 @@ func _test_environment(stage: int) -> void:
 			_check(target.visible == expected.visible and target.visible_in_tree == expected.visible, "Exact visibility: " + element)
 			_check((target.effective_modulate as Color).is_equal_approx(tint), "Actual inherited modulation matches ART: " + element)
 			if stage == 3 and element != "optional_sconces":
-				_check(target.visible and target.effective_modulate == Color.WHITE, "Full line restores approved white/visible response")
+				_check(target.visible and target.effective_modulate == tint, "Full line restores original response plus explicit PR17 lighting alpha")
 
 
 func _test_machines(stage: int, disabled: bool) -> void:
@@ -148,7 +152,7 @@ func _test_assets() -> void:
 	var locked: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/phase5d_base_asset_hashes.json"))
 	_check(locked.png_count == 88 and locked.assets.size() == 88, "Base locks every existing runtime texture")
 	for asset: Dictionary in locked.assets:
-		_check(FileAccess.get_sha256("res://" + asset.path) == asset.sha256, "Base PNG bytes unchanged: " + asset.path)
+		_check(FileAccess.get_sha256("res://" + asset.path) == LIGHTING_FIX.expected_asset_hash(asset.path, asset.sha256), "Base PNG unchanged or exact approved lighting replacement: " + asset.path)
 	_check(_count_pngs("res://assets") == 88, "Zero new runtime PNGs")
 
 

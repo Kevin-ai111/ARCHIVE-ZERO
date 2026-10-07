@@ -1,0 +1,796 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3060 Ti",
+	"environment": {
+		"cables_z": -69,
+		"catwalk_tile_count": 8,
+		"catwalk_z": -79,
+		"decoded_texture_bytes": 11397016,
+		"decor_z": -65,
+		"distant_z": -100,
+		"floor_reflection_positions": "[(30.0, 876.0), (501.0, 876.0), (991.0, 876.0), (1437.0, 876.0)]",
+		"floor_reflections_z": -1,
+		"floor_tile_count": 8,
+		"floor_z": -10,
+		"foreground_positions": "[(0.0, 970.0), (1560.0, 970.0)]",
+		"lamp_housings_z": -50,
+		"lamp_positions": "[(195.0, 145.0), (666.0, 145.0), (1156.0, 145.0), (1602.0, 145.0)]",
+		"light_cone_positions": "[(95.0, 245.0), (566.0, 245.0), (1056.0, 245.0), (1502.0, 245.0)]",
+		"light_cones_z": -52,
+		"pillar_positions": "[(86.0, 162.0), (900.0, 162.0), (1710.0, 162.0)]",
+		"pillars_z": -70,
+		"polish_decoded_texture_bytes": 9894208,
+		"polish_texture_count": 19,
+		"rear_wall_z": -82,
+		"roof_tile_count": 8,
+		"roof_z": -71,
+		"runtime_texture_count": 28,
+		"shadow_positions": "[(35.0, 866.0), (475.0, 866.0), (925.0, 866.0), (1450.0, 866.0)]",
+		"signage_positions": "[(76.0, 278.0), (1742.0, 278.0), (1492.0, 468.0)]",
+		"sprites": [
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(0.0, 0.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/background/AZ4I_BG_distant_archive_1920x792.png",
+				"z": -100
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(0.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(256.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(512.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(768.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1024.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1280.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1536.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1792.0, 490.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(0.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(256.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(512.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(768.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1024.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1280.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1536.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1792.0, 746.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/background/AZ_BG_wall_tile_256x256.png",
+				"z": -82
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(0.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(256.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(512.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(768.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1024.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1280.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1536.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1792.0, 330.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_back_catwalk_256x103.png",
+				"z": -79
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(0.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(256.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(512.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(768.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1024.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1280.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1536.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1792.0, 72.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_roof_repeat_256x156.png",
+				"z": -71
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(86.0, 162.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_pillar_A_128x754.png",
+				"z": -70
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(900.0, 162.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_pillar_A_128x754.png",
+				"z": -70
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1710.0, 162.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_pillar_A_128x754.png",
+				"z": -70
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(360.0, 175.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_ceiling_cable_320x146.png",
+				"z": -69
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1190.0, 175.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_ceiling_cable_320x146.png",
+				"z": -69
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(124.0, 468.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_pinboard_186x167.png",
+				"z": -65
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1407.0, 431.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_pipekit_128x192.png",
+				"z": -64
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(393.0, 450.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/architecture/AZ_ENV_pipekit_128x192.png",
+				"z": -64
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(95.0, 245.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_worklight_cone_300x360.png",
+				"z": -52
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(566.0, 245.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_worklight_cone_300x360.png",
+				"z": -52
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1056.0, 245.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_worklight_cone_300x360.png",
+				"z": -52
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1502.0, 245.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_worklight_cone_300x360.png",
+				"z": -52
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(195.0, 145.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/overhead/AZ4I_OV_pendant_100x148.png",
+				"z": -50
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(666.0, 145.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/overhead/AZ4I_OV_pendant_100x148.png",
+				"z": -50
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1156.0, 145.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/overhead/AZ4I_OV_pendant_100x148.png",
+				"z": -50
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1602.0, 145.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/overhead/AZ4I_OV_pendant_100x148.png",
+				"z": -50
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(112.0, 291.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/lighting/AZ_ENV_wall_sconce_42x96.png",
+				"z": -63
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(975.0, 460.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/lighting/AZ_ENV_wall_sconce_42x96.png",
+				"z": -63
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1825.0, 277.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/lighting/AZ_ENV_wall_sconce_42x96.png",
+				"z": -63
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(0.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(256.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(512.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(768.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1024.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1280.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1536.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": false,
+				"centered": false,
+				"position": "(1792.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/ground/AZ_ENV_floor_repeat_256x160.png",
+				"z": -10
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(30.0, 876.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_floor_pool_430x100.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(501.0, 876.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_floor_pool_430x100.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(991.0, 876.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_floor_pool_430x100.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1437.0, 876.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_floor_pool_430x100.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(248.0, 392.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/midground/AZ4I_MG_bay_recess_A_420x330.png",
+				"z": -78
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1100.0, 392.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/midground/AZ4I_MG_bay_recess_A_420x330.png",
+				"z": -78
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(660.0, 392.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/midground/AZ4I_MG_bay_recess_B_440x330.png",
+				"z": -77
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1462.0, 448.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/midground/AZ4I_MG_service_door_176x290.png",
+				"z": -76
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(70.0, 205.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/midground/AZ4I_MG_archive_shelving_320x230.png",
+				"z": -84
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1225.0, 214.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/midground/AZ4I_MG_archive_shelving_320x230.png",
+				"z": -84
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(250.0, 118.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/overhead/AZ4I_OV_cable_run_1_560x180.png",
+				"z": -68
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1080.0, 110.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/overhead/AZ4I_OV_cable_run_2_560x180.png",
+				"z": -68
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(180.0, 260.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_haze_strip_640x240.png",
+				"z": -80
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1060.0, 270.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_haze_strip_640x240.png",
+				"z": -80
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(0.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_floor_wear_512x160.png",
+				"z": -8
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(512.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_floor_wear_512x160.png",
+				"z": -8
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1024.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_floor_wear_512x160.png",
+				"z": -8
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1536.0, 920.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_floor_wear_512x160.png",
+				"z": -8
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(35.0, 866.0)",
+				"scale": "(0.8, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_machine_shadow_512x96.png",
+				"z": -2
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(475.0, 866.0)",
+				"scale": "(0.95, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_machine_shadow_512x96.png",
+				"z": -2
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(925.0, 866.0)",
+				"scale": "(1.12, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_machine_shadow_512x96.png",
+				"z": -2
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1450.0, 866.0)",
+				"scale": "(0.74, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_machine_shadow_512x96.png",
+				"z": -2
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(60.0, 900.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_service_markings_512x128.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(660.0, 900.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_service_markings_512x128.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1220.0, 900.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/ground/AZ4I_GR_service_markings_512x128.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(548.0, 886.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_cyan_bounce_320x88.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1508.0, 886.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/lighting/AZ4I_FX_cyan_bounce_320x88.png",
+				"z": -1
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(76.0, 278.0)",
+				"scale": "(0.5, 0.5)",
+				"texture": "res://assets/environment/phase4i/signage/AZ4I_SG_sector_A1_96x128_2x.png",
+				"z": -62
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1742.0, 278.0)",
+				"scale": "(0.5, 0.5)",
+				"texture": "res://assets/environment/phase4i/signage/AZ4I_SG_sector_A2_96x128_2x.png",
+				"z": -62
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1492.0, 468.0)",
+				"scale": "(0.5, 0.5)",
+				"texture": "res://assets/environment/phase4i/signage/AZ4I_SG_transfer_160x64_2x.png",
+				"z": -62
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(0.0, 970.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/foreground/AZ4I_FG_lower_rail_360x110.png",
+				"z": 20
+			},
+			{
+				"absolute_z": true,
+				"centered": false,
+				"position": "(1560.0, 970.0)",
+				"scale": "(1.0, 1.0)",
+				"texture": "res://assets/environment/phase4i/foreground/AZ4I_FG_lower_rail_360x110.png",
+				"z": 20
+			}
+		],
+		"wall_tile_count": 16
+	},
+	"filter": "linear",
+	"frames": [
+		{
+			"draw_calls": 81,
+			"frame": 0,
+			"parcel_centres": "[(436.0, 688.0), (682.4, 688.0), (928.8, 688.0), (1175.2, 688.0), (1421.6, 688.0)]",
+			"primitives": 1728,
+			"texture_memory_bytes": 87861046,
+			"video_memory_bytes": 94325246
+		}
+	],
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"motion_step_seconds": 0.15,
+	"phase_start": 0.0,
+	"renderer": "gl_compatibility",
+	"size": "(1920, 1080)",
+	"variant": "room"
+}

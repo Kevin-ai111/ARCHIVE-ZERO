@@ -12,6 +12,7 @@ const LINEAR_ALPHA_EPSILON := 1.0 / 65535.0
 const TRANSPARENT_MASK_ALPHA_LIMIT := 1.0 / 255.0
 const PARCEL_FILTER_EDGE_ALLOWANCE := 0.5
 const ARCHIVE_ROOM_SCENE: PackedScene = preload("res://scenes/world/archive_room.tscn")
+const LIGHTING_FIX := preload("res://tests/lighting_fix_test_support.gd")
 
 var _failures := 0
 
@@ -207,7 +208,7 @@ func _test_polish_manifest_and_locked_assets(room: Node2D) -> void:
 				matches.append(sprite)
 		var instances: Array = asset["instances"]
 		_expect_equal(matches.size(), instances.size(), "%s repeats only the approved number of instances" % path)
-		_expect_equal(FileAccess.get_sha256(path), asset["sha256"], "%s is the unchanged ART PNG" % path)
+		_expect_equal(FileAccess.get_sha256(path), LIGHTING_FIX.expected_asset_hash(path, asset["sha256"]), "%s is original ART or the explicitly approved PR17 lighting replacement" % path)
 		var texture := load(path) as Texture2D
 		_expect_vector(texture.get_size(), Vector2(asset["export"][0], asset["export"][1]), "%s uses approved export dimensions" % path)
 		var image := texture.get_image()
