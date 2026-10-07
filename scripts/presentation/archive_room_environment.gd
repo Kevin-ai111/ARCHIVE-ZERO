@@ -6,6 +6,45 @@ const POLISH_DECODED_TEXTURE_BYTES := 9_894_208
 # Nine retained Phase 4E textures plus the nineteen Phase 4I textures.
 const DECODED_TEXTURE_BYTES := 11_397_016
 
+var _commissioning_stage := -1
+var state_application_count := 0
+var _commissioning_targets: Dictionary = {}
+
+
+func apply_commissioning_stage(stage: int) -> void:
+	if stage == _commissioning_stage or stage < 0 or stage > 3:
+		return
+	# Explicit named NodePaths map Receiving/Scanner/Sorter/Intake regions.
+	# Parent modulation affects children regardless of absolute CanvasItem Z.
+	if _commissioning_targets.is_empty():
+		for element: String in ProgressiveRoomStateMatrix.TARGETS:
+			var nodes: Array[CanvasItem] = []
+			for path: String in ProgressiveRoomStateMatrix.TARGETS[element]:
+				nodes.append(get_node(path) as CanvasItem)
+			_commissioning_targets[element] = nodes
+	for element: String in _commissioning_targets:
+		var value := ProgressiveRoomStateMatrix.get_value(element, stage)
+		for target: CanvasItem in _commissioning_targets[element]:
+			target.visible = value.visible
+			target.modulate = value.modulate
+	_commissioning_stage = stage
+	state_application_count += 1
+
+
+func get_commissioning_snapshot() -> Dictionary:
+	var elements := {}
+	for element: String in _commissioning_targets:
+		var nodes: Array[Dictionary] = []
+		for target: CanvasItem in _commissioning_targets[element]:
+			var effective := target.modulate * target.self_modulate
+			var parent := target.get_parent() as CanvasItem
+			while parent != null:
+				effective *= parent.modulate
+				parent = parent.get_parent() as CanvasItem
+			nodes.append({"path": String(get_path_to(target)), "visible": target.visible, "visible_in_tree": target.is_visible_in_tree(), "effective_modulate": effective})
+		elements[element] = {"alpha_multiplier": ProgressiveRoomStateMatrix.get_value(element, _commissioning_stage).alpha_multiplier, "targets": nodes}
+	return {"stage": _commissioning_stage, "applications": state_application_count, "elements": elements}
+
 @onready var light_cones: Node2D = %LightCones
 @onready var lamp_housings: Node2D = %LampHousings
 @onready var wall_sconces: Node2D = %WallSconces
