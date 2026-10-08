@@ -86,6 +86,13 @@ func _lighting_shot(name_value: String, closeups: bool) -> bool:
 		else:
 			comparison = {"result": "No historical full-line Case Panel capture; independent UI regression and visual review"}
 	_measurements.append({"capture": name_value, "stage": CommissioningManager.get_stage(), "comparison": comparison, "draw_calls": int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)), "primitives": int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "texture_memory_bytes": int(Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED)), "environment": _room.get_node("%EnvironmentArt").get_commissioning_snapshot()})
+	if get_window().size == Vector2i(1920, 1080) and not name_value.ends_with("case-panel"):
+		if CommissioningManager.get_stage() in [1, 2, 3]:
+			if not _save_cyan_closeup(image, name_value, "scanner", Rect2i(500, 790, 416, 250)):
+				return false
+		if CommissioningManager.get_stage() == 3:
+			if not _save_cyan_closeup(image, name_value, "intake", Rect2i(1460, 790, 416, 250)):
+				return false
 	if closeups and get_window().size == Vector2i(1920, 1080):
 		var attachment := await _measure_bulb_attachment(image)
 		_measurements[-1]["bulb_attachment"] = attachment
@@ -109,6 +116,14 @@ func _lighting_shot(name_value: String, closeups: bool) -> bool:
 					push_error("Cannot save raw exact-base GPU close-up.")
 					get_tree().quit(1)
 					return false
+	return true
+
+
+func _save_cyan_closeup(image: Image, state_name: String, machine: String, region: Rect2i) -> bool:
+	if image.get_region(region).save_png(_output.path_join(state_name + "-" + machine + "-closeup.png")) != OK:
+		push_error("Cannot save raw cyan-bounce GPU close-up.")
+		get_tree().quit(1)
+		return false
 	return true
 
 

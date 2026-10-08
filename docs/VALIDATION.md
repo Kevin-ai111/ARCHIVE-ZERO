@@ -23,7 +23,8 @@ and the test scenes must print `Production pipeline tests passed.` and
 
 Case foundation prints 477 passing checks; manual Case integration prints 1873.
 Commissioning prints 293 checks; progressive room presentation prints 2503.
-The lighting correction adds 554 checks. Original ART/matrix fixtures remain
+The lighting correction adds 583 checks, including the single approved cyan-bounce
+correction contract. Original ART/matrix fixtures remain
 historical references; only two exact PNG replacements and nine approved alpha
 entries are exceptions. Actual three-resolution GPU pixel isolation, retained
 old golden and pending artistic approval are documented in

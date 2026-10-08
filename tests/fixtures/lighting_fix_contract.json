@@ -1,6 +1,11 @@
 {
   "base_sha": "77ec39b86dd904b3ced5b6fa1ca021bb56b4a39b",
   "package_sha256": "20f4818f6c66b9e8bf28bd03f4f1e9c0650117f1bb6c010477e6baa18cdf3c53",
+  "correction": {
+    "previous_head_sha": "6abf2a27231f15387ca9928b1929241181c6dabb",
+    "package_sha256": "1e75eacea2136d56f22218793c7f3fca8e313386033ec4da59975eb3eb011b76",
+    "verifier_checks": 31
+  },
   "asset_count": 88,
   "assets": {
     "assets/environment/phase4i/lighting/AZ4I_FX_worklight_cone_300x360.png": {
@@ -17,6 +22,14 @@
       "dimensions": [
         430,
         100
+      ]
+    },
+    "assets/environment/phase4i/lighting/AZ4I_FX_cyan_bounce_320x88.png": {
+      "sha256": "3bea037b1ac1d97223e90b3d01fb846adedc5a7dbea2f88267a24838abd35df3",
+      "old_sha256": "05c75ea2c12069f82c4c97382c5c3d3be084fd2b23c05b68d20f3e60aadf815f",
+      "dimensions": [
+        320,
+        88
       ]
     }
   },
@@ -136,5 +149,55 @@
       876
     ]
   ],
+  "cyan_bounce": {
+    "nodes": {
+      "scanner_cyan_bounce": {
+        "path": "CyanBounce/Art_14_0",
+        "position": [
+          548,
+          886
+        ],
+        "scale": [
+          1,
+          1
+        ],
+        "visible": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "alpha": [
+          0,
+          0.52,
+          0.68,
+          1
+        ]
+      },
+      "intake_cyan_bounce": {
+        "path": "CyanBounce/Art_14_1",
+        "position": [
+          1508,
+          886
+        ],
+        "scale": [
+          1,
+          1
+        ],
+        "visible": [
+          false,
+          false,
+          false,
+          true
+        ],
+        "alpha": [
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    }
+  },
   "baseline_policy": "PR16 historical pixels retained. Corrected capture is review candidate, not new approved golden. Pixels outside changed layer bounds must remain identical."
 }

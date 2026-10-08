@@ -15,7 +15,7 @@ func _ready() -> void:
 
 func _run() -> void:
 	var rules := LIGHTING.contract()
-	_check(rules.assets.size() == 2, "Exactly two explicitly approved runtime replacements")
+	_check(rules.assets.size() == 3, "Two approved lighting assets plus exactly one approved cyan correction")
 	for path: String in rules.assets:
 		var asset: Dictionary = rules.assets[path]
 		_check(FileAccess.get_sha256("res://" + path) == asset.sha256, "Exact corrected ART SHA: " + path)
@@ -32,6 +32,7 @@ func _run() -> void:
 	var environment := room.get_node("%EnvironmentArt") as ArchiveRoomEnvironmentVisual
 	var base: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/lighting_fix_base_environment.json"))
 	_check(JSON.parse_string(JSON.stringify(environment.get_layout_snapshot())) == base, "Every environment position/scale/texture path/Z/instance count matches exact base")
+	_test_cyan_contract(environment, rules)
 	_check(environment.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR and not environment.is_processing(), "Original linear filtering, no frame controller")
 	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/phase5d_state_matrix.json"))
 	for stopped: bool in [false, true]:
@@ -65,7 +66,7 @@ func _run() -> void:
 	room.queue_free()
 	await get_tree().process_frame
 	if _failures == 0:
-		print("Lighting correction tests passed: %d checks; two corrected textures, locked service art, exact alpha/geometry, authority isolation." % _checks)
+		print("Lighting correction tests passed: %d checks; corrected cone/pool/cyan art, locked service art, exact alpha/geometry, authority isolation." % _checks)
 	else:
 		push_error("Lighting correction tests failed: %d/%d" % [_failures, _checks])
 	get_tree().quit(0 if _failures == 0 else 1)
@@ -81,6 +82,23 @@ func _test_pixel_guard() -> void:
 	changed.set_pixel(0, 0, Color.WHITE)
 	_check(LIGHTING.compare_outside_regions(original, changed, regions).outside_changed_pixels == 1, "Negative control: unrelated pixel change detected")
 	_check(not LIGHTING.compare_outside_regions(original, Image.create(7, 6, false, Image.FORMAT_RGBA8), regions).valid, "Negative control: size mismatch fails")
+
+
+func _test_cyan_contract(environment: ArchiveRoomEnvironmentVisual, rules: Dictionary) -> void:
+	var cyan_path := "assets/environment/phase4i/lighting/AZ4I_FX_cyan_bounce_320x88.png"
+	_check(FileAccess.get_sha256("res://" + cyan_path) == rules.assets[cyan_path].sha256, "Corrected cyan bounce exact SHA")
+	var cyan_image := Image.load_from_file(ProjectSettings.globalize_path("res://" + cyan_path))
+	_check(cyan_image.get_size() == Vector2i(320, 88) and cyan_image.get_format() == Image.FORMAT_RGBA8, "Corrected cyan bounce is 320x88 RGBA")
+	for element: String in rules.cyan_bounce.nodes:
+		var expected: Dictionary = rules.cyan_bounce.nodes[element]
+		var sprite := environment.get_node(expected.path) as Sprite2D
+		_check(sprite.position == Vector2(expected.position[0], expected.position[1]), "Cyan bounce position unchanged: " + element)
+		_check(sprite.scale == Vector2(expected.scale[0], expected.scale[1]), "Cyan bounce scale unchanged: " + element)
+		_check(sprite.texture.resource_path == "res://" + cyan_path, "Same corrected texture serves: " + element)
+		for stage: int in range(4):
+			var value := ProgressiveRoomStateMatrix.get_value(element, stage)
+			_check(value.visible == expected.visible[stage], "Cyan bounce visibility unchanged: %s stage %d" % [element, stage])
+			_check(is_equal_approx(value.alpha_multiplier, float(expected.alpha[stage])), "Cyan bounce alpha unchanged: %s stage %d" % [element, stage])
 
 
 func _check(condition: bool, detail: String) -> void:

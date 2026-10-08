@@ -63,7 +63,7 @@ func _run() -> void:
 	_room.queue_free()
 	await _settle()
 	if _failures == 0:
-		print("Progressive room states tests passed: %d checks; 29 elements x 4 stages, 86 immutable PNGs + 2 approved lighting replacements." % _checks)
+		print("Progressive room states tests passed: %d checks; 29 elements x 4 stages, 85 immutable PNGs + 3 approved lighting replacements." % _checks)
 	else:
 		push_error("Progressive room states tests failed: %d/%d" % [_failures, _checks])
 	get_tree().quit(0 if _failures == 0 else 1)

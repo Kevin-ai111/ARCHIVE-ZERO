@@ -3,6 +3,37 @@
 Base: `77ec39b86dd904b3ced5b6fa1ca021bb56b4a39b`.
 Branch: `codex/archive-room-lighting-fix`. Visual correction only; do not merge automatically.
 
+## Cyan-bounce correction pass
+
+The Art Director accepted the corrected work-light cones, warm floor pools and
+service-marking balance, but blocked the residual Scanner/Intake cyan ellipses.
+The follow-up package
+`ARCHIVE_ZERO_CyanBounceFix_v1_PRODUCTION_REVIEW.zip` has SHA-256
+`1e75eacea2136d56f22218793c7f3fca8e313386033ec4da59975eb3eb011b76`.
+Its supplied deterministic verifier ran unchanged and passed **31/31** checks.
+
+Exactly one runtime PNG was supplied and integrated. The previous 320×88 RGBA
+asset (`05c75ea2c12069f82c4c97382c5c3d3be084fd2b23c05b68d20f3e60aadf815f`)
+is replaced by the corrected byte-exact asset
+`3bea037b1ac1d97223e90b3d01fb846adedc5a7dbea2f88267a24838abd35df3`.
+It uses irregular horizontal fragments, full-transparent gaps and asymmetric
+falloff rather than a closed oval. Source files and offline composites were not
+copied into runtime, and the PNG bytes were not regenerated or modified.
+
+The existing shared-texture contract is unchanged:
+
+| Instance | Position before/after | Scale before/after |
+| --- | --- | --- |
+| Scanner | (548,886) / (548,886) | (1,1) / (1,1) |
+| Intake | (1508,886) / (1508,886) | (1,1) / (1,1) |
+
+No alpha trim was justified by the real renderer, so the established values stay
+exactly: Scanner **0.52** in Scanner Online, **0.68** in Sorter Online and
+**1.00** in Full Line; Intake **1.00** only in Full Line. Visibility remains
+Scanner hidden/visible/visible/visible and Intake hidden/hidden/hidden/visible
+across Manual/Scanner/Sorter/Full-Line. Commissioning thresholds and manager
+code are unchanged.
+
 ## Option C and verified provenance
 
 The Art Director's Option C is a mixed fix: replace only the cone/pool overlays,
@@ -22,15 +53,17 @@ remain outside runtime.
 | --- | --- | --- |
 | `AZ4I_FX_worklight_cone_300x360.png` | 300×360 RGBA | `38d2e668c0d1f9bc7503b0b714be7f242997e71300c8b27235f56458822bd74f` |
 | `AZ4I_FX_floor_pool_430x100.png` | 430×100 RGBA | `a1f5e02af860245f8a8585c9df59f9a84a466df0da822ad3ad9da35f1bda7492` |
+| `AZ4I_FX_cyan_bounce_320x88.png` | 320×88 RGBA | `3bea037b1ac1d97223e90b3d01fb846adedc5a7dbea2f88267a24838abd35df3` |
 
 Locked service marking remains byte-identical:
 `145c7827f70219e677bad590ecd4f9889544748f3281b1af641669d15c5b0f3b`.
 
-There are still **88** runtime PNGs: these two approved replacements and **86
-byte-identical base images**, covering every unrelated environment, machine,
-conveyor, Case Panel and Case-item asset. Existing import files/policy are
+There are still **88** runtime PNGs. Relative to the original base there are the
+two approved lighting replacements plus the single approved cyan replacement;
+the other **85** images are byte-identical. Relative to the previous PR #17 head,
+all **87 unrelated PNGs** remain byte-identical. Existing import files/policy are
 unchanged: lossless, mipmaps off, alpha preserved, linear environment filtering.
-PNG disk size increases by 4,336 bytes; decoded/resident texture dimensions do not.
+Decoded/resident texture dimensions do not change.
 
 ## Exact-base diagnostic, before tuning
 
@@ -46,10 +79,10 @@ unchanged. Only the observation/evidence is retained:
 
 Observation: removing the warm pools removes the repeated warm ellipses and
 reducing markings quiets the lower screen, while old geometric cones remain.
-The separate Scanner/Intake cyan-bounce ellipses remain visible even in this
-diagnostic. They are not FloorReflections and are explicitly outside the approved
-delta. They remain unchanged in this PR and are an identified residual visual
-limitation, not claimed fixed.
+That diagnostic also isolated the separate Scanner/Intake cyan ellipses. The
+subsequent ART Director correction pass described above now replaces precisely
+that one shared cyan texture; the diagnostic remains historical evidence, not the
+final runtime result.
 
 ## Final runtime values and geometry
 
@@ -67,7 +100,8 @@ value is inside its package range.
 Inactive cones/pools retain exactly their old hidden/zero-alpha state. Existing
 RGB modulation and visibility thresholds remain unchanged. All other **20**
 matrix entries are untouched, including FloorWear, pendant housings, haze,
-cyan bounces, architecture and shadows. No per-frame controller was added.
+cyan-bounce state values, architecture and shadows. No per-frame controller was
+added.
 
 | Cone pair | Before top-left | After top-left | Y delta |
 | --- | --- | --- | ---: |
@@ -93,7 +127,9 @@ spread, no old horizontal cap/trapezoid and a clean lower fade. No Y shift neede
 ## Actual graphical review evidence
 
 Official **Godot 4.7.2.stable.official.ed1daf0bf**, compatibility/OpenGL3.3,
-NVIDIA RTX 3060 Ti on Windows. Fifty proof PNGs plus metadata are included:
+NVIDIA RTX 3060 Ti on Windows. The original fifty lighting proof PNGs remain,
+and the focused cyan correction adds twelve actual runtime PNGs plus three
+metadata files:
 15 exact-base state/Manual-Case references, 18 corrected room/Case captures,
 16 raw before/after bulb/work-zone crops and one temporary diagnostic.
 
@@ -109,22 +145,29 @@ are unchanged; phases and conveyor time are frozen at zero only in QA.
 - [960×540](screenshots/archive-room-lighting-fix/960x540/):
   same six captures; no new crop/overlap problem.
 - [Exact-base references](screenshots/archive-room-lighting-fix/base/).
+- [Cyan correction Full HD](screenshots/archive-room-lighting-fix/cyan-correction/1920x1080/):
+  Scanner, Sorter and Full-Line rooms; requested Scanner/Intake close-ups; and
+  Full-Line+CASE_0001.
+- [Cyan correction 1280×720](screenshots/archive-room-lighting-fix/cyan-correction/1280x720/)
+  and [960×540](screenshots/archive-room-lighting-fix/cyan-correction/960x540/):
+  Scanner Online and Full Line at each size.
 
 | Review | Observation |
 | --- | --- |
 | Manual Shift | Warm Receiving bulb/local response over a cool readable room; installed downstream machines remain dormant. Warm oval/ring and dominant floor-arrow presentation removed. |
-| Scanner Online | Existing Scanner activation remains clear, with soft attached work light; no intensity compensation. |
-| Sorter Online | Existing central activation remains distinct; corrected response is subtle and the actual bottleneck outline is unchanged. |
-| Full Line | Four readable work regions, restrained cone volume, quiet fragmented warm floor response; machine art remains dominant. Locked cyan bounces remain oval. |
-| 720p / 540p | Same visual correction and state sequence; floor material stays readable. Fine warm response becomes less conspicuous with downscaling, intentionally not brightened. |
-| Case Panel | CASE_0001 checked in Manual and Full Line at all three sizes; UI/layout untouched, room cues visible beside it, no new contrast/overlap/clipping. |
+| Scanner Online | Scanner activation remains clear. At alpha 0.52 its cyan response is visible but restrained, fragmented and open; no ellipse, closed oval, ring or uniform disc. |
+| Sorter Online | Scanner response at 0.68 remains broken into floor catches while the Sorter bottleneck outline stays visually dominant. |
+| Full Line | Scanner and Intake both show local irregular catches, not matching decals. Their different surrounding floor/machine context avoids distracting repetition; warm practical lighting remains dominant. |
+| Scanner / Intake close-ups | Raw unscaled GPU crops retain transparent gaps and asymmetric falloff. Linear filtering does not reconnect the fragments into an oval or introduce a hard edge. |
+| 720p / 540p | The fragmented silhouette survives fractional scaling with no cyan blob, objectionable aliasing or visual noise. No compensating alpha increase was applied at 540p. |
+| Case Panel | FULL_LINE_ONLINE+CASE_0001 at Full HD is unchanged and readable; the floor-only correction does not compete with the panel or introduce a contrast issue. |
 
 The actual room qualitatively follows the supplied Option-C preview. The native
 HUD, existing bottleneck outline and exact frozen parcel phase differ from offline
 composites; these are preserved gameplay presentation, not lighting regressions.
-Repeated warm ellipse/decal appearance is removed. Do not claim every floor oval
-is gone: the two protected cyan-bounce shapes remain, as the offline corrected
-preview also shows. Independent final artistic approval is still pending.
+Repeated warm and cyan ellipse/decal appearance is removed in the actual Godot
+output. This is technical/runtime validation only: the new evidence is awaiting
+ART Director re-review and does not claim final artistic approval.
 
 ## Intentional historical-baseline exception
 
@@ -142,16 +185,19 @@ Inactive overlays are not excluded from comparison. These are conservative
 drawing bounds, not a per-alpha-pixel segmentation. Locked asset/geometry tests
 independently guard unrelated content inside those bounds.
 
-**Outside-region changed pixels: 0** for all four states and Manual+Case at all
-three resolutions. Full-HD outside coverage ranges from 1,371,206 to 1,751,108
-pixels per frame; 720p from 606,707 to 777,006; 540p from 340,146 to 436,266.
-All reported values and region bounds are in each resolution's metadata.
+For the correction pass, **outside-region changed pixels: 0** for all four states
+and both Case frames at all three resolutions. Full-HD cyan deltas are 13,840
+pixels in Scanner Online, 13,926 in Sorter Online and 28,043 in Full Line; 720p
+Scanner/Full-Line deltas are 6,235/12,681; 540p values are 3,556/7,174. Manual
+Shift changes zero pixels because both cyan instances are hidden. All reported
+values and region bounds are in each resolution's metadata.
 The existing generic progressive capture uses the same documented guard against
 its retained PR16 Full-Line reference.
 
-Full-Line+Case has no matching historical full-line-panel screenshot, so no
-pixel-parity claim is made for that particular frame: unchanged UI hashes,
-the complete UI regression and actual inspection provide its validation.
+The correction comparison uses the current PR #17 runtime captures as its direct
+reference, including Full-Line+Case. That frame changes only inside the two cyan
+texture bounds; the panel and every pixel outside permitted overlay bounds remain
+identical.
 
 ## Regression / authority / saves
 
@@ -165,7 +211,7 @@ exited **0** with official Godot 4.7.2:
 | Manual Case UI | **1873 checks PASS** |
 | Commissioning domain | **293 checks PASS**, unchanged manager |
 | Progressive room states | **2503 checks PASS**, all 29×4 entries and dormant/true-disabled/caching/belt rules |
-| Focused lighting | **554 checks PASS**, corrected hashes/dimensions/import, locked marking, complete geometry, exact alpha/ranges, isolation and pixel-guard negative controls |
+| Focused lighting | **583 checks PASS**, corrected cone/pool/cyan hashes and dimensions/import, locked marking, explicit cyan position/scale/visibility/alpha contract, complete geometry, authority isolation and pixel-guard negative controls |
 | Production/upgrades/save/legacy migrations | PASS |
 | Existing visual foundation | PASS at all three sizes; transformed gate/parcel overlap remains 0 at ±16°/0° and 13 coupled phases |
 | Main 120-frame smoke | PASS |
@@ -191,8 +237,8 @@ Same unchanged `archive_room_polish_capture.tscn`, exact phase zero, same GPU:
 
 | Full Line | Draw calls | Primitives | Texture bytes |
 | --- | ---: | ---: | ---: |
-| Exact base | 81 | 1728 | 87,861,046 |
-| Corrected | 81 | 1728 | 87,861,046 |
+| Previous PR #17 head | 81 | 1728 | 87,861,046 |
+| Cyan correction | 81 | 1728 | 87,861,046 |
 | Delta | **0** | **0** | **0** |
 
 Both video-memory snapshots are 94,325,246 bytes. There remain 19 Phase4I textures,
@@ -216,8 +262,9 @@ live save. Screenshots and human visual judgment complement, not replace, tests.
 
 ## Remaining scope / limitations
 
-- The protected Scanner/Intake cyan bounce artwork and response still produce
-  oval shapes. This needs a separately authorized ART/integration decision.
+- The cyan ellipse blocker is superseded by this correction pass. Runtime and
+  automated validation pass, but final ART Director re-review is still pending;
+  the correction captures are review evidence, not a newly approved golden.
 - Cones/floor response intentionally remain subtle, especially at 540p; no
   overbright compensation. Locked UI secondary text remains 9 physical pixels
   there; this PR does not redesign it.
