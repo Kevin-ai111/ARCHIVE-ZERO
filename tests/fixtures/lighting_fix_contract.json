@@ -1,0 +1,203 @@
+{
+  "base_sha": "77ec39b86dd904b3ced5b6fa1ca021bb56b4a39b",
+  "package_sha256": "20f4818f6c66b9e8bf28bd03f4f1e9c0650117f1bb6c010477e6baa18cdf3c53",
+  "correction": {
+    "previous_head_sha": "6abf2a27231f15387ca9928b1929241181c6dabb",
+    "package_sha256": "1e75eacea2136d56f22218793c7f3fca8e313386033ec4da59975eb3eb011b76",
+    "verifier_checks": 31
+  },
+  "asset_count": 88,
+  "assets": {
+    "assets/environment/phase4i/lighting/AZ4I_FX_worklight_cone_300x360.png": {
+      "sha256": "38d2e668c0d1f9bc7503b0b714be7f242997e71300c8b27235f56458822bd74f",
+      "old_sha256": "981031e370c72df1e2fdf6bd6dfb42f5b2d4495df2e3067fc837d9a8f27cad49",
+      "dimensions": [
+        300,
+        360
+      ]
+    },
+    "assets/environment/phase4i/lighting/AZ4I_FX_floor_pool_430x100.png": {
+      "sha256": "a1f5e02af860245f8a8585c9df59f9a84a466df0da822ad3ad9da35f1bda7492",
+      "old_sha256": "cba3892f763c06c64a0b297f897e7395d1c908b56871d7c8856237b066ebfd4b",
+      "dimensions": [
+        430,
+        100
+      ]
+    },
+    "assets/environment/phase4i/lighting/AZ4I_FX_cyan_bounce_320x88.png": {
+      "sha256": "3bea037b1ac1d97223e90b3d01fb846adedc5a7dbea2f88267a24838abd35df3",
+      "old_sha256": "05c75ea2c12069f82c4c97382c5c3d3be084fd2b23c05b68d20f3e60aadf815f",
+      "dimensions": [
+        320,
+        88
+      ]
+    }
+  },
+  "locked_service_marking": {
+    "path": "assets/environment/phase4i/ground/AZ4I_GR_service_markings_512x128.png",
+    "sha256": "145c7827f70219e677bad590ecd4f9889544748f3281b1af641669d15c5b0f3b"
+  },
+  "alpha": {
+    "light_cone": [
+      0.76,
+      0.76,
+      0.82,
+      0.88
+    ],
+    "floor_light_pool": [
+      0.52,
+      0.52,
+      0.58,
+      0.64
+    ],
+    "service_markings": [
+      0.18,
+      0.23,
+      0.28,
+      0.35
+    ]
+  },
+  "ranges": {
+    "light_cone": [
+      [
+        0.7,
+        0.85
+      ],
+      [
+        0.7,
+        0.85
+      ],
+      [
+        0.75,
+        0.9
+      ],
+      [
+        0.8,
+        1
+      ]
+    ],
+    "floor_light_pool": [
+      [
+        0.45,
+        0.65
+      ],
+      [
+        0.45,
+        0.65
+      ],
+      [
+        0.5,
+        0.7
+      ],
+      [
+        0.55,
+        0.75
+      ]
+    ],
+    "service_markings": [
+      [
+        0.15,
+        0.2
+      ],
+      [
+        0.2,
+        0.25
+      ],
+      [
+        0.25,
+        0.3
+      ],
+      [
+        0.3,
+        0.4
+      ]
+    ]
+  },
+  "cone_positions": [
+    [
+      95,
+      245
+    ],
+    [
+      566,
+      245
+    ],
+    [
+      1056,
+      245
+    ],
+    [
+      1502,
+      245
+    ]
+  ],
+  "pool_positions": [
+    [
+      30,
+      876
+    ],
+    [
+      501,
+      876
+    ],
+    [
+      991,
+      876
+    ],
+    [
+      1437,
+      876
+    ]
+  ],
+  "cyan_bounce": {
+    "nodes": {
+      "scanner_cyan_bounce": {
+        "path": "CyanBounce/Art_14_0",
+        "position": [
+          548,
+          886
+        ],
+        "scale": [
+          1,
+          1
+        ],
+        "visible": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "alpha": [
+          0,
+          0.52,
+          0.68,
+          1
+        ]
+      },
+      "intake_cyan_bounce": {
+        "path": "CyanBounce/Art_14_1",
+        "position": [
+          1508,
+          886
+        ],
+        "scale": [
+          1,
+          1
+        ],
+        "visible": [
+          false,
+          false,
+          false,
+          true
+        ],
+        "alpha": [
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    }
+  },
+  "baseline_policy": "PR16 historical pixels retained. Corrected capture is review candidate, not new approved golden. Pixels outside changed layer bounds must remain identical."
+}

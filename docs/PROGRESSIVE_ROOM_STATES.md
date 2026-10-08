@@ -3,6 +3,12 @@
 Base: `4714f71f912e718818b5db4871bfe2eee18d05fb`.
 Branch: `codex/progressive-room-states`. This milestone does not merge itself.
 
+Historical PR16 record: PR17 is now the narrowly scoped lighting correction
+documented in [`ARCHIVE_ROOM_LIGHTING_FIX.md`](ARCHIVE_ROOM_LIGHTING_FIX.md).
+Its two textures/nine lighting alpha entries intentionally supersede the
+full-image parity requirement below, while this old PNG/matrix remains retained.
+First Shift, formerly anticipated for PR17 in this record, is still deferred.
+
 ## Provenance and unchanged art
 
 The original `ARCHIVE_ZERO_Phase5D_B_Progressive_Room_States_v1_PRODUCTION_REVIEW.zip`

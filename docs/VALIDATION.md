@@ -11,6 +11,7 @@ godot --headless --path . tests/case_foundation_test.tscn
 godot --headless --path . tests/manual_case_processing_test.tscn
 godot --headless --path . tests/commissioning_test.tscn
 godot --headless --path . tests/progressive_room_states_test.tscn
+godot --headless --path . tests/archive_room_lighting_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
 godot --headless --path . tests/visual_foundation_test.tscn
 godot --headless --path . --quit-after 120
@@ -22,6 +23,12 @@ and the test scenes must print `Production pipeline tests passed.` and
 
 Case foundation prints 477 passing checks; manual Case integration prints 1873.
 Commissioning prints 293 checks; progressive room presentation prints 2503.
+The lighting correction adds 583 checks, including the single approved cyan-bounce
+correction contract. Original ART/matrix fixtures remain
+historical references; only two exact PNG replacements and nine approved alpha
+entries are exceptions. Actual three-resolution GPU pixel isolation, retained
+old golden and pending artistic approval are documented in
+[`ARCHIVE_ROOM_LIGHTING_FIX.md`](ARCHIVE_ROOM_LIGHTING_FIX.md).
 Those additions cover strict stage/save contracts, the complete approved matrix,
 dormant versus real-disabled behavior, repeated visual refresh composition,
 all 88 existing PNG hashes, and production/case isolation in running/stopped

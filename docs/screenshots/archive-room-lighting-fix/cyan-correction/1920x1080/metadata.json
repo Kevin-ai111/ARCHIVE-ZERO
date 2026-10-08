@@ -1,0 +1,2181 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3060 Ti",
+	"approval": "Review captures only; no replacement golden approved",
+	"base_sha": "77ec39b86dd904b3ced5b6fa1ca021bb56b4a39b",
+	"captures": [
+		{
+			"capture": "manual_shift",
+			"comparison": {
+				"all_changed_pixels": 0,
+				"allowed_regions": [
+					"[P: (94.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (29.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (59.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (659.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (1219.0, 899.0), S: (514.0, 130.0)]"
+				],
+				"outside_changed_pixels": 0,
+				"outside_checked_pixels": 1751108,
+				"valid": true
+			},
+			"draw_calls": 61,
+			"environment": {
+				"applications": 2,
+				"elements": {
+					"cable_runs": {
+						"alpha_multiplier": 0.72,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.72)",
+								"path": "PolishCables",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"distant_background": {
+						"alpha_multiplier": 0.86,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.86)",
+								"path": "DistantArchive/Backdrop",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_1": {
+						"alpha_multiplier": 0.52,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.52)",
+								"path": "FloorReflections/Art_13_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_2": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_light_pool_3": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_2",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_light_pool_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_wear": {
+						"alpha_multiplier": 0.74,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.74)",
+								"path": "FloorWear",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"foreground_rails": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "ForegroundRails",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"haze": {
+						"alpha_multiplier": 0.22,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.22)",
+								"path": "Haze",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"intake_cyan_bounce": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "CyanBounce/Art_14_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_1": {
+						"alpha_multiplier": 0.76,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.76)",
+								"path": "LightCones/Art_8_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_2": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_3": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_2",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"machine_shadow_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_2": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_3": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_4": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"optional_sconces": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "WallSconces",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"pendant_housing_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_2": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_3": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_4": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"recess_lighting": {
+						"alpha_multiplier": 0.38,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.38)",
+								"path": "BayRecessA",
+								"visible": true,
+								"visible_in_tree": true
+							},
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.38)",
+								"path": "BayRecessB",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"scanner_cyan_bounce": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "CyanBounce/Art_14_0",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"service_door": {
+						"alpha_multiplier": 0.58,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.58)",
+								"path": "ServiceDoor",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_markings": {
+						"alpha_multiplier": 0.18,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.18)",
+								"path": "ServiceMarkings",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"shelving": {
+						"alpha_multiplier": 0.72,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.72)",
+								"path": "ArchiveShelving",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"signage": {
+						"alpha_multiplier": 0.74,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.74)",
+								"path": "Signage",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					}
+				},
+				"stage": 0
+			},
+			"primitives": 1634,
+			"stage": 0,
+			"texture_memory_bytes": 87861046
+		},
+		{
+			"capture": "scanner_online",
+			"comparison": {
+				"all_changed_pixels": 13840,
+				"allowed_regions": [
+					"[P: (94.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (565.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (29.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (500.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (59.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (659.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (1219.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (547.0, 885.0), S: (322.0, 90.0)]"
+				],
+				"outside_changed_pixels": 0,
+				"outside_checked_pixels": 1624708,
+				"valid": true
+			},
+			"draw_calls": 64,
+			"environment": {
+				"applications": 3,
+				"elements": {
+					"cable_runs": {
+						"alpha_multiplier": 0.8,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.8)",
+								"path": "PolishCables",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"distant_background": {
+						"alpha_multiplier": 0.9,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.9)",
+								"path": "DistantArchive/Backdrop",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_1": {
+						"alpha_multiplier": 0.52,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.52)",
+								"path": "FloorReflections/Art_13_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_2": {
+						"alpha_multiplier": 0.52,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.52)",
+								"path": "FloorReflections/Art_13_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_3": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_2",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_light_pool_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_wear": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.82)",
+								"path": "FloorWear",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"foreground_rails": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.88)",
+								"path": "ForegroundRails",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"haze": {
+						"alpha_multiplier": 0.38,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.38)",
+								"path": "Haze",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"intake_cyan_bounce": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "CyanBounce/Art_14_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_1": {
+						"alpha_multiplier": 0.76,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.76)",
+								"path": "LightCones/Art_8_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_2": {
+						"alpha_multiplier": 0.76,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.76)",
+								"path": "LightCones/Art_8_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_3": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_2",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"machine_shadow_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_3": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_4": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"optional_sconces": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "WallSconces",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"pendant_housing_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_3": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_4": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"recess_lighting": {
+						"alpha_multiplier": 0.55,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.55)",
+								"path": "BayRecessA",
+								"visible": true,
+								"visible_in_tree": true
+							},
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.55)",
+								"path": "BayRecessB",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"scanner_cyan_bounce": {
+						"alpha_multiplier": 0.52,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.95, 1.0, 0.52)",
+								"path": "CyanBounce/Art_14_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_door": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "ServiceDoor",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_markings": {
+						"alpha_multiplier": 0.23,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.23)",
+								"path": "ServiceMarkings",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"shelving": {
+						"alpha_multiplier": 0.8,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.8)",
+								"path": "ArchiveShelving",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"signage": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.82)",
+								"path": "Signage",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					}
+				},
+				"stage": 1
+			},
+			"primitives": 1644,
+			"stage": 1,
+			"texture_memory_bytes": 87861046
+		},
+		{
+			"capture": "sorter_online",
+			"comparison": {
+				"all_changed_pixels": 13926,
+				"allowed_regions": [
+					"[P: (94.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (565.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (1055.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (29.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (500.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (990.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (59.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (659.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (1219.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (547.0, 885.0), S: (322.0, 90.0)]"
+				],
+				"outside_changed_pixels": 0,
+				"outside_checked_pixels": 1501428,
+				"valid": true
+			},
+			"draw_calls": 67,
+			"environment": {
+				"applications": 4,
+				"elements": {
+					"cable_runs": {
+						"alpha_multiplier": 0.9,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.9)",
+								"path": "PolishCables",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"distant_background": {
+						"alpha_multiplier": 0.96,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.96)",
+								"path": "DistantArchive/Backdrop",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_1": {
+						"alpha_multiplier": 0.58,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.58)",
+								"path": "FloorReflections/Art_13_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_2": {
+						"alpha_multiplier": 0.58,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.58)",
+								"path": "FloorReflections/Art_13_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_3": {
+						"alpha_multiplier": 0.58,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.58)",
+								"path": "FloorReflections/Art_13_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_wear": {
+						"alpha_multiplier": 0.92,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.92)",
+								"path": "FloorWear",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"foreground_rails": {
+						"alpha_multiplier": 0.94,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.94)",
+								"path": "ForegroundRails",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"haze": {
+						"alpha_multiplier": 0.68,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.68)",
+								"path": "Haze",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"intake_cyan_bounce": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "CyanBounce/Art_14_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_1": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.82)",
+								"path": "LightCones/Art_8_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_2": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.82)",
+								"path": "LightCones/Art_8_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_3": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.82)",
+								"path": "LightCones/Art_8_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"machine_shadow_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_3": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_4": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"optional_sconces": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "WallSconces",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"pendant_housing_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_3": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_4": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"recess_lighting": {
+						"alpha_multiplier": 0.78,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.78)",
+								"path": "BayRecessA",
+								"visible": true,
+								"visible_in_tree": true
+							},
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.78)",
+								"path": "BayRecessB",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"scanner_cyan_bounce": {
+						"alpha_multiplier": 0.68,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.97, 1.0, 0.68)",
+								"path": "CyanBounce/Art_14_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_door": {
+						"alpha_multiplier": 0.76,
+						"targets": [
+							{
+								"effective_modulate": "(0.88, 0.92, 0.96, 0.76)",
+								"path": "ServiceDoor",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_markings": {
+						"alpha_multiplier": 0.28,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.28)",
+								"path": "ServiceMarkings",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"shelving": {
+						"alpha_multiplier": 0.9,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.9)",
+								"path": "ArchiveShelving",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"signage": {
+						"alpha_multiplier": 0.9,
+						"targets": [
+							{
+								"effective_modulate": "(0.94, 0.96, 0.98, 0.9)",
+								"path": "Signage",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					}
+				},
+				"stage": 2
+			},
+			"primitives": 1660,
+			"stage": 2,
+			"texture_memory_bytes": 87861046
+		},
+		{
+			"bulb_attachment": [
+				{
+					"bulb_bottom_y": 275,
+					"criterion": "first nonzero 8-bit GPU pixel difference, not perceptual brightness threshold",
+					"first_rendered_cone_delta_y": 276,
+					"gap_pixels": 0,
+					"region": 1
+				},
+				{
+					"bulb_bottom_y": 275,
+					"criterion": "first nonzero 8-bit GPU pixel difference, not perceptual brightness threshold",
+					"first_rendered_cone_delta_y": 276,
+					"gap_pixels": 0,
+					"region": 2
+				},
+				{
+					"bulb_bottom_y": 275,
+					"criterion": "first nonzero 8-bit GPU pixel difference, not perceptual brightness threshold",
+					"first_rendered_cone_delta_y": 276,
+					"gap_pixels": 0,
+					"region": 3
+				},
+				{
+					"bulb_bottom_y": 275,
+					"criterion": "first nonzero 8-bit GPU pixel difference, not perceptual brightness threshold",
+					"first_rendered_cone_delta_y": 276,
+					"gap_pixels": 0,
+					"region": 4
+				}
+			],
+			"capture": "full_line_online",
+			"comparison": {
+				"all_changed_pixels": 28043,
+				"allowed_regions": [
+					"[P: (94.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (565.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (1055.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (1501.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (29.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (500.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (990.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (1436.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (59.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (659.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (1219.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (547.0, 885.0), S: (322.0, 90.0)]",
+					"[P: (1507.0, 885.0), S: (322.0, 90.0)]"
+				],
+				"outside_changed_pixels": 0,
+				"outside_checked_pixels": 1371206,
+				"valid": true
+			},
+			"draw_calls": 81,
+			"environment": {
+				"applications": 5,
+				"elements": {
+					"cable_runs": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "PolishCables",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"distant_background": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "DistantArchive/Backdrop",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_1": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_2": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_3": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_4": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_wear": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "FloorWear",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"foreground_rails": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "ForegroundRails",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"haze": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "Haze",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"intake_cyan_bounce": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "CyanBounce/Art_14_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_1": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_2": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_3": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_4": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_3": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_4": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"optional_sconces": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "WallSconces",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"pendant_housing_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_3": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_4": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"recess_lighting": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "BayRecessA",
+								"visible": true,
+								"visible_in_tree": true
+							},
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "BayRecessB",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"scanner_cyan_bounce": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "CyanBounce/Art_14_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_door": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "ServiceDoor",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_markings": {
+						"alpha_multiplier": 0.35,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.35)",
+								"path": "ServiceMarkings",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"shelving": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "ArchiveShelving",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"signage": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "Signage",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					}
+				},
+				"stage": 3
+			},
+			"primitives": 1728,
+			"stage": 3,
+			"texture_memory_bytes": 87861046
+		},
+		{
+			"capture": "manual_shift-case-panel",
+			"comparison": {
+				"all_changed_pixels": 0,
+				"allowed_regions": [
+					"[P: (94.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (29.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (59.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (659.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (1219.0, 899.0), S: (514.0, 130.0)]"
+				],
+				"outside_changed_pixels": 0,
+				"outside_checked_pixels": 1751108,
+				"valid": true
+			},
+			"draw_calls": 108,
+			"environment": {
+				"applications": 6,
+				"elements": {
+					"cable_runs": {
+						"alpha_multiplier": 0.72,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.72)",
+								"path": "PolishCables",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"distant_background": {
+						"alpha_multiplier": 0.86,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.86)",
+								"path": "DistantArchive/Backdrop",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_1": {
+						"alpha_multiplier": 0.52,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.52)",
+								"path": "FloorReflections/Art_13_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_2": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_light_pool_3": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_2",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_light_pool_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "FloorReflections/Art_13_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"floor_wear": {
+						"alpha_multiplier": 0.74,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.74)",
+								"path": "FloorWear",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"foreground_rails": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "ForegroundRails",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"haze": {
+						"alpha_multiplier": 0.22,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.22)",
+								"path": "Haze",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"intake_cyan_bounce": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "CyanBounce/Art_14_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_1": {
+						"alpha_multiplier": 0.76,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.76)",
+								"path": "LightCones/Art_8_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_2": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_1",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_3": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_2",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"light_cone_4": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "LightCones/Art_8_3",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"machine_shadow_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_2": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_3": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_4": {
+						"alpha_multiplier": 0.82,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.82)",
+								"path": "MachineShadows/Art_11_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"optional_sconces": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "WallSconces",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"pendant_housing_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_2": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_3": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_4": {
+						"alpha_multiplier": 0.62,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.62)",
+								"path": "LampHousings/Art_7_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"recess_lighting": {
+						"alpha_multiplier": 0.38,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.38)",
+								"path": "BayRecessA",
+								"visible": true,
+								"visible_in_tree": true
+							},
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.38)",
+								"path": "BayRecessB",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"scanner_cyan_bounce": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "CyanBounce/Art_14_0",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"service_door": {
+						"alpha_multiplier": 0.58,
+						"targets": [
+							{
+								"effective_modulate": "(0.62, 0.68, 0.72, 0.58)",
+								"path": "ServiceDoor",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_markings": {
+						"alpha_multiplier": 0.18,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.18)",
+								"path": "ServiceMarkings",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"shelving": {
+						"alpha_multiplier": 0.72,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.72)",
+								"path": "ArchiveShelving",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"signage": {
+						"alpha_multiplier": 0.74,
+						"targets": [
+							{
+								"effective_modulate": "(0.82, 0.88, 0.94, 0.74)",
+								"path": "Signage",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					}
+				},
+				"stage": 0
+			},
+			"primitives": 2484,
+			"stage": 0,
+			"texture_memory_bytes": 88472714
+		},
+		{
+			"capture": "full_line_online-case-panel",
+			"comparison": {
+				"all_changed_pixels": 28043,
+				"allowed_regions": [
+					"[P: (94.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (565.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (1055.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (1501.0, 244.0), S: (302.0, 362.0)]",
+					"[P: (29.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (500.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (990.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (1436.0, 875.0), S: (432.0, 102.0)]",
+					"[P: (59.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (659.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (1219.0, 899.0), S: (514.0, 130.0)]",
+					"[P: (547.0, 885.0), S: (322.0, 90.0)]",
+					"[P: (1507.0, 885.0), S: (322.0, 90.0)]"
+				],
+				"outside_changed_pixels": 0,
+				"outside_checked_pixels": 1371206,
+				"valid": true
+			},
+			"draw_calls": 128,
+			"environment": {
+				"applications": 7,
+				"elements": {
+					"cable_runs": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "PolishCables",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"distant_background": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "DistantArchive/Backdrop",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_1": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_2": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_3": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_light_pool_4": {
+						"alpha_multiplier": 0.64,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.64)",
+								"path": "FloorReflections/Art_13_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"floor_wear": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "FloorWear",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"foreground_rails": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "ForegroundRails",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"haze": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "Haze",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"intake_cyan_bounce": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "CyanBounce/Art_14_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_1": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_2": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_3": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"light_cone_4": {
+						"alpha_multiplier": 0.88,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.88)",
+								"path": "LightCones/Art_8_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_3": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"machine_shadow_4": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "MachineShadows/Art_11_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"optional_sconces": {
+						"alpha_multiplier": 0,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.0)",
+								"path": "WallSconces",
+								"visible": false,
+								"visible_in_tree": false
+							}
+						]
+					},
+					"pendant_housing_1": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_2": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_1",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_3": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_2",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"pendant_housing_4": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "LampHousings/Art_7_3",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"recess_lighting": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "BayRecessA",
+								"visible": true,
+								"visible_in_tree": true
+							},
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "BayRecessB",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"scanner_cyan_bounce": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "CyanBounce/Art_14_0",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_door": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "ServiceDoor",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"service_markings": {
+						"alpha_multiplier": 0.35,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 0.35)",
+								"path": "ServiceMarkings",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"shelving": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "ArchiveShelving",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					},
+					"signage": {
+						"alpha_multiplier": 1,
+						"targets": [
+							{
+								"effective_modulate": "(1.0, 1.0, 1.0, 1.0)",
+								"path": "Signage",
+								"visible": true,
+								"visible_in_tree": true
+							}
+						]
+					}
+				},
+				"stage": 3
+			},
+			"primitives": 2578,
+			"stage": 3,
+			"texture_memory_bytes": 88472714
+		}
+	],
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"phase": "machine phases and conveyor time zero",
+	"physical_size": "(1920, 1080)",
+	"renderer": "gl_compatibility"
+}

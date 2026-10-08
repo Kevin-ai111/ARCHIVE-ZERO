@@ -4,6 +4,7 @@ extends Node
 # -- --capture=true --size=1920x1080 --out=C:/temp/commissioning-proof
 const ROOM := preload("res://scenes/world/archive_room.tscn")
 const SUPPORT := preload("res://tests/commissioning_test_support.gd")
+const LIGHTING_FIX := preload("res://tests/lighting_fix_test_support.gd")
 var _room: Node2D
 var _toolbar: CanvasLayer
 var _options := {}
@@ -135,11 +136,13 @@ func _shot(output: String, name_value: String) -> bool:
 	var parity := "not applicable"
 	if name_value == "full_line_online" and get_window().size == Vector2i(1920, 1080):
 		var baseline := Image.load_from_file("res://docs/screenshots/progressive-room-states/base-full-line.png")
-		if baseline.get_size() != image.get_size() or baseline.get_data() != image.get_data():
-			push_error("Full-line render differs from exact pre-PR baseline.")
+		# PR17 intentionally changes lighting, not the historical reference PNG.
+		var delta := LIGHTING_FIX.compare_outside_regions(baseline, image, LIGHTING_FIX.affected_screen_regions(_room.get_node("%EnvironmentArt")))
+		if not delta.valid or delta.outside_changed_pixels != 0:
+			push_error("Full-line pixels outside approved lighting regions changed.")
 			get_tree().quit(1)
 			return false
-		parity = "pixel-identical to exact base 4714f71f912e718818b5db4871bfe2eee18d05fb"
+		parity = "Historical PR16 baseline preserved; PR17 delta isolated to lighting regions. New golden pending artistic approval."
 	_measurements.append({"capture": name_value, "stage": CommissioningManager.get_stage(), "baseline_parity": parity, "draw_calls": int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)), "primitives": int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "texture_memory_bytes": int(Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED)), "environment": _room.get_node("%EnvironmentArt").get_commissioning_snapshot(), "scanner": _room.get_node("%BasicScanner").get_state_snapshot(), "sorter": _room.get_node("%BasicSorter").get_state_snapshot(), "intake": _room.get_node("%ArchiveIntake").get_state_snapshot()})
 	print("Rendered %s %s: full-line parity=%s" % [name_value, get_window().size, parity])
 	return true
