@@ -21,6 +21,7 @@ enum CommissionResult {
 	WRONG_PHASE,
 	INSUFFICIENT_FUNDS,
 	ALREADY_COMMISSIONED,
+	TRANSACTION_FAILED,
 }
 
 const FIRST_SHIFT_SAVE_VERSION := 1
@@ -126,6 +127,10 @@ func is_complete() -> bool:
 	return _phase == Phase.COMPLETE
 
 
+func is_transaction_active() -> bool:
+	return _mutating
+
+
 func is_upgrade_purchasing_unlocked() -> bool:
 	return is_complete()
 
@@ -228,6 +233,8 @@ func get_commission_result_message(result: CommissionResult) -> String:
 			return "Not enough Credits for commissioning."
 		CommissionResult.ALREADY_COMMISSIONED:
 			return "This machine is already commissioned."
+		CommissionResult.TRANSACTION_FAILED:
+			return "Commissioning could not be completed. No changes were applied."
 		_:
 			return "Complete the current First Shift objective first."
 
@@ -295,6 +302,51 @@ func is_valid_first_shift_save_data(data: Variant) -> bool:
 	return true
 
 
+func is_valid_save_composition(
+	first_shift_data: Variant, case_data: Variant, commissioning_data: Variant
+) -> bool:
+	if not is_valid_first_shift_save_data(first_shift_data):
+		return false
+	if not CaseManager.is_valid_case_save_data(case_data):
+		return false
+	if not CommissioningManager.is_valid_commissioning_save_data(commissioning_data):
+		return false
+	var first_shift: Dictionary = first_shift_data as Dictionary
+	var claimed_values: Array = first_shift["claimed_reward_case_ids"] as Array
+	# Empty COMPLETE claims are the explicit pre-v4 migration marker. Older
+	# saves did not own First Shift/Case cross-domain history.
+	if first_shift["phase"] == PHASE_LABELS[Phase.COMPLETE] and claimed_values.is_empty():
+		return true
+
+	var expected_stage_by_phase := {
+		PHASE_LABELS[Phase.MANUAL_CASES]: CommissioningManager.STAGE_LABELS[CommissioningManager.Stage.MANUAL_SHIFT],
+		PHASE_LABELS[Phase.SCANNER_READY]: CommissioningManager.STAGE_LABELS[CommissioningManager.Stage.MANUAL_SHIFT],
+		PHASE_LABELS[Phase.SCANNER_CASES]: CommissioningManager.STAGE_LABELS[CommissioningManager.Stage.SCANNER_ONLINE],
+		PHASE_LABELS[Phase.SORTER_READY]: CommissioningManager.STAGE_LABELS[CommissioningManager.Stage.SCANNER_ONLINE],
+		PHASE_LABELS[Phase.SORTER_CASES]: CommissioningManager.STAGE_LABELS[CommissioningManager.Stage.SORTER_ONLINE],
+		PHASE_LABELS[Phase.INTAKE_READY]: CommissioningManager.STAGE_LABELS[CommissioningManager.Stage.SORTER_ONLINE],
+		PHASE_LABELS[Phase.COMPLETE]: CommissioningManager.STAGE_LABELS[CommissioningManager.Stage.FULL_LINE_ONLINE],
+	}
+	if commissioning_data["stage"] != expected_stage_by_phase.get(first_shift["phase"], ""):
+		return false
+
+	var claimed := {}
+	for value: String in claimed_values:
+		claimed[StringName(value)] = true
+	var archived := {}
+	for entry: Dictionary in case_data["progress"]:
+		var case_id := StringName(entry["case_id"])
+		if case_id in FIRST_SHIFT_CASE_IDS and entry["state"] == CaseProgress.STATE_LABELS[CaseProgress.State.ARCHIVED]:
+			archived[case_id] = true
+	for case_id: StringName in claimed:
+		if not archived.has(case_id):
+			return false
+	for case_id: StringName in archived:
+		if not claimed.has(case_id):
+			return false
+	return true
+
+
 func restore_first_shift_save_data(data: Variant) -> bool:
 	if _mutating or not is_valid_first_shift_save_data(data):
 		return false
@@ -320,13 +372,23 @@ func _commission(
 	next_phase: Phase
 ) -> CommissionResult:
 	if _mutating:
-		return CommissionResult.WRONG_PHASE
+		return CommissionResult.TRANSACTION_FAILED
 	if _phase > expected_phase or CommissioningManager.get_stage() > expected_stage:
 		return CommissionResult.ALREADY_COMMISSIONED
 	if _phase != expected_phase or CommissioningManager.get_stage() != expected_stage:
 		return CommissionResult.WRONG_PHASE
+	var stage: MachineRuntime = SimulationManager.get_production_line().get_stage(machine_id)
+	if (
+		stage == null
+		or stage.is_enabled()
+		or int(CommissioningManager.MACHINE_STAGES.get(machine_id, -1)) != expected_stage + 1
+	):
+		return CommissionResult.TRANSACTION_FAILED
 	if not Economy.can_afford(cost):
 		return CommissionResult.INSUFFICIENT_FUNDS
+	var snapshot := _get_commission_snapshot()
+	if snapshot.is_empty():
+		return CommissionResult.TRANSACTION_FAILED
 	_mutating = true
 	var success := Economy.spend_money(cost)
 	if success:
@@ -335,12 +397,88 @@ func _commission(
 		success = SimulationManager.set_machine_enabled(machine_id, true)
 	if success:
 		_phase = next_phase
-	_mutating = false
+	if success:
+		success = _commission_postconditions_hold(snapshot, expected_stage + 1, cost, machine_id, next_phase)
 	if not success:
-		push_error("Validated First Shift commissioning transaction failed.")
-		return CommissionResult.WRONG_PHASE
+		var rolled_back := _restore_commission_snapshot(snapshot)
+		_mutating = false
+		if not rolled_back:
+			push_error("First Shift commissioning rollback failed to restore the exact pre-call state.")
+		return CommissionResult.TRANSACTION_FAILED
+	_mutating = false
 	first_shift_state_changed.emit(_phase)
 	return CommissionResult.SUCCESS
+
+
+func _get_commission_snapshot() -> Dictionary:
+	var simulation := SimulationManager.get_transaction_snapshot()
+	if not SimulationManager.is_valid_transaction_snapshot(simulation):
+		return {}
+	return {
+		"game": {
+			"money": GameState.get_money(),
+			"earned": GameState.get_total_money_earned(),
+			"items": GameState.get_total_processed_items(),
+			"playtime": GameState.get_total_playtime(),
+		},
+		"commissioning": CommissioningManager.get_commissioning_save_data(),
+		"simulation": simulation,
+		"phase": _phase,
+	}
+
+
+func _commission_postconditions_hold(
+	snapshot: Dictionary,
+	expected_stage: int,
+	cost: int,
+	machine_id: StringName,
+	next_phase: Phase
+) -> bool:
+	var game: Dictionary = snapshot["game"] as Dictionary
+	if (
+		GameState.get_money() != int(game["money"]) - cost
+		or GameState.get_total_money_earned() != int(game["earned"])
+		or GameState.get_total_processed_items() != int(game["items"])
+		or not is_equal_approx(GameState.get_total_playtime(), float(game["playtime"]))
+		or CommissioningManager.get_stage() != expected_stage
+		or _phase != next_phase
+	):
+		return false
+	var runtime: MachineRuntime = SimulationManager.get_production_line().get_stage(machine_id)
+	if runtime == null or not runtime.is_enabled():
+		return false
+	var simulation: Dictionary = snapshot["simulation"] as Dictionary
+	var expected_production: Dictionary = (simulation["production_save"] as Dictionary).duplicate(true)
+	var machines: Dictionary = expected_production["machines"] as Dictionary
+	var machine_state: Dictionary = machines[String(machine_id)] as Dictionary
+	machine_state["enabled"] = true
+	return (
+		SimulationManager.get_production_save_data() == expected_production
+		and is_zero_approx(SimulationManager.get_pending_simulation_seconds())
+		and is_equal_approx(SimulationManager.get_tick_interval(), float(simulation["tick_interval"]))
+	)
+
+
+func _restore_commission_snapshot(snapshot: Dictionary) -> bool:
+	var simulation_ok := SimulationManager.restore_transaction_snapshot(snapshot["simulation"])
+	var commissioning_ok := CommissioningManager.restore_commissioning_save_data(snapshot["commissioning"])
+	var game: Dictionary = snapshot["game"] as Dictionary
+	var game_ok := GameState.restore_state(
+		int(game["money"]), int(game["earned"]), int(game["items"]), float(game["playtime"])
+	)
+	_phase = int(snapshot["phase"]) as Phase
+	return (
+		simulation_ok
+		and commissioning_ok
+		and game_ok
+		and SimulationManager.get_transaction_snapshot() == snapshot["simulation"]
+		and CommissioningManager.get_commissioning_save_data() == snapshot["commissioning"]
+		and GameState.get_money() == int(game["money"])
+		and GameState.get_total_money_earned() == int(game["earned"])
+		and GameState.get_total_processed_items() == int(game["items"])
+		and is_equal_approx(GameState.get_total_playtime(), float(game["playtime"]))
+		and _phase == int(snapshot["phase"])
+	)
 
 
 func _on_active_case_changed() -> void:
@@ -385,15 +523,55 @@ func _on_case_progress_changed(case_id: StringName) -> void:
 	var reward := CASE_BASE_REWARD
 	if CaseManager.is_case_classification_correct(case_id):
 		reward += CASE_ACCURACY_BONUS
-	if not Economy.add_money(reward):
-		push_error("First Shift Case reward could not be committed.")
-		return
+	var game_before := {
+		"money": GameState.get_money(),
+		"earned": GameState.get_total_money_earned(),
+		"items": GameState.get_total_processed_items(),
+		"playtime": GameState.get_total_playtime(),
+	}
+	var phase_before := _phase
+	var claims_before := _claimed_reward_case_ids.duplicate()
+	_mutating = true
+	# Reserve before Economy emits money_changed, so no observer can see money
+	# credited without the corresponding idempotency claim.
 	_claimed_reward_case_ids.append(case_id)
+	var success := Economy.add_money(reward)
+	var phase_changed := false
+	if success:
+		phase_changed = _update_progression_gate()
+		success = (
+			GameState.get_money() == int(game_before["money"]) + reward
+			and GameState.get_total_money_earned() == int(game_before["earned"]) + reward
+			and GameState.get_total_processed_items() == int(game_before["items"])
+			and is_equal_approx(GameState.get_total_playtime(), float(game_before["playtime"]))
+			and _claimed_reward_case_ids.count(case_id) == 1
+		)
+	if not success:
+		_claimed_reward_case_ids = claims_before
+		_phase = phase_before
+		var restored := GameState.restore_state(
+			int(game_before["money"]),
+			int(game_before["earned"]),
+			int(game_before["items"]),
+			float(game_before["playtime"])
+		)
+		_mutating = false
+		if (
+			not restored
+			or _claimed_reward_case_ids != claims_before
+			or _phase != phase_before
+			or GameState.get_money() != int(game_before["money"])
+			or GameState.get_total_money_earned() != int(game_before["earned"])
+		):
+			push_error("First Shift reward rollback failed to restore the exact pre-call state.")
+		return
+	_mutating = false
 	case_reward_granted.emit(case_id, reward)
-	_update_progression_gate()
+	if phase_changed:
+		first_shift_state_changed.emit(_phase)
 
 
-func _update_progression_gate() -> void:
+func _update_progression_gate() -> bool:
 	var next_phase := _phase
 	if _phase == Phase.MANUAL_CASES and _all_archived(MANUAL_CASE_IDS):
 		next_phase = Phase.SCANNER_READY
@@ -403,7 +581,8 @@ func _update_progression_gate() -> void:
 		next_phase = Phase.INTAKE_READY
 	if next_phase != _phase:
 		_phase = next_phase
-		first_shift_state_changed.emit(_phase)
+		return true
+	return false
 
 
 func _all_archived(case_ids: Array[StringName]) -> bool:

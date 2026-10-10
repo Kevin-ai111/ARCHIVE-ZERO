@@ -20,6 +20,9 @@ const BASIC_SCANNER_ID: StringName = &"basic_scanner"
 const BASIC_SORTER_ID: StringName = &"basic_sorter"
 const CURRENT_SAVE_VERSION: int = 3
 const PREVIOUS_SAVE_VERSION: int = 2
+const TRANSACTION_SNAPSHOT_KEYS: Array[String] = [
+	"production_save", "pending_seconds", "tick_interval",
+]
 
 var _tick_interval: float = DEFAULT_TICK_INTERVAL
 var _tick_accumulator: float = 0.0
@@ -190,6 +193,50 @@ func get_tick_interval() -> float:
 
 func get_pending_simulation_seconds() -> float:
 	return _tick_accumulator
+
+
+# Cross-authority coordinators may snapshot and restore this authority through
+# this narrow public boundary without reaching into SimulationManager internals.
+func get_transaction_snapshot() -> Dictionary:
+	return {
+		"production_save": get_production_save_data(),
+		"pending_seconds": _tick_accumulator,
+		"tick_interval": _tick_interval,
+	}
+
+
+func is_valid_transaction_snapshot(snapshot: Variant) -> bool:
+	if typeof(snapshot) != TYPE_DICTIONARY or snapshot.size() != TRANSACTION_SNAPSHOT_KEYS.size():
+		return false
+	for key: String in TRANSACTION_SNAPSHOT_KEYS:
+		if not snapshot.has(key):
+			return false
+	if typeof(snapshot["production_save"]) != TYPE_DICTIONARY:
+		return false
+	if not is_valid_production_save_data(snapshot["production_save"] as Dictionary):
+		return false
+	var pending: Variant = snapshot["pending_seconds"]
+	var interval: Variant = snapshot["tick_interval"]
+	if typeof(pending) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(pending)) or float(pending) < 0.0:
+		return false
+	if typeof(interval) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(interval)) or float(interval) < MINIMUM_TICK_INTERVAL:
+		return false
+	return true
+
+
+func restore_transaction_snapshot(snapshot: Variant) -> bool:
+	if not is_valid_transaction_snapshot(snapshot):
+		return false
+	var production_save: Dictionary = snapshot["production_save"] as Dictionary
+	if not _production_line.restore_save_data(production_save):
+		return false
+	_owned_upgrade_ids.assign(production_save["owned_upgrade_ids"])
+	_apply_upgrade_multipliers()
+	_tick_accumulator = float(snapshot["pending_seconds"])
+	_tick_interval = float(snapshot["tick_interval"])
+	production_line_changed.emit()
+	upgrades_changed.emit()
+	return true
 
 
 func get_production_line() -> ProductionLine:

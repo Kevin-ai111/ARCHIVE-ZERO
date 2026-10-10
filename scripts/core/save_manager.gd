@@ -12,6 +12,11 @@ const TEMP_SAVE_PATH: String = "user://archive_zero_save.tmp"
 
 
 func save_game() -> bool:
+	# Reject before flushing or opening the temp file. A synchronous observer may
+	# request a save while a multi-authority transaction is only partly applied.
+	if FirstShiftManager.is_transaction_active():
+		push_warning("Save rejected while a First Shift transaction is active.")
+		return false
 	SimulationManager.flush_pending_simulation()
 	var save_data: Dictionary = {
 		"save_version": SAVE_VERSION,
@@ -25,6 +30,9 @@ func save_game() -> bool:
 		"commissioning_save": CommissioningManager.get_commissioning_save_data(),
 		"first_shift": FirstShiftManager.get_first_shift_save_data(),
 	}
+	if not _is_valid_complete_save(save_data):
+		push_error("Live state did not form a coherent Global v4 save snapshot.")
+		return false
 
 	var save_file: FileAccess = FileAccess.open(TEMP_SAVE_PATH, FileAccess.WRITE)
 	if save_file == null:
@@ -52,6 +60,9 @@ func save_game() -> bool:
 
 
 func load_game() -> bool:
+	if FirstShiftManager.is_transaction_active():
+		push_warning("Load rejected while a First Shift transaction is active.")
+		return false
 	if not has_save():
 		push_warning("No ARCHIVE ZERO save file exists yet.")
 		return false
@@ -135,6 +146,13 @@ func _is_valid_complete_save(save_data: Dictionary) -> bool:
 		return false
 	if not FirstShiftManager.is_valid_first_shift_save_data(save_data.get("first_shift")):
 		push_warning("Save file contains invalid First Shift state.")
+		return false
+	if not FirstShiftManager.is_valid_save_composition(
+		save_data.get("first_shift"),
+		save_data.get("case_save"),
+		save_data.get("commissioning_save")
+	):
+		push_warning("Save file contains inconsistent First Shift cross-domain state.")
 		return false
 	return true
 

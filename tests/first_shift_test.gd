@@ -8,6 +8,13 @@ var _checks := 0
 var _failures := 0
 var _original_save_exists := false
 var _original_save_contents := ""
+var _injection_target: StringName = &""
+var _injection_fired := false
+var _unexpected_transition_fired := false
+var _transaction_save_results: Array[bool] = []
+var _transaction_save_changed_file := false
+var _transaction_save_baseline := ""
+var _game_saved_count := 0
 
 
 func _ready() -> void:
@@ -19,6 +26,9 @@ func _ready() -> void:
 func _run() -> void:
 	_backup_save()
 	_test_first_shift_save_schema()
+	await _test_reward_signal_save_atomicity()
+	await _test_commission_transaction_atomicity()
+	_test_cross_domain_save_validation()
 	await _test_minimum_path_and_authority()
 	await _test_perfect_path_and_upgrade_unlock()
 	await _test_save_restore_checkpoints()
@@ -60,6 +70,148 @@ func _test_first_shift_save_schema() -> void:
 		_check(not FirstShiftManager.is_valid_first_shift_save_data(candidate), "Malformed First Shift v1 payload rejected")
 		_check(not FirstShiftManager.restore_first_shift_save_data(candidate), "Malformed First Shift v1 restore rejected")
 		_check(FirstShiftManager.get_first_shift_save_data() == before, "Malformed First Shift restore is atomic")
+
+
+func _test_reward_signal_save_atomicity() -> void:
+	_check(FirstShiftManager.start_new_game(), "Reward-race fixture starts fresh")
+	_check(SaveManager.save_game(), "Reward-race baseline save succeeds")
+	_transaction_save_baseline = FileAccess.get_file_as_string(SaveManager.SAVE_PATH)
+	_transaction_save_results.clear()
+	_transaction_save_changed_file = false
+	_game_saved_count = 0
+	GameState.money_changed.connect(_save_on_money_changed)
+	SaveManager.game_saved.connect(_on_game_saved)
+	await _process_case(&"CASE_0001", true)
+	GameState.money_changed.disconnect(_save_on_money_changed)
+	SaveManager.game_saved.disconnect(_on_game_saved)
+	_check(_transaction_save_results == [false], "money_changed reward listener save is rejected during transaction")
+	_check(not _transaction_save_changed_file, "Rejected reward listener save leaves prior file untouched")
+	_check(_game_saved_count == 0, "Rejected reward listener save emits no game_saved")
+	_check(GameState.get_money() == 5 and GameState.get_total_money_earned() == 5, "Correct CASE_0001 awards exactly 5 Credits")
+	_check(FirstShiftManager.get_claimed_reward_case_ids() == [&"CASE_0001"], "Reward claim is committed exactly once before publication")
+	_check(SaveManager.save_game(), "Coherent post-reward save succeeds")
+	_check(SaveManager.load_game(), "First reward-race reload succeeds")
+	await _settle()
+	_check(SaveManager.load_game(), "Second reward-race reload succeeds")
+	await _settle()
+	FirstShiftManager._on_case_progress_changed(&"CASE_0001")
+	_check(GameState.get_money() == 5, "Save/load and replayed archive preserve exactly 5 Credits, not 10")
+	_check(FirstShiftManager.get_claimed_reward_case_ids() == [&"CASE_0001"], "Save/load preserves one CASE_0001 reward claim")
+
+
+func _test_commission_transaction_atomicity() -> void:
+	_check(FirstShiftManager.start_new_game(), "Commission-atomicity fixture starts fresh")
+	for case_id: StringName in FirstShiftManager.MANUAL_CASE_IDS:
+		await _process_case_silently(case_id, true)
+	_check(FirstShiftManager.get_phase() == FirstShiftManager.Phase.SCANNER_READY, "Atomicity fixture reaches Scanner gate")
+
+	await _assert_downstream_failure_rolls_back(
+		&"basic_scanner", Callable(FirstShiftManager, "commission_scanner"), "Scanner"
+	)
+	var before_unexpected := _state_snapshot()
+	_unexpected_transition_fired = false
+	GameState.money_changed.connect(_inject_unexpected_scanner_transition)
+	var unexpected_result: int = FirstShiftManager.commission_scanner()
+	GameState.money_changed.disconnect(_inject_unexpected_scanner_transition)
+	_check(_unexpected_transition_fired, "Injected Scanner listener performs an unexpected authority transition")
+	_check(unexpected_result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, "Unexpected Scanner transition fails the outer transaction")
+	_check(_state_snapshot() == before_unexpected, "Unexpected Scanner transition rolls every authority back exactly")
+
+	_check(SaveManager.save_game(), "Pre-Scanner coherent save succeeds")
+	_transaction_save_baseline = FileAccess.get_file_as_string(SaveManager.SAVE_PATH)
+	_transaction_save_results.clear()
+	_transaction_save_changed_file = false
+	_game_saved_count = 0
+	GameState.money_changed.connect(_save_on_money_changed)
+	CommissioningManager.commissioning_stage_changed.connect(_save_on_commissioning_changed)
+	SimulationManager.production_line_changed.connect(_save_on_production_changed)
+	SaveManager.game_saved.connect(_on_game_saved)
+	_check(FirstShiftManager.commission_scanner() == FirstShiftManager.CommissionResult.SUCCESS, "Scanner commits after adversarial rollback")
+	GameState.money_changed.disconnect(_save_on_money_changed)
+	CommissioningManager.commissioning_stage_changed.disconnect(_save_on_commissioning_changed)
+	SimulationManager.production_line_changed.disconnect(_save_on_production_changed)
+	SaveManager.game_saved.disconnect(_on_game_saved)
+	_check(_transaction_save_results.size() >= 3 and not _transaction_save_results.has(true), "Commission money/stage/production listeners all reject in-flight saves")
+	_check(not _transaction_save_changed_file, "Rejected commissioning listener saves leave prior file untouched")
+	_check(_game_saved_count == 0, "Rejected commissioning listener saves emit no game_saved")
+	var scanner_committed := _state_snapshot()
+	_check(FirstShiftManager.commission_scanner() == FirstShiftManager.CommissionResult.ALREADY_COMMISSIONED, "Scanner double commissioning is rejected after commit")
+	_check(_state_snapshot() == scanner_committed, "Scanner double commissioning changes no authority and charges zero")
+	_check(SaveManager.save_game(), "Post-Scanner coherent save succeeds")
+	var scanner_saved := _state_snapshot()
+	_check(SaveManager.load_game() and _state_snapshot() == scanner_saved, "Post-Scanner save/load round-trip remains coherent")
+
+	for case_id: StringName in FirstShiftManager.SCANNER_CASE_IDS:
+		await _process_case_silently(case_id, true)
+	_check(FirstShiftManager.get_phase() == FirstShiftManager.Phase.SORTER_READY, "Atomicity fixture reaches Sorter gate")
+	await _assert_downstream_failure_rolls_back(
+		&"basic_sorter", Callable(FirstShiftManager, "commission_sorter"), "Sorter"
+	)
+	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.SUCCESS, "Sorter commits after adversarial rollback")
+	var sorter_committed := _state_snapshot()
+	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.ALREADY_COMMISSIONED, "Sorter double commissioning is rejected after commit")
+	_check(_state_snapshot() == sorter_committed, "Sorter double commissioning changes no authority and charges zero")
+
+	for case_id: StringName in FirstShiftManager.SORTER_CASE_IDS:
+		await _process_case_silently(case_id, true)
+	_check(FirstShiftManager.get_phase() == FirstShiftManager.Phase.INTAKE_READY, "Atomicity fixture reaches Intake gate")
+	await _assert_downstream_failure_rolls_back(
+		&"archive_intake", Callable(FirstShiftManager, "commission_intake"), "Intake"
+	)
+	_check(FirstShiftManager.commission_intake() == FirstShiftManager.CommissionResult.SUCCESS, "Intake commits after adversarial rollback")
+	var intake_committed := _state_snapshot()
+	_check(FirstShiftManager.commission_intake() == FirstShiftManager.CommissionResult.ALREADY_COMMISSIONED, "Intake double commissioning is rejected after commit")
+	_check(_state_snapshot() == intake_committed, "Intake double commissioning changes no authority and charges zero")
+
+
+func _assert_downstream_failure_rolls_back(
+	machine_id: StringName, commission: Callable, label: String
+) -> void:
+	_check(SaveManager.save_game(), label + " pre-failure coherent save succeeds")
+	_transaction_save_baseline = FileAccess.get_file_as_string(SaveManager.SAVE_PATH)
+	_transaction_save_results.clear()
+	_transaction_save_changed_file = false
+	var pending_fixture := SimulationManager.get_transaction_snapshot()
+	pending_fixture["pending_seconds"] = 0.2
+	_check(SimulationManager.restore_transaction_snapshot(pending_fixture), label + " pending-time fixture is installed through the Simulation authority")
+	_check(_close(SimulationManager.get_pending_simulation_seconds(), 0.2), label + " failure begins with 0.2 seconds pending")
+	_injection_target = machine_id
+	_injection_fired = false
+	SimulationManager.production_line_changed.connect(_inject_disable_target)
+	var before := _state_snapshot()
+	var result: int = int(commission.call())
+	SimulationManager.production_line_changed.disconnect(_inject_disable_target)
+	_check(_injection_fired, label + " downstream listener injects a runtime failure")
+	_check(result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, label + " reports transaction failure")
+	_check(_state_snapshot() == before, label + " failure restores Credits, stage, production, phase and pending time exactly")
+	_check(not _transaction_save_results.is_empty() and not _transaction_save_results.has(true), label + " in-flight listener save is rejected")
+	_check(not _transaction_save_changed_file, label + " rejected in-flight save preserves prior file")
+
+
+func _test_cross_domain_save_validation() -> void:
+	FirstShiftManager.start_new_game()
+	var native := _live_save_payload()
+	_check(SaveManager._is_valid_complete_save(native), "Coherent native v4 composition is accepted")
+	var claimed_without_archive := native.duplicate(true)
+	claimed_without_archive["first_shift"]["claimed_reward_case_ids"] = ["CASE_0001"]
+	_check(not SaveManager._is_valid_complete_save(claimed_without_archive), "Claimed reward without ARCHIVED Case is rejected")
+
+	var archived_without_claim := native.duplicate(true)
+	var case_save: Dictionary = archived_without_claim["case_save"] as Dictionary
+	case_save["queue"].erase("CASE_0001")
+	for entry: Dictionary in case_save["progress"]:
+		if entry["case_id"] == "CASE_0001":
+			entry["state"] = "ARCHIVED"
+			entry["selected_category_id"] = "PERS"
+			break
+	_check(not SaveManager._is_valid_complete_save(archived_without_claim), "ARCHIVED First Shift Case without reward claim is rejected")
+
+	var stage_mismatch := native.duplicate(true)
+	stage_mismatch["commissioning_save"]["stage"] = "SCANNER_ONLINE"
+	_check(not SaveManager._is_valid_complete_save(stage_mismatch), "First Shift phase/commissioning stage mismatch is rejected")
+	var legacy_marker := native.duplicate(true)
+	legacy_marker["first_shift"] = FirstShiftManager.get_legacy_complete_save_data()
+	_check(SaveManager._is_valid_complete_save(legacy_marker), "Explicit COMPLETE plus zero-claim legacy marker remains accepted")
 
 
 func _test_minimum_path_and_authority() -> void:
@@ -265,6 +417,23 @@ func _process_case(case_id: StringName, correct: bool) -> void:
 	_check(CaseManager.archive_active_case(), "Player archives Case " + String(case_id))
 
 
+func _process_case_silently(case_id: StringName, correct: bool) -> void:
+	var activated := FirstShiftManager.activate_next_case()
+	if activated == null or activated.get_case_id() != case_id:
+		return
+	await _settle()
+	var progress := CaseManager.get_active_case()
+	if progress == null:
+		return
+	if progress.get_state() == CaseProgress.State.ACTIVE:
+		CaseManager.mark_active_case_inspected()
+		progress = CaseManager.get_active_case()
+	if progress != null and progress.get_state() == CaseProgress.State.INSPECTED:
+		var category := CaseManager.get_case_definition(case_id).expected_category_id if correct else _wrong_category(case_id)
+		CaseManager.classify_active_case(category)
+	CaseManager.archive_active_case()
+
+
 func _round_trip(label: String) -> void:
 	var before := _state_snapshot()
 	_check(SaveManager.save_game(), label + " save succeeds")
@@ -283,11 +452,64 @@ func _state_snapshot() -> Dictionary:
 		"money": GameState.get_money(),
 		"earned": GameState.get_total_money_earned(),
 		"items": GameState.get_total_processed_items(),
-		"production": SimulationManager.get_production_save_data(),
+		"simulation": SimulationManager.get_transaction_snapshot(),
 		"cases": CaseManager.get_case_save_data(),
 		"commissioning": CommissioningManager.get_commissioning_save_data(),
 		"first_shift": FirstShiftManager.get_first_shift_save_data(),
 	}
+
+
+func _live_save_payload() -> Dictionary:
+	return {
+		"save_version": SaveManager.SAVE_VERSION,
+		"money": GameState.get_money(),
+		"total_money_earned": GameState.get_total_money_earned(),
+		"total_processed_items": GameState.get_total_processed_items(),
+		"total_playtime": GameState.get_total_playtime(),
+		"save_timestamp": 1,
+		"production_line": SimulationManager.get_production_save_data(),
+		"case_save": CaseManager.get_case_save_data(),
+		"commissioning_save": CommissioningManager.get_commissioning_save_data(),
+		"first_shift": FirstShiftManager.get_first_shift_save_data(),
+	}
+
+
+func _record_transaction_save_attempt() -> void:
+	_transaction_save_results.append(SaveManager.save_game())
+	if FileAccess.get_file_as_string(SaveManager.SAVE_PATH) != _transaction_save_baseline:
+		_transaction_save_changed_file = true
+
+
+func _save_on_money_changed(_money: int) -> void:
+	_record_transaction_save_attempt()
+
+
+func _save_on_commissioning_changed(_stage: CommissioningManager.Stage) -> void:
+	_record_transaction_save_attempt()
+
+
+func _save_on_production_changed() -> void:
+	_record_transaction_save_attempt()
+
+
+func _on_game_saved() -> void:
+	_game_saved_count += 1
+
+
+func _inject_disable_target() -> void:
+	if _injection_fired or _injection_target.is_empty() or not _enabled(_injection_target):
+		return
+	_injection_fired = true
+	_record_transaction_save_attempt()
+	SimulationManager.set_machine_enabled(_injection_target, false)
+
+
+func _inject_unexpected_scanner_transition(_money: int) -> void:
+	if _unexpected_transition_fired:
+		return
+	_unexpected_transition_fired = true
+	_record_transaction_save_attempt()
+	CommissioningManager.commission_scanner()
 
 
 func _version_two_line() -> Dictionary:

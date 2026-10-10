@@ -36,6 +36,11 @@ An archived First Shift Case grants 4 Credits plus 1 for a correct final
 classification through `Economy`/`GameState`. It never calls
 `SimulationManager.process_manual_items()`. Claimed Case IDs are persisted, so
 restore notifications or a duplicate archive observation cannot pay twice.
+Reward publication is signal-safe: the claim is reserved before Economy emits
+`money_changed`, the Credit and progression gate are committed while the First
+Shift transaction guard is active, and First Shift signals publish only after
+the complete state is observable. If Economy rejects the Credit, the claim and
+phase are rolled back before the guard is released.
 
 Worst case: `6×4 - 16 + 4×4 - 18 + 4×5 - 20 = 6 Credits`.
 Perfect manual/scanner classification: `14×5 - 16 - 18 - 20 = 16 Credits`.
@@ -73,6 +78,23 @@ migrate to First Shift `COMPLETE`, preserving economy and production. Valid
 legacy Case/Commissioning payloads are retained; absent payloads receive their
 existing compatibility defaults.
 
+Commissioning is a cross-authority transaction. Preflight validates the exact
+phase/stage relationship, target runtime and balance. A transaction snapshot
+then covers Credits and GameState totals, Commissioning stage, Production save,
+pending simulation/tick state and First Shift phase. Scanner, Sorter and Intake
+must satisfy all postconditions after their normal public APIs run; otherwise
+every authority is restored and the exact snapshot is verified before a failure
+is returned. No coordinator writes another authority's private fields.
+
+`SaveManager` rejects save and load requests while this critical section is
+active, before flushing simulation or touching either save path. Therefore
+synchronous listeners on `money_changed`, `commissioning_stage_changed` or
+`production_line_changed` cannot persist a partially committed transaction,
+cannot replace a prior valid file, and cannot emit `game_saved`. Native v4
+validation additionally requires phase/stage agreement and a one-to-one match
+between archived First Shift Cases and reward claims. The explicit
+`COMPLETE`+zero-claim legacy marker remains accepted for pre-v4 migrations.
+
 ## Runtime evidence and performance
 
 All images below are real Godot 4.7.2 Compatibility viewport captures:
@@ -97,11 +119,14 @@ memory.
 
 ## Validation
 
-`tests/first_shift_test.tscn` performs 340 checks covering the exact queue and
+`tests/first_shift_test.tscn` performs 409 checks covering the exact queue and
 gates, both economy paths, automation, reward idempotency, authority isolation,
 all commissioning failures, save checkpoints, every legacy migration, the
 upgrade guard, dormant/disabled semantics, the 300-second no-backlog case and
-the 100-second Full-Line invariant, plus strict/atomic First Shift v1 payload validation.
+the 100-second Full-Line invariant, strict/atomic First Shift v1 payload
+validation, adversarial rollback at all three commissioning gates, synchronous
+signal-save rejection, exact 5-Credit reward replay, and native v4 cross-domain
+composition checks.
 
 `tests/first_shift_visual_test.tscn` is an opt-in graphical evidence driver. It
 uses public gameplay APIs and captures ArchiveRoom; it is not part of runtime.

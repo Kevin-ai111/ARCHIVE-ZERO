@@ -24,7 +24,17 @@ and the test scenes must print `Production pipeline tests passed.` and
 
 Case foundation prints 487 passing checks; manual Case integration prints 1873.
 Commissioning prints 293 checks; progressive room presentation prints 2503.
-First Shift sequencing prints 340 checks.
+First Shift sequencing prints 409 checks. Its correction-pass coverage injects
+synchronous public listeners during Scanner, Sorter and Intake commissioning,
+forces downstream failure and unexpected stage advancement, and verifies exact
+rollback of Credits, aggregate totals, stage, runtime/production state, pending
+time and phase. It also attempts saves from reward `money_changed`, commission
+`money_changed`, `commissioning_stage_changed` and `production_line_changed`;
+each in-flight save must return false, preserve the previous file and emit no
+`game_saved`. The CASE_0001 regression proves 5 Credits remain 5 after two
+loads and a replayed archive notification, while native v4 composition checks
+reject missing/phantom claims and phase/stage mismatch without weakening the
+explicit legacy-complete marker.
 The lighting correction adds 583 checks, including the single approved cyan-bounce
 correction contract. Original ART/matrix fixtures remain
 historical references; only two exact PNG replacements and nine approved alpha
