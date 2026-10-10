@@ -3,17 +3,20 @@
 ## Foundation
 
 ARCHIVE ZERO separates authoritative numerical simulation from presentation.
-Six session-wide services are Autoloads:
+Seven session-wide services are Autoloads:
 
 1. `GameState` owns session totals.
 2. `Economy` validates currency transactions.
 3. `SimulationManager` advances time, owns purchased upgrade IDs, and commits output.
 4. `SaveManager` persists and restores supported state.
-5. `CaseManager` owns concrete-case queue and progress, independently of output,
-   Credits and the live save file. It starts empty and does not advance time.
+5. `CaseManager` owns concrete-case queue and progress, independently of output
+   and Credits. It starts empty and does not advance time.
 6. `CommissioningManager` owns only the ordered commissioning stage. It starts
-   fully commissioned, never writes production or cases, and has an independent
-   save-v1 contract not integrated into live SaveManager v3.
+   fully commissioned for compatibility, never writes production or cases, and
+   retains an independent save-v1 contract.
+7. `FirstShiftManager` orchestrates opening progression, one-time Case rewards,
+   commissioning actions and the temporary upgrade lock. It does not replace
+   any domain authority and has no per-frame loop.
 
 Machine definitions, installed machines, upgrade definitions, and production
 lines are domain objects rather than Nodes or additional Autoloads.
@@ -28,10 +31,9 @@ Wrong but known classifications are representable and separately evaluable.
 
 A concrete case is not an aggregate ProductionLine item. CaseManager never
 calls `SimulationManager.process_manual_items()` or changes production, machine
-state, upgrades or money. Its independent case-save v1 contract is not integrated
-into global SaveManager v3. Startup enqueues nothing. See `docs/CASE_SYSTEM.md`
-for APIs, signal semantics, strict atomic restore, authored cases and the later
-First Shift/live-save migration boundary.
+state, upgrades or money. Its unchanged case-save v1 contract is composed into
+global SaveManager v4. See `docs/CASE_SYSTEM.md` for its APIs and strict atomic
+restore, and `docs/FIRST_SHIFT.md` for fresh-game queue orchestration.
 
 The Manual Case Panel is a native-Control CanvasLayer that only reads definitions
 and progress and forwards input to CaseManager. Its item texture mapping lives
@@ -175,13 +177,14 @@ contains exactly:
 `SimulationManager` is the only owner of purchased IDs. The purchase sequence is:
 
 1. resolve and validate the requested definition;
-2. reject duplicate ownership or a missing target machine;
-3. check affordability through `Economy` without mutating state;
+2. reject the purchase while First Shift is incomplete;
+3. reject duplicate ownership or a missing target machine;
 4. flush pending simulation time under the old capacities;
-5. spend the exact price through `Economy`;
-6. append the ID once;
-7. derive all machine upgrade multipliers from the complete ownership list;
-8. emit production and upgrade change signals.
+5. check affordability through `Economy` without mutating state;
+6. spend the exact price through `Economy`;
+7. append the ID once;
+8. derive all machine upgrade multipliers from the complete ownership list;
+9. emit production and upgrade change signals.
 
 The public debug modifier seam rejects machines managed by real upgrades. The
 old free Sorter x1/x2 dashboard controls were removed from player flow.
@@ -203,7 +206,8 @@ Each completed item continues to award two Credits.
 
 ## Saving and migration
 
-Save schema version 3 stores primitive production state:
+Global Save v4 composes GameState, production-v3, Case-v1,
+Commissioning-v1 and First-Shift-v1 state. The production sub-schema stores:
 
 ```json
 {

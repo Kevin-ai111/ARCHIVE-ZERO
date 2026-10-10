@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0012"
+item_id = &"red_folding_umbrella"
+found_location = "East Concourse — Bench 12"
+found_time_label = "23:05"
+condition_text = "Dry / minor wear"
+expected_category_id = &"PERS"
+routing_policy = &"NORMAL"
+inspection_material = "Fabric / Nylon"
+inspection_identifier = "None"
+inspection_risk = "Normal"

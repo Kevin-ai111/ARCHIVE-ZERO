@@ -44,6 +44,9 @@ jobs:
       - name: Run commissioning domain validation
         run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/commissioning_test.tscn
 
+      - name: Run First Shift sequencing validation
+        run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/first_shift_test.tscn
+
       - name: Run progressive room state validation
         run: Godot_v4.7.2-stable_linux.x86_64 --headless --path . tests/progressive_room_states_test.tscn
 

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0011"
+item_id = &"canvas_tote_bag"
+found_location = "City Bus 42 — Rear Seat"
+found_time_label = "23:01"
+condition_text = "Dry / minor staining"
+expected_category_id = &"BAG"
+routing_policy = &"NORMAL"
+inspection_material = "Canvas / Cotton"
+inspection_identifier = "None"
+inspection_risk = "Normal"

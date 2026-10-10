@@ -10,6 +10,7 @@ enum PurchaseResult {
 	ALREADY_OWNED,
 	TARGET_UNAVAILABLE,
 	INSUFFICIENT_FUNDS,
+	FIRST_SHIFT_LOCKED,
 }
 
 const DEFAULT_TICK_INTERVAL: float = 0.25
@@ -73,6 +74,9 @@ func purchase_upgrade(upgrade_id: String) -> int:
 	var definition: UpgradeDefinition = UpgradeCatalog.get_definition(upgrade_id)
 	if definition == null or not definition.is_valid():
 		return PurchaseResult.INVALID_UPGRADE
+	var first_shift := get_node_or_null("/root/FirstShiftManager")
+	if first_shift != null and not first_shift.is_upgrade_purchasing_unlocked():
+		return PurchaseResult.FIRST_SHIFT_LOCKED
 	if _owned_upgrade_ids.has(upgrade_id):
 		return PurchaseResult.ALREADY_OWNED
 	if _production_line.get_stage(definition.target_machine_id) == null:
@@ -106,6 +110,8 @@ func get_purchase_result_message(result: int, upgrade_id: String) -> String:
 			return "%s cannot be installed because its machine is unavailable." % upgrade_name
 		PurchaseResult.INSUFFICIENT_FUNDS:
 			return "Not enough Credits to buy %s." % upgrade_name
+		PurchaseResult.FIRST_SHIFT_LOCKED:
+			return "Available after line commissioning."
 		_:
 			return "Unknown upgrade: %s." % upgrade_id
 
