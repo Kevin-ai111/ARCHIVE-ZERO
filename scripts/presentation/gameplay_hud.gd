@@ -33,6 +33,7 @@ func _ready() -> void:
 	SimulationManager.simulation_updated.connect(_on_simulation_updated)
 	FirstShiftManager.first_shift_state_changed.connect(_on_first_shift_changed)
 	FirstShiftManager.case_reward_granted.connect(_on_case_reward_granted)
+	FirstShiftManager.transaction_rolled_back.connect(_refresh)
 	CaseManager.queue_changed.connect(_refresh_first_shift)
 	CaseManager.active_case_changed.connect(_refresh_first_shift)
 	CaseManager.case_progress_changed.connect(_on_case_progress_changed)
@@ -59,6 +60,8 @@ func _exit_tree() -> void:
 		FirstShiftManager.first_shift_state_changed.disconnect(_on_first_shift_changed)
 	if FirstShiftManager.case_reward_granted.is_connected(_on_case_reward_granted):
 		FirstShiftManager.case_reward_granted.disconnect(_on_case_reward_granted)
+	if FirstShiftManager.transaction_rolled_back.is_connected(_refresh):
+		FirstShiftManager.transaction_rolled_back.disconnect(_refresh)
 	if CaseManager.queue_changed.is_connected(_refresh_first_shift):
 		CaseManager.queue_changed.disconnect(_refresh_first_shift)
 	if CaseManager.active_case_changed.is_connected(_refresh_first_shift):

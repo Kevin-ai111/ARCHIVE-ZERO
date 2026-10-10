@@ -3,6 +3,7 @@ extends Node
 const EPSILON := 0.00001
 const SCANNER_UPGRADE := "scanner_motor_1"
 const SORTER_UPGRADE := "sorter_motor_1"
+const ARCHIVE_ROOM_SCENE := preload("res://scenes/world/archive_room.tscn")
 
 var _checks := 0
 var _failures := 0
@@ -10,11 +11,16 @@ var _original_save_exists := false
 var _original_save_contents := ""
 var _injection_target: StringName = &""
 var _injection_fired := false
-var _unexpected_transition_fired := false
 var _transaction_save_results: Array[bool] = []
 var _transaction_save_changed_file := false
 var _transaction_save_baseline := ""
 var _game_saved_count := 0
+var _persistent_transition := Callable()
+var _persistent_money_attempts := 0
+var _persistent_commission_attempts := 0
+var _persistent_production_attempts := 0
+var _rollback_resolution_count := 0
+var _domain_signal_counts := {}
 
 
 func _ready() -> void:
@@ -108,14 +114,24 @@ func _test_commission_transaction_atomicity() -> void:
 	await _assert_downstream_failure_rolls_back(
 		&"basic_scanner", Callable(FirstShiftManager, "commission_scanner"), "Scanner"
 	)
-	var before_unexpected := _state_snapshot()
-	_unexpected_transition_fired = false
-	GameState.money_changed.connect(_inject_unexpected_scanner_transition)
-	var unexpected_result: int = FirstShiftManager.commission_scanner()
-	GameState.money_changed.disconnect(_inject_unexpected_scanner_transition)
-	_check(_unexpected_transition_fired, "Injected Scanner listener performs an unexpected authority transition")
-	_check(unexpected_result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, "Unexpected Scanner transition fails the outer transaction")
-	_check(_state_snapshot() == before_unexpected, "Unexpected Scanner transition rolls every authority back exactly")
+	var room := ARCHIVE_ROOM_SCENE.instantiate()
+	add_child(room)
+	await _settle()
+	_assert_persistent_money_listener_rolls_back(
+		Callable(FirstShiftManager, "commission_scanner"),
+		Callable(CommissioningManager, "commission_scanner"),
+		"Scanner"
+	)
+	var scanner_presentation: Dictionary = room.get_node("%BasicScanner").get_state_snapshot()
+	var hud: CanvasLayer = room.get_node("GameplayHUD") as CanvasLayer
+	_check(not bool(scanner_presentation["commissioned"]) and not bool(scanner_presentation["enabled"]), "Scanner presentation reconciles to dormant Manual state after rollback")
+	_check((hud.get_node("%CreditsValue") as Label).text == "30", "HUD reconciles to restored 30-Credit Scanner balance")
+	_check((hud.get_node("%FirstShiftActionButton") as Button).text == "COMMISSION SCANNER — 16 C", "HUD reconciles to Scanner-ready action after rollback")
+	_assert_persistent_production_listener_rolls_back(
+		Callable(FirstShiftManager, "commission_scanner"), "Scanner"
+	)
+	room.queue_free()
+	await _settle()
 
 	_check(SaveManager.save_game(), "Pre-Scanner coherent save succeeds")
 	_transaction_save_baseline = FileAccess.get_file_as_string(SaveManager.SAVE_PATH)
@@ -147,6 +163,11 @@ func _test_commission_transaction_atomicity() -> void:
 	await _assert_downstream_failure_rolls_back(
 		&"basic_sorter", Callable(FirstShiftManager, "commission_sorter"), "Sorter"
 	)
+	_assert_persistent_money_listener_rolls_back(
+		Callable(FirstShiftManager, "commission_sorter"),
+		Callable(CommissioningManager, "commission_sorter"),
+		"Sorter"
+	)
 	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.SUCCESS, "Sorter commits after adversarial rollback")
 	var sorter_committed := _state_snapshot()
 	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.ALREADY_COMMISSIONED, "Sorter double commissioning is rejected after commit")
@@ -157,6 +178,11 @@ func _test_commission_transaction_atomicity() -> void:
 	_check(FirstShiftManager.get_phase() == FirstShiftManager.Phase.INTAKE_READY, "Atomicity fixture reaches Intake gate")
 	await _assert_downstream_failure_rolls_back(
 		&"archive_intake", Callable(FirstShiftManager, "commission_intake"), "Intake"
+	)
+	_assert_persistent_money_listener_rolls_back(
+		Callable(FirstShiftManager, "commission_intake"),
+		Callable(CommissioningManager, "commission_intake"),
+		"Intake"
 	)
 	_check(FirstShiftManager.commission_intake() == FirstShiftManager.CommissionResult.SUCCESS, "Intake commits after adversarial rollback")
 	var intake_committed := _state_snapshot()
@@ -186,6 +212,61 @@ func _assert_downstream_failure_rolls_back(
 	_check(_state_snapshot() == before, label + " failure restores Credits, stage, production, phase and pending time exactly")
 	_check(not _transaction_save_results.is_empty() and not _transaction_save_results.has(true), label + " in-flight listener save is rejected")
 	_check(not _transaction_save_changed_file, label + " rejected in-flight save preserves prior file")
+
+
+func _assert_persistent_money_listener_rolls_back(
+	commission: Callable, interfering_transition: Callable, label: String
+) -> void:
+	var pending_fixture := SimulationManager.get_transaction_snapshot()
+	pending_fixture["pending_seconds"] = 0.2
+	_check(SimulationManager.restore_transaction_snapshot(pending_fixture), label + " persistent-listener pending fixture installs")
+	var before := _state_snapshot()
+	_persistent_transition = interfering_transition
+	_persistent_money_attempts = 0
+	_persistent_commission_attempts = 0
+	_rollback_resolution_count = 0
+	_reset_domain_signal_counts()
+	_connect_domain_signal_counters()
+	GameState.money_changed.connect(_persistent_money_commission_listener)
+	CommissioningManager.commissioning_stage_changed.connect(_persistent_commission_listener)
+	FirstShiftManager.transaction_rolled_back.connect(_on_transaction_rolled_back)
+	var result: int = int(commission.call())
+	# The interfering listeners deliberately remain connected while both the
+	# rollback and its presentation reconciliation complete.
+	_check(result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, label + " persistent money listener forces transaction failure")
+	_check(_state_snapshot() == before, label + " persistent listener rollback is exact while listeners remain connected")
+	_check(_persistent_money_attempts == 1, label + " silent rollback emits no second money_changed wave")
+	_check(_persistent_commission_attempts == 1, label + " silent rollback emits no second commissioning-stage wave")
+	_check(_rollback_resolution_count == 1, label + " publishes one dedicated rollback reconciliation")
+	_check(_domain_signal_counts == _expected_signal_counts(1, 0, 0, 1, 0, 0, 0), label + " silent rollback emits zero ordinary authority notifications")
+	GameState.money_changed.disconnect(_persistent_money_commission_listener)
+	CommissioningManager.commissioning_stage_changed.disconnect(_persistent_commission_listener)
+	FirstShiftManager.transaction_rolled_back.disconnect(_on_transaction_rolled_back)
+	_disconnect_domain_signal_counters()
+
+
+func _assert_persistent_production_listener_rolls_back(
+	commission: Callable, label: String
+) -> void:
+	var pending_fixture := SimulationManager.get_transaction_snapshot()
+	pending_fixture["pending_seconds"] = 0.2
+	_check(SimulationManager.restore_transaction_snapshot(pending_fixture), label + " persistent-production pending fixture installs")
+	var before := _state_snapshot()
+	_persistent_production_attempts = 0
+	_rollback_resolution_count = 0
+	_reset_domain_signal_counts()
+	_connect_domain_signal_counters()
+	SimulationManager.production_line_changed.connect(_persistent_production_listener)
+	FirstShiftManager.transaction_rolled_back.connect(_on_transaction_rolled_back)
+	var result: int = int(commission.call())
+	_check(result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, label + " persistent production listener forces transaction failure")
+	_check(_state_snapshot() == before, label + " production-listener rollback restores exact pre-call snapshot")
+	_check(_persistent_production_attempts == 2, label + " rollback adds no third production-line notification")
+	_check(_rollback_resolution_count == 1, label + " production failure publishes one rollback reconciliation")
+	_check(_domain_signal_counts == _expected_signal_counts(1, 0, 0, 1, 2, 0, 1), label + " production rollback emits no ordinary restore notifications")
+	SimulationManager.production_line_changed.disconnect(_persistent_production_listener)
+	FirstShiftManager.transaction_rolled_back.disconnect(_on_transaction_rolled_back)
+	_disconnect_domain_signal_counters()
 
 
 func _test_cross_domain_save_validation() -> void:
@@ -449,12 +530,10 @@ func _round_trip(label: String) -> void:
 
 func _state_snapshot() -> Dictionary:
 	return {
-		"money": GameState.get_money(),
-		"earned": GameState.get_total_money_earned(),
-		"items": GameState.get_total_processed_items(),
+		"game": GameState.get_transaction_snapshot(),
 		"simulation": SimulationManager.get_transaction_snapshot(),
 		"cases": CaseManager.get_case_save_data(),
-		"commissioning": CommissioningManager.get_commissioning_save_data(),
+		"commissioning": CommissioningManager.get_transaction_snapshot(),
 		"first_shift": FirstShiftManager.get_first_shift_save_data(),
 	}
 
@@ -504,12 +583,101 @@ func _inject_disable_target() -> void:
 	SimulationManager.set_machine_enabled(_injection_target, false)
 
 
-func _inject_unexpected_scanner_transition(_money: int) -> void:
-	if _unexpected_transition_fired:
-		return
-	_unexpected_transition_fired = true
-	_record_transaction_save_attempt()
-	CommissioningManager.commission_scanner()
+func _persistent_money_commission_listener(_money: int) -> void:
+	_persistent_money_attempts += 1
+	_persistent_transition.call()
+
+
+func _persistent_commission_listener(stage: CommissioningManager.Stage) -> void:
+	_persistent_commission_attempts += 1
+	match stage:
+		CommissioningManager.Stage.SCANNER_ONLINE:
+			CommissioningManager.commission_sorter()
+		CommissioningManager.Stage.SORTER_ONLINE:
+			CommissioningManager.commission_intake()
+		CommissioningManager.Stage.FULL_LINE_ONLINE:
+			CommissioningManager.reset_to_manual_shift()
+
+
+func _persistent_production_listener() -> void:
+	_persistent_production_attempts += 1
+	SimulationManager.set_machine_enabled(&"receiving_desk", false)
+
+
+func _on_transaction_rolled_back() -> void:
+	_rollback_resolution_count += 1
+
+
+func _expected_signal_counts(
+	money: int,
+	processed: int,
+	state: int,
+	commissioning: int,
+	production: int,
+	upgrades: int,
+	simulation: int
+) -> Dictionary:
+	return {
+		"money_changed": money,
+		"processed_items_changed": processed,
+		"state_restored": state,
+		"commissioning_stage_changed": commissioning,
+		"production_line_changed": production,
+		"upgrades_changed": upgrades,
+		"simulation_updated": simulation,
+	}
+
+
+func _reset_domain_signal_counts() -> void:
+	_domain_signal_counts = _expected_signal_counts(0, 0, 0, 0, 0, 0, 0)
+
+
+func _connect_domain_signal_counters() -> void:
+	GameState.money_changed.connect(_count_money_changed)
+	GameState.processed_items_changed.connect(_count_processed_items_changed)
+	GameState.state_restored.connect(_count_state_restored)
+	CommissioningManager.commissioning_stage_changed.connect(_count_commissioning_changed)
+	SimulationManager.production_line_changed.connect(_count_production_changed)
+	SimulationManager.upgrades_changed.connect(_count_upgrades_changed)
+	SimulationManager.simulation_updated.connect(_count_simulation_updated)
+
+
+func _disconnect_domain_signal_counters() -> void:
+	GameState.money_changed.disconnect(_count_money_changed)
+	GameState.processed_items_changed.disconnect(_count_processed_items_changed)
+	GameState.state_restored.disconnect(_count_state_restored)
+	CommissioningManager.commissioning_stage_changed.disconnect(_count_commissioning_changed)
+	SimulationManager.production_line_changed.disconnect(_count_production_changed)
+	SimulationManager.upgrades_changed.disconnect(_count_upgrades_changed)
+	SimulationManager.simulation_updated.disconnect(_count_simulation_updated)
+
+
+func _count_money_changed(_money: int) -> void:
+	_domain_signal_counts["money_changed"] += 1
+
+
+func _count_processed_items_changed(_items: int) -> void:
+	_domain_signal_counts["processed_items_changed"] += 1
+
+
+func _count_state_restored() -> void:
+	_domain_signal_counts["state_restored"] += 1
+
+
+func _count_commissioning_changed(_stage: CommissioningManager.Stage) -> void:
+	_domain_signal_counts["commissioning_stage_changed"] += 1
+
+
+func _count_production_changed() -> void:
+	_domain_signal_counts["production_line_changed"] += 1
+
+
+func _count_upgrades_changed() -> void:
+	_domain_signal_counts["upgrades_changed"] += 1
+
+
+func _count_simulation_updated(_items: int, _credits: int, _elapsed: float) -> void:
+	_domain_signal_counts["simulation_updated"] += 1
 
 
 func _version_two_line() -> Dictionary:

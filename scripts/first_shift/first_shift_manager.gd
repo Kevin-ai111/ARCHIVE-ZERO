@@ -5,6 +5,7 @@ extends Node
 
 signal first_shift_state_changed(phase: Phase)
 signal case_reward_granted(case_id: StringName, credits: int)
+signal transaction_rolled_back
 
 enum Phase {
 	MANUAL_CASES,
@@ -404,6 +405,10 @@ func _commission(
 		_mutating = false
 		if not rolled_back:
 			push_error("First Shift commissioning rollback failed to restore the exact pre-call state.")
+		else:
+			# Presentation observers re-read the now-coherent authorities. Ordinary
+			# authority mutation signals stay suppressed throughout rollback.
+			transaction_rolled_back.emit()
 		return CommissionResult.TRANSACTION_FAILED
 	_mutating = false
 	first_shift_state_changed.emit(_phase)
@@ -411,17 +416,18 @@ func _commission(
 
 
 func _get_commission_snapshot() -> Dictionary:
+	var game := GameState.get_transaction_snapshot()
+	if not GameState.is_valid_transaction_snapshot(game):
+		return {}
+	var commissioning := CommissioningManager.get_transaction_snapshot()
+	if not CommissioningManager.is_valid_transaction_snapshot(commissioning):
+		return {}
 	var simulation := SimulationManager.get_transaction_snapshot()
 	if not SimulationManager.is_valid_transaction_snapshot(simulation):
 		return {}
 	return {
-		"game": {
-			"money": GameState.get_money(),
-			"earned": GameState.get_total_money_earned(),
-			"items": GameState.get_total_processed_items(),
-			"playtime": GameState.get_total_playtime(),
-		},
-		"commissioning": CommissioningManager.get_commissioning_save_data(),
+		"game": game,
+		"commissioning": commissioning,
 		"simulation": simulation,
 		"phase": _phase,
 	}
@@ -437,9 +443,9 @@ func _commission_postconditions_hold(
 	var game: Dictionary = snapshot["game"] as Dictionary
 	if (
 		GameState.get_money() != int(game["money"]) - cost
-		or GameState.get_total_money_earned() != int(game["earned"])
-		or GameState.get_total_processed_items() != int(game["items"])
-		or not is_equal_approx(GameState.get_total_playtime(), float(game["playtime"]))
+		or GameState.get_total_money_earned() != int(game["total_money_earned"])
+		or GameState.get_total_processed_items() != int(game["total_processed_items"])
+		or not is_equal_approx(GameState.get_total_playtime(), float(game["total_playtime"]))
 		or CommissioningManager.get_stage() != expected_stage
 		or _phase != next_phase
 	):
@@ -460,23 +466,17 @@ func _commission_postconditions_hold(
 
 
 func _restore_commission_snapshot(snapshot: Dictionary) -> bool:
-	var simulation_ok := SimulationManager.restore_transaction_snapshot(snapshot["simulation"])
-	var commissioning_ok := CommissioningManager.restore_commissioning_save_data(snapshot["commissioning"])
-	var game: Dictionary = snapshot["game"] as Dictionary
-	var game_ok := GameState.restore_state(
-		int(game["money"]), int(game["earned"]), int(game["items"]), float(game["playtime"])
-	)
+	var simulation_ok := SimulationManager.restore_transaction_snapshot_silent(snapshot["simulation"])
+	var commissioning_ok := CommissioningManager.restore_transaction_snapshot_silent(snapshot["commissioning"])
+	var game_ok := GameState.restore_transaction_snapshot_silent(snapshot["game"])
 	_phase = int(snapshot["phase"]) as Phase
 	return (
 		simulation_ok
 		and commissioning_ok
 		and game_ok
 		and SimulationManager.get_transaction_snapshot() == snapshot["simulation"]
-		and CommissioningManager.get_commissioning_save_data() == snapshot["commissioning"]
-		and GameState.get_money() == int(game["money"])
-		and GameState.get_total_money_earned() == int(game["earned"])
-		and GameState.get_total_processed_items() == int(game["items"])
-		and is_equal_approx(GameState.get_total_playtime(), float(game["playtime"]))
+		and CommissioningManager.get_transaction_snapshot() == snapshot["commissioning"]
+		and GameState.get_transaction_snapshot() == snapshot["game"]
 		and _phase == int(snapshot["phase"])
 	)
 
@@ -523,12 +523,7 @@ func _on_case_progress_changed(case_id: StringName) -> void:
 	var reward := CASE_BASE_REWARD
 	if CaseManager.is_case_classification_correct(case_id):
 		reward += CASE_ACCURACY_BONUS
-	var game_before := {
-		"money": GameState.get_money(),
-		"earned": GameState.get_total_money_earned(),
-		"items": GameState.get_total_processed_items(),
-		"playtime": GameState.get_total_playtime(),
-	}
+	var game_before := GameState.get_transaction_snapshot()
 	var phase_before := _phase
 	var claims_before := _claimed_reward_case_ids.duplicate()
 	_mutating = true
@@ -541,27 +536,21 @@ func _on_case_progress_changed(case_id: StringName) -> void:
 		phase_changed = _update_progression_gate()
 		success = (
 			GameState.get_money() == int(game_before["money"]) + reward
-			and GameState.get_total_money_earned() == int(game_before["earned"]) + reward
-			and GameState.get_total_processed_items() == int(game_before["items"])
-			and is_equal_approx(GameState.get_total_playtime(), float(game_before["playtime"]))
+			and GameState.get_total_money_earned() == int(game_before["total_money_earned"]) + reward
+			and GameState.get_total_processed_items() == int(game_before["total_processed_items"])
+			and is_equal_approx(GameState.get_total_playtime(), float(game_before["total_playtime"]))
 			and _claimed_reward_case_ids.count(case_id) == 1
 		)
 	if not success:
 		_claimed_reward_case_ids = claims_before
 		_phase = phase_before
-		var restored := GameState.restore_state(
-			int(game_before["money"]),
-			int(game_before["earned"]),
-			int(game_before["items"]),
-			float(game_before["playtime"])
-		)
+		var restored := GameState.restore_transaction_snapshot_silent(game_before)
 		_mutating = false
 		if (
 			not restored
 			or _claimed_reward_case_ids != claims_before
 			or _phase != phase_before
-			or GameState.get_money() != int(game_before["money"])
-			or GameState.get_total_money_earned() != int(game_before["earned"])
+			or GameState.get_transaction_snapshot() != game_before
 		):
 			push_error("First Shift reward rollback failed to restore the exact pre-call state.")
 		return

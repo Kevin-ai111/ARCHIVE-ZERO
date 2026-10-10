@@ -225,6 +225,14 @@ func is_valid_transaction_snapshot(snapshot: Variant) -> bool:
 
 
 func restore_transaction_snapshot(snapshot: Variant) -> bool:
+	return _restore_transaction_snapshot(snapshot, true)
+
+
+func restore_transaction_snapshot_silent(snapshot: Variant) -> bool:
+	return _restore_transaction_snapshot(snapshot, false)
+
+
+func _restore_transaction_snapshot(snapshot: Variant, publish: bool) -> bool:
 	if not is_valid_transaction_snapshot(snapshot):
 		return false
 	var production_save: Dictionary = snapshot["production_save"] as Dictionary
@@ -234,8 +242,9 @@ func restore_transaction_snapshot(snapshot: Variant) -> bool:
 	_apply_upgrade_multipliers()
 	_tick_accumulator = float(snapshot["pending_seconds"])
 	_tick_interval = float(snapshot["tick_interval"])
-	production_line_changed.emit()
-	upgrades_changed.emit()
+	if publish:
+		production_line_changed.emit()
+		upgrades_changed.emit()
 	return true
 
 

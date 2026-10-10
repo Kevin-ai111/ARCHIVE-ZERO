@@ -24,7 +24,7 @@ and the test scenes must print `Production pipeline tests passed.` and
 
 Case foundation prints 487 passing checks; manual Case integration prints 1873.
 Commissioning prints 293 checks; progressive room presentation prints 2503.
-First Shift sequencing prints 409 checks. Its correction-pass coverage injects
+First Shift sequencing prints 436 checks. Its correction-pass coverage injects
 synchronous public listeners during Scanner, Sorter and Intake commissioning,
 forces downstream failure and unexpected stage advancement, and verifies exact
 rollback of Credits, aggregate totals, stage, runtime/production state, pending
@@ -35,6 +35,14 @@ each in-flight save must return false, preserve the previous file and emit no
 loads and a replayed archive notification, while native v4 composition checks
 reject missing/phantom claims and phase/stage mismatch without weakening the
 explicit legacy-complete marker.
+Persistent listeners now remain connected throughout rollback at all three
+commissioning gates. GameState, Commissioning, and Simulation restore their
+authority-owned snapshots silently; the test counts no rollback emissions from
+all seven ordinary domain signals, verifies the full snapshot including 0.2
+pending seconds and tick state, then confirms each normal retry succeeds. A
+real ArchiveRoom and gameplay HUD instance also re-read the dedicated rollback
+reconciliation and return the Scanner to dormant Manual presentation with the
+restored 30-Credit balance.
 The lighting correction adds 583 checks, including the single approved cyan-bounce
 correction contract. Original ART/matrix fixtures remain
 historical references; only two exact PNG replacements and nine approved alpha

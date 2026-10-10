@@ -86,6 +86,21 @@ must satisfy all postconditions after their normal public APIs run; otherwise
 every authority is restored and the exact snapshot is verified before a failure
 is returned. No coordinator writes another authority's private fields.
 
+Rollback uses narrow authority-owned silent APIs in `GameState`,
+`CommissioningManager`, and `SimulationManager`. They validate and restore only
+their own transaction snapshots without emitting normal gameplay signals. A
+persistent synchronous listener therefore receives no second `money_changed`,
+`processed_items_changed`, `state_restored`, `commissioning_stage_changed`,
+`production_line_changed`, `upgrades_changed`, or `simulation_updated` wave
+during rollback. Normal save/load restore functions retain their existing
+notification behavior.
+
+After exact silent restoration and verification, FirstShiftManager emits one
+dedicated `transaction_rolled_back` reconciliation signal. ArchiveRoom and the
+gameplay HUD respond only by re-reading the completed authority state. This
+returns a failed Scanner attempt to dormant Manual presentation without
+publishing fake domain mutations or success-facing First Shift state.
+
 `SaveManager` rejects save and load requests while this critical section is
 active, before flushing simulation or touching either save path. Therefore
 synchronous listeners on `money_changed`, `commissioning_stage_changed` or
@@ -119,14 +134,18 @@ memory.
 
 ## Validation
 
-`tests/first_shift_test.tscn` performs 409 checks covering the exact queue and
+`tests/first_shift_test.tscn` performs 436 checks covering the exact queue and
 gates, both economy paths, automation, reward idempotency, authority isolation,
 all commissioning failures, save checkpoints, every legacy migration, the
 upgrade guard, dormant/disabled semantics, the 300-second no-backlog case and
 the 100-second Full-Line invariant, strict/atomic First Shift v1 payload
 validation, adversarial rollback at all three commissioning gates, synchronous
 signal-save rejection, exact 5-Credit reward replay, and native v4 cross-domain
-composition checks.
+composition checks. Persistent money listeners reproduce the exact Scanner,
+Sorter, and Intake reentrancy failure while remaining connected through
+rollback; persistent commissioning and production listeners and seven signal
+counters prove silent restoration, exact snapshots, successful retry, and
+presentation reconciliation.
 
 `tests/first_shift_visual_test.tscn` is an opt-in graphical evidence driver. It
 uses public gameplay APIs and captures ArchiveRoom; it is not part of runtime.
