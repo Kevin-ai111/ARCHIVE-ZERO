@@ -59,7 +59,7 @@ func _run() -> void:
 					var limits: Array = rules.ranges[family][stage]
 					_check(alpha >= limits[0] and alpha <= limits[1], "All active lighting alpha values within approved ART ranges")
 			_check(SUPPORT.authority_snapshot() == authority and CommissioningManager.get_commissioning_save_data() == commissioning, "Lighting cannot mutate production/cases/commissioning/save authority")
-	_check(SaveManager.SAVE_VERSION == 3 and CaseManager.CASE_SAVE_VERSION == 1 and CommissioningManager.COMMISSIONING_SAVE_VERSION == 1, "Save contracts remain 3/1/1")
+	_check(SaveManager.SAVE_VERSION == 4 and CaseManager.CASE_SAVE_VERSION == 1 and CommissioningManager.COMMISSIONING_SAVE_VERSION == 1, "Save contracts are 4/1/1")
 	_test_pixel_guard()
 	SUPPORT.restore_stage(3)
 	CaseManager.reset_cases()

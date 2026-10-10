@@ -91,11 +91,11 @@ Rejected operations emit nothing. Identical valid restore succeeds without
 signals. Reentrant mutations from signal handlers reject until the current
 notification batch is complete; getters remain usable and see committed state.
 
-## Independent serialization v1
+## Case serialization v1
 
-Global `SaveManager.SAVE_VERSION` remains **3**. No case fields are written to
-or read from the live user save. This independently testable payload is exposed
-only through CaseManager's `get_case_save_data()`, `get_default_case_save_data()`,
+Global `SaveManager.SAVE_VERSION` is **4** and composes this unchanged Case v1
+payload under `case_save`. The independently testable payload is exposed through
+CaseManager's `get_case_save_data()`, `get_default_case_save_data()`,
 `is_valid_case_save_data()` and `restore_case_save_data()`:
 
 ```json

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0013"
+item_id = &"wireless_earbuds"
+found_location = "Platform 6 — Ticket Machine"
+found_time_label = "23:09"
+condition_text = "Case scratched / intact"
+expected_category_id = &"ELEC"
+routing_policy = &"NORMAL"
+inspection_material = "Plastic / Electronics"
+inspection_identifier = "Device serial"
+inspection_risk = "Normal"

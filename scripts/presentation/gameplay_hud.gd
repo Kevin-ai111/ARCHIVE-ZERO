@@ -15,6 +15,9 @@ var _last_windowed_position := Vector2i(-1, -1)
 @onready var upgrade_rows: VBoxContainer = %UpgradeRows
 @onready var shop_status: Label = %ShopStatus
 @onready var display_mode_button: Button = %DisplayModeButton
+@onready var first_shift_objective: Label = %FirstShiftObjective
+@onready var first_shift_status: Label = %FirstShiftStatus
+@onready var first_shift_action_button: Button = %FirstShiftActionButton
 
 
 func _ready() -> void:
@@ -22,11 +25,17 @@ func _ready() -> void:
 	%CloseShopButton.pressed.connect(close_upgrade_shop)
 	%DebugDashboardButton.pressed.connect(_open_debug_dashboard)
 	display_mode_button.pressed.connect(toggle_display_mode)
+	first_shift_action_button.pressed.connect(_perform_first_shift_action)
 	GameState.money_changed.connect(_on_money_changed)
 	GameState.state_restored.connect(_refresh)
 	SimulationManager.production_line_changed.connect(_refresh)
 	SimulationManager.upgrades_changed.connect(_refresh_upgrade_state)
 	SimulationManager.simulation_updated.connect(_on_simulation_updated)
+	FirstShiftManager.first_shift_state_changed.connect(_on_first_shift_changed)
+	FirstShiftManager.case_reward_granted.connect(_on_case_reward_granted)
+	CaseManager.queue_changed.connect(_refresh_first_shift)
+	CaseManager.active_case_changed.connect(_refresh_first_shift)
+	CaseManager.case_progress_changed.connect(_on_case_progress_changed)
 	_build_upgrade_rows()
 	_refresh()
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED:
@@ -46,11 +55,25 @@ func _exit_tree() -> void:
 		SimulationManager.upgrades_changed.disconnect(_refresh_upgrade_state)
 	if SimulationManager.simulation_updated.is_connected(_on_simulation_updated):
 		SimulationManager.simulation_updated.disconnect(_on_simulation_updated)
+	if FirstShiftManager.first_shift_state_changed.is_connected(_on_first_shift_changed):
+		FirstShiftManager.first_shift_state_changed.disconnect(_on_first_shift_changed)
+	if FirstShiftManager.case_reward_granted.is_connected(_on_case_reward_granted):
+		FirstShiftManager.case_reward_granted.disconnect(_on_case_reward_granted)
+	if CaseManager.queue_changed.is_connected(_refresh_first_shift):
+		CaseManager.queue_changed.disconnect(_refresh_first_shift)
+	if CaseManager.active_case_changed.is_connected(_refresh_first_shift):
+		CaseManager.active_case_changed.disconnect(_refresh_first_shift)
+	if CaseManager.case_progress_changed.is_connected(_on_case_progress_changed):
+		CaseManager.case_progress_changed.disconnect(_on_case_progress_changed)
 
 
 func open_upgrade_shop() -> void:
 	upgrade_overlay.visible = true
-	shop_status.text = "Select one of the two available machine upgrades."
+	shop_status.text = (
+		"Select one of the two available machine upgrades."
+		if FirstShiftManager.is_upgrade_purchasing_unlocked()
+		else "AVAILABLE AFTER LINE COMMISSIONING"
+	)
 	_refresh_upgrade_state()
 
 
@@ -81,6 +104,8 @@ func get_readability_snapshot() -> Dictionary:
 		"primary_button_size": %UpgradeButton.custom_minimum_size,
 		"shop_panel_size": %UpgradePanel.custom_minimum_size,
 		"windowed_size": WINDOWED_SIZE,
+		"first_shift_panel": %FirstShiftPanel.get_rect(),
+		"first_shift_action_size": first_shift_action_button.custom_minimum_size,
 	}
 
 
@@ -153,6 +178,19 @@ func _on_simulation_updated(_items_processed: int, _credits_earned: int, _elapse
 	_refresh()
 
 
+func _on_first_shift_changed(_phase: int) -> void:
+	_refresh()
+
+
+func _on_case_reward_granted(case_id: StringName, credits: int) -> void:
+	first_shift_status.text = "%s ARCHIVED · +%d C" % [String(case_id).replace("CASE_", "CASE "), credits]
+	_refresh_upgrade_state()
+
+
+func _on_case_progress_changed(_case_id: StringName) -> void:
+	_refresh_first_shift()
+
+
 func _refresh() -> void:
 	if not is_node_ready():
 		return
@@ -161,21 +199,76 @@ func _refresh() -> void:
 	var bottleneck: MachineRuntime = SimulationManager.get_production_line().get_bottleneck()
 	bottleneck_value.text = "Line stopped" if bottleneck == null else bottleneck.get_definition().display_name
 	_refresh_upgrade_state()
+	_refresh_first_shift()
 
 
 func _refresh_upgrade_state() -> void:
 	if not is_node_ready():
 		return
+	var unlocked := FirstShiftManager.is_upgrade_purchasing_unlocked()
 	for definition: UpgradeDefinition in SimulationManager.get_upgrade_definitions():
 		var upgrade_id := String(definition.id)
 		var owned := SimulationManager.owns_upgrade(upgrade_id)
 		var button: Button = _purchase_buttons.get(upgrade_id) as Button
 		var owned_label: Label = _owned_labels.get(upgrade_id) as Label
 		if button != null:
-			button.disabled = owned
-			button.text = "Owned" if owned else "Purchase"
+			button.disabled = owned or not unlocked
+			button.text = "Owned" if owned else ("Purchase" if unlocked else "Locked")
 		if owned_label != null:
-			owned_label.text = "INSTALLED" if owned else "AVAILABLE"
+			owned_label.text = "INSTALLED" if owned else ("AVAILABLE" if unlocked else "AFTER LINE")
+
+
+func _refresh_first_shift() -> void:
+	if not is_node_ready():
+		return
+	first_shift_objective.text = FirstShiftManager.get_objective_text()
+	if not first_shift_status.text.contains("ARCHIVED · +"):
+		first_shift_status.text = _first_shift_detail_text()
+	first_shift_action_button.text = FirstShiftManager.get_primary_action_text()
+	first_shift_action_button.disabled = (
+		FirstShiftManager.is_complete()
+		or (
+			not CaseManager.has_active_case()
+			and FirstShiftManager.get_phase() in [
+				FirstShiftManager.Phase.MANUAL_CASES,
+				FirstShiftManager.Phase.SCANNER_CASES,
+				FirstShiftManager.Phase.SORTER_CASES,
+			]
+			and not FirstShiftManager.can_activate_next_case()
+		)
+	)
+
+
+func _first_shift_detail_text() -> String:
+	var active := CaseManager.get_active_case()
+	if active != null:
+		return "%s · %s" % [String(active.get_case_id()).replace("CASE_", "CASE "), CaseProgress.STATE_LABELS[active.get_state()]]
+	return FirstShiftManager.get_primary_action_text()
+
+
+func _perform_first_shift_action() -> void:
+	first_shift_status.text = ""
+	if CaseManager.has_active_case():
+		var panel := get_parent().get_node_or_null("CasePanel") as ManualCasePanel
+		if panel != null:
+			panel.open_panel()
+		_refresh_first_shift()
+		return
+	var result := FirstShiftManager.CommissionResult.WRONG_PHASE
+	match FirstShiftManager.get_phase():
+		FirstShiftManager.Phase.MANUAL_CASES, FirstShiftManager.Phase.SCANNER_CASES, FirstShiftManager.Phase.SORTER_CASES:
+			var activated := FirstShiftManager.activate_next_case()
+			first_shift_status.text = "CASE ACTIVATED" if activated != null else "CASE NOT AVAILABLE"
+		FirstShiftManager.Phase.SCANNER_READY:
+			result = FirstShiftManager.commission_scanner()
+			first_shift_status.text = FirstShiftManager.get_commission_result_message(result)
+		FirstShiftManager.Phase.SORTER_READY:
+			result = FirstShiftManager.commission_sorter()
+			first_shift_status.text = FirstShiftManager.get_commission_result_message(result)
+		FirstShiftManager.Phase.INTAKE_READY:
+			result = FirstShiftManager.commission_intake()
+			first_shift_status.text = FirstShiftManager.get_commission_result_message(result)
+	_refresh()
 
 
 func _refresh_display_mode_label() -> void:
