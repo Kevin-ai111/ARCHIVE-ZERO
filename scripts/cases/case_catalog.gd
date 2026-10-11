@@ -36,6 +36,11 @@ const DEFAULT_CASES: Array[Resource] = [
 	preload("res://data/cases/records/case_0014.tres"),
 	preload("res://data/cases/records/case_0015.tres"),
 ]
+const DIRECTIVE_VALIDATED_CASE_IDS: Array[StringName] = [
+	&"CASE_0001", &"CASE_0002", &"CASE_0003", &"CASE_0004", &"CASE_0005", &"CASE_0006",
+	&"CASE_0007", &"CASE_0008", &"CASE_0009", &"CASE_0011", &"CASE_0012", &"CASE_0013",
+	&"CASE_0014", &"CASE_0015",
+]
 
 var _categories: Dictionary = {}
 var _items: Dictionary = {}
@@ -47,6 +52,15 @@ var _valid := false
 func _init(categories: Array = DEFAULT_CATEGORIES, items: Array = DEFAULT_ITEMS, cases: Array = DEFAULT_CASES) -> void:
 	if not is_valid_catalog_data(categories, items, cases):
 		return
+	var directive_catalog := ArchiveDirectiveCatalog.new()
+	if not directive_catalog.is_valid():
+		return
+	for definition: CaseDefinition in cases:
+		if (
+			definition.case_id in DIRECTIVE_VALIDATED_CASE_IDS
+			and directive_catalog.evaluate(definition) != definition.expected_category_id
+		):
+			return
 	for category: CaseCategoryDefinition in categories:
 		_categories[category.category_id] = category.duplicate(true)
 	for item: ArchiveItemDefinition in items:
@@ -84,8 +98,6 @@ static func is_valid_catalog_data(categories: Array, items: Array, cases: Array)
 		if not definition.is_valid() or case_ids.has(definition.case_id):
 			return false
 		if not item_ids.has(definition.item_id) or not category_ids.has(definition.expected_category_id):
-			return false
-		if definition.expected_category_id != item_ids[definition.item_id]:
 			return false
 		case_ids[definition.case_id] = true
 	return true

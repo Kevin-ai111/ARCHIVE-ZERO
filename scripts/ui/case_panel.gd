@@ -6,6 +6,8 @@ const TEXT := Color(0.87, 0.91, 0.92)
 const CYAN := Color(0.35, 0.82, 0.87)
 const MUTED := Color(0.52, 0.63, 0.67)
 const AMBER := Color(0.95, 0.72, 0.34)
+const RESULT_GREEN := Color(0.45, 0.78, 0.58)
+const RESULT_RED := Color(0.88, 0.42, 0.38)
 const CATEGORY_IDS: Array[StringName] = [&"PERS", &"ELEC", &"DOCS", &"BAG"]
 const CATEGORY_NAMES := ["Personal Items", "Electronics", "Documents", "Bags / Containers"]
 
@@ -26,6 +28,13 @@ var risk: Label
 var pending: Label
 var inspection_check: TextureRect
 var manual_review: Control
+var directives_button: Button
+var directives_drawer: Control
+var result_overlay: Control
+var result_title: Label
+var result_classification: Label
+var result_detail: Label
+var result_reward: Label
 var _buttons: Array[Button] = []
 
 @onready var panel: Control = $Panel
@@ -35,6 +44,7 @@ func _ready() -> void:
 	_build_controls()
 	CaseManager.active_case_changed.connect(_on_active_case_changed)
 	CaseManager.case_progress_changed.connect(_on_case_progress_changed)
+	FirstShiftManager.case_result_committed.connect(_on_case_result_committed)
 	refresh_from_authority()
 	# Instantiation after activation reconstructs the existing active case too.
 	if CaseManager.has_active_case():
@@ -44,6 +54,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	CaseManager.active_case_changed.disconnect(_on_active_case_changed)
 	CaseManager.case_progress_changed.disconnect(_on_case_progress_changed)
+	FirstShiftManager.case_result_committed.disconnect(_on_case_result_committed)
 
 
 func open_panel() -> bool:
@@ -79,11 +90,21 @@ func _on_case_progress_changed(_case_id: StringName) -> void:
 	refresh_from_authority()
 
 
+func _on_case_result_committed(_result: Dictionary) -> void:
+	refresh_from_authority()
+
+
 func refresh_from_authority() -> void:
 	var progress: CaseProgress = CaseManager.get_active_case()
 	if progress == null:
-		close_panel()
+		var result := FirstShiftManager.get_last_committed_case_result()
+		if result.is_empty():
+			close_panel()
+		else:
+			_show_result(result)
 		return
+	result_overlay.hide()
+	directives_button.disabled = false
 	var definition: CaseDefinition = CaseManager.get_case_definition(progress.get_case_id())
 	var item: ArchiveItemDefinition = CaseManager.get_item_definition(definition.item_id)
 	var previous_focus := panel.get_viewport().gui_get_focus_owner()
@@ -113,7 +134,7 @@ func refresh_from_authority() -> void:
 	for category_id: StringName in CATEGORY_IDS:
 		var button := category_buttons[category_id] as Button
 		var selected := progress.get_selected_category_id() == category_id
-		button.disabled = state != CaseProgress.State.INSPECTED
+		button.disabled = state not in [CaseProgress.State.INSPECTED, CaseProgress.State.CLASSIFIED]
 		button.set_meta("selected", selected)
 		(button.get_node("Code") as Label).text = ("✓ " if selected else "") + String(category_id)
 	_update_focus_chain()
@@ -130,7 +151,7 @@ func _inspect() -> void:
 
 func _classify(category_id: StringName) -> void:
 	if panel.visible and not (category_buttons[category_id] as Button).disabled:
-		CaseManager.classify_active_case(category_id)
+		CaseManager.set_active_case_classification(category_id)
 
 
 func _archive() -> void:
@@ -201,10 +222,96 @@ func _build_controls() -> void:
 		var subtitle := _label(button, "Subtitle", Rect2(4, 76, 166, 26), CATEGORY_NAMES[index], 18)
 		subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.pressed.connect(_classify.bind(category_id))
+	directives_button = _button("Directives", Rect2(630, 470, 152, 30), "DIRECTIVES", false)
+	directives_button.tooltip_text = "Open or close Archive Directives"
+	directives_button.pressed.connect(_toggle_directives)
 	release_button = _button("Release", Rect2(24, 632, 776, 60), "RELEASE TO ARCHIVE", false)
 	release_button.pressed.connect(_archive)
 	var divider := _texture(panel, "Divider", Rect2(24, 452, 776, 4), load(ASSET_ROOT + "AZ_CASE_divider_h_2x.png"))
 	divider.stretch_mode = TextureRect.STRETCH_SCALE
+	_build_directives_drawer()
+	_build_result_overlay()
+
+
+func _build_directives_drawer() -> void:
+	directives_drawer = Control.new()
+	directives_drawer.name = "DirectivesDrawer"
+	directives_drawer.position = Vector2(338, 84)
+	directives_drawer.size = Vector2(462, 372)
+	directives_drawer.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_child(directives_drawer)
+	_add_backdrop(directives_drawer, directives_drawer.size)
+	_surface(directives_drawer, "Surface", Rect2(Vector2.ZERO, directives_drawer.size), "section", Vector4(16, 16, 16, 16))
+	_label(directives_drawer, "Heading", Rect2(16, 10, 430, 30), "ARCHIVE DIRECTIVES · SHIFT 01", 20, CYAN)
+	var catalog := ArchiveDirectiveCatalog.new()
+	var directives := catalog.get_directives()
+	for index: int in directives.size():
+		var directive := directives[index]
+		var top := 44.0 + index * 78.0
+		var title := _label(directives_drawer, "DirectiveTitle%d" % index, Rect2(16, top, 430, 26), directive.title, 18, AMBER if directive.priority >= 400 else TEXT)
+		title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		var body := _label(directives_drawer, "DirectiveText%d" % index, Rect2(16, top + 23, 430, 55), directive.display_text, 18, MUTED)
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		body.max_lines_visible = 2
+	directives_drawer.hide()
+
+
+func _build_result_overlay() -> void:
+	result_overlay = Control.new()
+	result_overlay.name = "ResultOverlay"
+	result_overlay.position = Vector2(24, 84)
+	result_overlay.size = Vector2(776, 608)
+	result_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_child(result_overlay)
+	_add_backdrop(result_overlay, result_overlay.size)
+	_surface(result_overlay, "Surface", Rect2(Vector2.ZERO, result_overlay.size), "section", Vector4(18, 18, 18, 18))
+	_label(result_overlay, "Eyebrow", Rect2(32, 42, 712, 34), "ARCHIVE ROUTING RECORD", 20, CYAN)
+	result_title = _label(result_overlay, "ResultTitle", Rect2(32, 94, 712, 52), "CASE ARCHIVED", 34)
+	result_classification = _label(result_overlay, "Classification", Rect2(32, 166, 712, 48), "", 28)
+	result_detail = _label(result_overlay, "Detail", Rect2(32, 232, 712, 108), "", 22, MUTED)
+	result_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	result_reward = _label(result_overlay, "Reward", Rect2(32, 366, 712, 58), "", 30)
+	var notice := _label(result_overlay, "Notice", Rect2(32, 452, 712, 64), "Routing committed. Close this record to continue the First Shift.", 20, MUTED)
+	notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	result_overlay.hide()
+
+
+func _add_backdrop(parent: Control, backdrop_size: Vector2) -> void:
+	var backdrop := ColorRect.new()
+	backdrop.name = "Backdrop"
+	backdrop.size = backdrop_size
+	backdrop.color = Color(0.025, 0.075, 0.09, 0.97)
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(backdrop)
+
+
+func _toggle_directives() -> void:
+	if directives_button.disabled or result_overlay.visible:
+		return
+	directives_drawer.visible = not directives_drawer.visible
+	(directives_button.get_node("Caption") as Label).text = "RETURN TO CASE" if directives_drawer.visible else "DIRECTIVES"
+	_update_button_surface(directives_button)
+
+
+func _show_result(result: Dictionary) -> void:
+	directives_drawer.hide()
+	result_overlay.show()
+	panel.show()
+	case_number.text = "CASE #%s" % String(result["case_id"]).trim_prefix("CASE_")
+	status.text = "ARCHIVED"
+	manual_review.hide()
+	var correct := bool(result["correct"])
+	result_classification.text = "CLASSIFICATION: CORRECT" if correct else "CLASSIFICATION: MISROUTED"
+	result_classification.add_theme_color_override("font_color", RESULT_GREEN if correct else RESULT_RED)
+	result_detail.text = "ROUTE ACCEPTED" if correct else "SELECTED: %s\nEXPECTED: %s" % [result["selected_category_id"], result["expected_category_id"]]
+	result_reward.text = "REWARD: +%d C" % int(result["reward"])
+	result_reward.add_theme_color_override("font_color", RESULT_GREEN if correct else RESULT_RED)
+	for button: Button in _buttons:
+		button.disabled = button != close_button
+	_update_focus_chain()
+	for button: Button in _buttons:
+		_update_button_surface(button)
+	close_button.grab_focus()
 
 
 func _label(parent: Node, node_name: String, rect: Rect2, text_value: String, font_size: int, color: Color = TEXT) -> Label:
@@ -266,7 +373,7 @@ func _button(node_name: String, rect: Rect2, caption: String, category: bool) ->
 	panel.add_child(button)
 	_surface(button, "Surface", Rect2(Vector2.ZERO, rect.size), "category_base" if category else "primary_button_base", Vector4(14, 14, 14, 14) if category else Vector4(20, 14, 20, 14))
 	if not caption.is_empty():
-		var label := _label(button, "Caption", Rect2(8, 4, rect.size.x - 16, rect.size.y - 8), caption, 22)
+		var label := _label(button, "Caption", Rect2(8, 2, rect.size.x - 16, rect.size.y - 4), caption, 16 if rect.size.y < 40 else 22)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var focus := Panel.new()
 	focus.name = "FocusOutline"
@@ -318,7 +425,9 @@ func _update_focus_chain() -> void:
 
 
 func _focus_first_action() -> void:
-	if not inspect_button.disabled:
+	if result_overlay.visible:
+		close_button.grab_focus()
+	elif not inspect_button.disabled:
 		inspect_button.grab_focus()
 	elif not release_button.disabled:
 		release_button.grab_focus()

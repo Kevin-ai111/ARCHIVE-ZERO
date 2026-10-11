@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ArchiveDirectiveDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/archive_directive_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+directive_id = &"DIRECTIVE_01_C"
+title = "01-C · DOCUMENTS — PRIORITY"
+display_text = "A Document ID or File reference routes to DOCS regardless of container form."
+priority = 400
+target_category_id = &"DOCS"
+evidence_field = &"inspection_identifier"
+match_values = PackedStringArray("Document ID", "File reference")

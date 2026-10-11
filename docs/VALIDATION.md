@@ -11,6 +11,7 @@ godot --headless --path . tests/case_foundation_test.tscn
 godot --headless --path . tests/manual_case_processing_test.tscn
 godot --headless --path . tests/commissioning_test.tscn
 godot --headless --path . tests/first_shift_test.tscn
+godot --headless --path . tests/archive_inspection_rules_test.tscn
 godot --headless --path . tests/progressive_room_states_test.tscn
 godot --headless --path . tests/archive_room_lighting_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
@@ -22,14 +23,15 @@ The version must report Godot 4.7.2 stable. Every command must exit with code `0
 and the test scenes must print `Production pipeline tests passed.` and
 `Visual foundation tests passed for 1920x1080, 1280x720, and 960x540.`
 
-Case foundation prints 487 passing checks; manual Case integration prints 1873.
+Case foundation prints 489 passing checks; manual Case integration prints 1874.
 Commissioning prints 293 checks; progressive room presentation prints 2503.
-First Shift sequencing prints 436 checks. Its correction-pass coverage injects
+First Shift sequencing prints 438 checks; Archive inspection/rules prints 235.
+The First Shift correction coverage injects
 synchronous public listeners during Scanner, Sorter and Intake commissioning,
 forces downstream failure and unexpected stage advancement, and verifies exact
 rollback of Credits, aggregate totals, stage, runtime/production state, pending
-time and phase. It also attempts saves from reward `money_changed`, commission
-`money_changed`, `commissioning_stage_changed` and `production_line_changed`;
+time and phase. It also attempts saves from reward `money_changed` and commission
+`commissioning_stage_changed`/`production_line_changed`;
 each in-flight save must return false, preserve the previous file and emit no
 `game_saved`. The CASE_0001 regression proves 5 Credits remain 5 after two
 loads and a replayed archive notification, while native v4 composition checks
@@ -42,7 +44,17 @@ all seven ordinary domain signals, verifies the full snapshot including 0.2
 pending seconds and tick state, then confirms each normal retry succeeds. A
 real ArchiveRoom and gameplay HUD instance also re-read the dedicated rollback
 reconciliation and return the Scanner to dormant Manual presentation with the
-restored 30-Credit balance.
+restored zero-cost gate balance.
+
+The inspection/rules suite validates four structured Directives, unique IDs and
+priorities, valid category references, deterministic evaluation for all fourteen
+ordinary First Shift Cases, document priority over the same Tote Bag visual,
+CASE_0010 exclusion and invalid-data rejection. It covers editable
+PERS→ELEC→DOCS classification with unchanged Case Save v1, post-Archive
+correct/misrouted snapshots, +5/+0 reward claims, no zero-value Economy call,
+the exact 35-Credit mixed path, all three zero-cost commissions and three-size
+Directive/result layout. The First Shift suite separately proves all-wrong =
+0 C and all-correct = 70 C before aggregate production.
 The lighting correction adds 583 checks, including the single approved cyan-bounce
 correction contract. Original ART/matrix fixtures remain
 historical references; only two exact PNG replacements and nine approved alpha
@@ -137,6 +149,25 @@ Pull requests run the import and automated test commands through
 official Godot 4.7 stable Linux binary.
 
 ## Full-HD graphical validation
+
+### Phase 5E-B1 Archive inspection and rules
+
+The dedicated graphical driver rendered seven current runtime states at each
+target with Godot 4.7.2, OpenGL Compatibility and an NVIDIA RTX 3060 Ti. The
+proof includes inspected evidence plus Directives, initial and changed category
+selection, correct and misrouted committed results, the zero-Credit Scanner gate
+and a Sorter Case left INSPECTED for player classification.
+
+- [1920×1080 proof set](screenshots/archive-inspection-rules/1920x1080/)
+- [1280×720 proof set](screenshots/archive-inspection-rules/1280x720/)
+- [960×540 proof set](screenshots/archive-inspection-rules/960x540/)
+
+All four Directive bodies fit at 18 logical pixels; categories, selected state
+and Archive remain usable while the drawer is open. Correct/misrouted details
+fit the result panel, which does not retain an authoritative active Case. At
+960×540 the existing half-scale floor remains 9 physical pixels for secondary
+text; no new shrink was introduced. Independent QA and visual review remain
+required. See [ARCHIVE_DIRECTIVES.md](ARCHIVE_DIRECTIVES.md).
 
 ### Phase 4I unified environment polish
 

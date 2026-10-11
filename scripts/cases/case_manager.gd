@@ -106,9 +106,23 @@ func mark_active_case_inspected() -> bool:
 
 
 func classify_active_case(category_id: StringName) -> bool:
-	if not _catalog.has_category(category_id):
+	return set_active_case_classification(category_id)
+
+
+func set_active_case_classification(category_id: StringName) -> bool:
+	if _publishing or not _catalog.has_category(category_id):
 		return false
-	return _advance_active(CaseProgress.State.INSPECTED, CaseProgress.State.CLASSIFIED, category_id)
+	var record := get_active_case()
+	if record == null or record.get_state() not in [CaseProgress.State.INSPECTED, CaseProgress.State.CLASSIFIED]:
+		return false
+	if record.get_state() == CaseProgress.State.CLASSIFIED and record.get_selected_category_id() == category_id:
+		return true
+	var before := get_case_save_data()
+	_progress[_active_case_id] = CaseProgress.new(
+		_active_case_id, CaseProgress.State.CLASSIFIED, category_id
+	)
+	_publish_changes(before)
+	return true
 
 
 func archive_active_case() -> bool:
