@@ -30,6 +30,11 @@ const DEFAULT_CASES: Array[Resource] = [
 	preload("res://data/cases/records/case_0008.tres"),
 	preload("res://data/cases/records/case_0009.tres"),
 	preload("res://data/cases/records/case_0010.tres"),
+	preload("res://data/cases/records/case_0011.tres"),
+	preload("res://data/cases/records/case_0012.tres"),
+	preload("res://data/cases/records/case_0013.tres"),
+	preload("res://data/cases/records/case_0014.tres"),
+	preload("res://data/cases/records/case_0015.tres"),
 ]
 
 var _categories: Dictionary = {}

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CaseDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/case_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+case_id = &"CASE_0015"
+item_id = &"backpack"
+found_location = "Central Station — Locker Hall"
+found_time_label = "23:18"
+condition_text = "Zipped / surface wear"
+expected_category_id = &"BAG"
+routing_policy = &"NORMAL"
+inspection_material = "Nylon / Polyester"
+inspection_identifier = "Luggage tag"
+inspection_risk = "Normal"

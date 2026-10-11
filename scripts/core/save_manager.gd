@@ -3,14 +3,20 @@ extends Node
 signal game_saved
 signal game_loaded
 
-const SAVE_VERSION: int = 3
-const PREVIOUS_SAVE_VERSION: int = 2
+const SAVE_VERSION: int = 4
+const PREVIOUS_SAVE_VERSION: int = 3
+const VERSION_TWO_SAVE_VERSION: int = 2
 const LEGACY_SAVE_VERSION: int = 1
 const SAVE_PATH: String = "user://archive_zero_save.json"
 const TEMP_SAVE_PATH: String = "user://archive_zero_save.tmp"
 
 
 func save_game() -> bool:
+	# Reject before flushing or opening the temp file. A synchronous observer may
+	# request a save while a multi-authority transaction is only partly applied.
+	if FirstShiftManager.is_transaction_active():
+		push_warning("Save rejected while a First Shift transaction is active.")
+		return false
 	SimulationManager.flush_pending_simulation()
 	var save_data: Dictionary = {
 		"save_version": SAVE_VERSION,
@@ -20,7 +26,13 @@ func save_game() -> bool:
 		"total_playtime": GameState.get_total_playtime(),
 		"save_timestamp": int(Time.get_unix_time_from_system()),
 		"production_line": SimulationManager.get_production_save_data(),
+		"case_save": CaseManager.get_case_save_data(),
+		"commissioning_save": CommissioningManager.get_commissioning_save_data(),
+		"first_shift": FirstShiftManager.get_first_shift_save_data(),
 	}
+	if not _is_valid_complete_save(save_data):
+		push_error("Live state did not form a coherent Global v4 save snapshot.")
+		return false
 
 	var save_file: FileAccess = FileAccess.open(TEMP_SAVE_PATH, FileAccess.WRITE)
 	if save_file == null:
@@ -48,6 +60,9 @@ func save_game() -> bool:
 
 
 func load_game() -> bool:
+	if FirstShiftManager.is_transaction_active():
+		push_warning("Load rejected while a First Shift transaction is active.")
+		return false
 	if not has_save():
 		push_warning("No ARCHIVE ZERO save file exists yet.")
 		return false
@@ -123,10 +138,34 @@ func _is_valid_complete_save(save_data: Dictionary) -> bool:
 	if not SimulationManager.is_valid_production_save_data(production_data):
 		push_warning("Save file contains invalid production state.")
 		return false
+	if not CaseManager.is_valid_case_save_data(save_data.get("case_save")):
+		push_warning("Save file contains invalid Case state.")
+		return false
+	if not CommissioningManager.is_valid_commissioning_save_data(save_data.get("commissioning_save")):
+		push_warning("Save file contains invalid commissioning state.")
+		return false
+	if not FirstShiftManager.is_valid_first_shift_save_data(save_data.get("first_shift")):
+		push_warning("Save file contains invalid First Shift state.")
+		return false
+	if not FirstShiftManager.is_valid_save_composition(
+		save_data.get("first_shift"),
+		save_data.get("case_save"),
+		save_data.get("commissioning_save")
+	):
+		push_warning("Save file contains inconsistent First Shift cross-domain state.")
+		return false
 	return true
 
 
 func _restore_save_data(save_data: Dictionary) -> bool:
+	# Restore reward claims before CaseManager publishes restored progress. This
+	# makes replayed archive notifications idempotent.
+	if not FirstShiftManager.restore_first_shift_save_data(save_data["first_shift"]):
+		push_error("Validated First Shift state could not be restored.")
+		return false
+	if not CommissioningManager.restore_commissioning_save_data(save_data["commissioning_save"]):
+		push_error("Validated commissioning state could not be restored.")
+		return false
 	if not GameState.restore_state(
 		int(save_data["money"]),
 		int(save_data["total_money_earned"]),
@@ -140,6 +179,9 @@ func _restore_save_data(save_data: Dictionary) -> bool:
 	if not SimulationManager.restore_production_save_data(production_data):
 		push_error("Validated production state could not be restored.")
 		return false
+	if not CaseManager.restore_case_save_data(save_data["case_save"]):
+		push_error("Validated Case state could not be restored.")
+		return false
 	return true
 
 
@@ -148,28 +190,39 @@ func _prepare_save_data(save_data: Dictionary) -> Dictionary:
 		return {}
 
 	var version: int = int(save_data["save_version"])
-	if version == LEGACY_SAVE_VERSION:
-		var legacy_data: Dictionary = save_data.duplicate(true)
-		legacy_data["save_version"] = SAVE_VERSION
-		legacy_data["production_line"] = SimulationManager.get_default_production_save_data()
-		return legacy_data
-	if version != PREVIOUS_SAVE_VERSION and version != SAVE_VERSION:
+	if version not in [LEGACY_SAVE_VERSION, VERSION_TWO_SAVE_VERSION, PREVIOUS_SAVE_VERSION, SAVE_VERSION]:
 		return {}
 
 	var migrated_data: Dictionary = save_data.duplicate(true)
-	var production_data: Variant = migrated_data.get(
-		"production_line", migrated_data.get("production", null)
-	)
-	if typeof(production_data) != TYPE_DICTIONARY:
-		return {}
-
-	var migrated_production: Dictionary = SimulationManager.migrate_production_save_data(
-		production_data as Dictionary, version
-	)
-	if migrated_production.is_empty():
-		return {}
+	var migrated_production: Dictionary
+	if version == LEGACY_SAVE_VERSION:
+		migrated_production = SimulationManager.get_default_production_save_data()
+	else:
+		var production_data: Variant = migrated_data.get(
+			"production_line", migrated_data.get("production", null)
+		)
+		if typeof(production_data) != TYPE_DICTIONARY:
+			return {}
+		migrated_production = SimulationManager.migrate_production_save_data(
+			production_data as Dictionary,
+			SimulationManager.CURRENT_SAVE_VERSION if version >= PREVIOUS_SAVE_VERSION else version
+		)
+		if migrated_production.is_empty():
+			return {}
 
 	migrated_data["production_line"] = migrated_production
+	if version < SAVE_VERSION:
+		var legacy_case: Variant = migrated_data.get("case_save", CaseManager.get_default_case_save_data())
+		var legacy_commissioning: Variant = migrated_data.get(
+			"commissioning_save", CommissioningManager.get_default_commissioning_save_data()
+		)
+		if not CaseManager.is_valid_case_save_data(legacy_case):
+			return {}
+		if not CommissioningManager.is_valid_commissioning_save_data(legacy_commissioning):
+			return {}
+		migrated_data["case_save"] = (legacy_case as Dictionary).duplicate(true)
+		migrated_data["commissioning_save"] = (legacy_commissioning as Dictionary).duplicate(true)
+		migrated_data["first_shift"] = FirstShiftManager.get_legacy_complete_save_data()
 	migrated_data["save_version"] = SAVE_VERSION
 	migrated_data.erase("production")
 	return migrated_data
@@ -189,6 +242,9 @@ func _is_valid_base_save(save_data: Dictionary) -> bool:
 		"total_playtime",
 		"save_timestamp",
 		"production_line",
+		"case_save",
+		"commissioning_save",
+		"first_shift",
 	]
 	for field: String in required_fields:
 		if not save_data.has(field):

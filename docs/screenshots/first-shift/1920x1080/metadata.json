@@ -1,0 +1,196 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3060 Ti",
+	"capture_source": "Actual Godot ArchiveRoom runtime viewport",
+	"captures": [
+		{
+			"action": "CASE READY",
+			"active_case": "",
+			"aggregate_items": 0,
+			"case_state": "",
+			"commissioning": "MANUAL_SHIFT",
+			"credits": 0,
+			"draw_calls": 66,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "a-fresh-manual",
+			"node_count": 323,
+			"phase": "MANUAL_CASES",
+			"texture_memory_bytes": 87992118,
+			"throughput": 0.0
+		},
+		{
+			"action": "OPEN ACTIVE CASE",
+			"active_case": "CASE_0001",
+			"aggregate_items": 0,
+			"case_state": "ACTIVE",
+			"commissioning": "MANUAL_SHIFT",
+			"credits": 0,
+			"draw_calls": 113,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "b-case-0001-manual",
+			"node_count": 323,
+			"phase": "MANUAL_CASES",
+			"texture_memory_bytes": 88472714,
+			"throughput": 0.0
+		},
+		{
+			"action": "COMMISSION SCANNER — 16 C",
+			"active_case": "",
+			"aggregate_items": 0,
+			"case_state": "",
+			"commissioning": "MANUAL_SHIFT",
+			"credits": 30,
+			"draw_calls": 66,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "c-scanner-ready",
+			"node_count": 323,
+			"phase": "SCANNER_READY",
+			"texture_memory_bytes": 88243328,
+			"throughput": 0.0
+		},
+		{
+			"action": "OPEN ACTIVE CASE",
+			"active_case": "CASE_0007",
+			"aggregate_items": 0,
+			"case_state": "INSPECTED",
+			"commissioning": "SCANNER_ONLINE",
+			"credits": 14,
+			"draw_calls": 121,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "d-scanner-case-0007-inspected",
+			"node_count": 323,
+			"phase": "SCANNER_CASES",
+			"texture_memory_bytes": 88243328,
+			"throughput": 0.0
+		},
+		{
+			"action": "COMMISSION SORTER — 18 C",
+			"active_case": "",
+			"aggregate_items": 0,
+			"case_state": "",
+			"commissioning": "SCANNER_ONLINE",
+			"credits": 34,
+			"draw_calls": 68,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "e-sorter-ready",
+			"node_count": 323,
+			"phase": "SORTER_READY",
+			"texture_memory_bytes": 88243328,
+			"throughput": 0.0
+		},
+		{
+			"action": "OPEN ACTIVE CASE",
+			"active_case": "CASE_0012",
+			"aggregate_items": 0,
+			"case_state": "CLASSIFIED",
+			"commissioning": "SORTER_ONLINE",
+			"credits": 16,
+			"draw_calls": 124,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "f-sorter-case-0012-classified",
+			"node_count": 323,
+			"phase": "SORTER_CASES",
+			"texture_memory_bytes": 88636542,
+			"throughput": 0.0
+		},
+		{
+			"action": "COMMISSION INTAKE — 20 C",
+			"active_case": "",
+			"aggregate_items": 0,
+			"case_state": "",
+			"commissioning": "SORTER_ONLINE",
+			"credits": 36,
+			"draw_calls": 70,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "g-intake-ready",
+			"node_count": 323,
+			"phase": "INTAKE_READY",
+			"texture_memory_bytes": 88418090,
+			"throughput": 0.0
+		},
+		{
+			"action": "FULL LINE ONLINE",
+			"active_case": "",
+			"aggregate_items": 0,
+			"case_state": "",
+			"commissioning": "FULL_LINE_ONLINE",
+			"credits": 16,
+			"draw_calls": 86,
+			"hud": {
+				"first_shift_action_size": "(390.0, 64.0)",
+				"first_shift_panel": "[P: (460.0, 968.0), S: (1000.0, 92.0)]",
+				"minimum_font_size": 24,
+				"primary_button_size": "(260.0, 64.0)",
+				"shop_panel_size": "(920.0, 690.0)",
+				"windowed_size": "(1280, 720)"
+			},
+			"name": "h-full-line-online",
+			"node_count": 323,
+			"phase": "COMPLETE",
+			"texture_memory_bytes": 88418090,
+			"throughput": 0.75
+		}
+	],
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"logical_size": "(1920, 1080)",
+	"physical_size": "(1920, 1080)",
+	"renderer": "gl_compatibility"
+}

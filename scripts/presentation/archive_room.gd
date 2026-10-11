@@ -11,11 +11,16 @@ const SCANNER_MACHINE_ID := &"basic_scanner"
 
 
 func _ready() -> void:
+	# Only the configured main scene starts a fresh shift. Test fixtures that
+	# instantiate ArchiveRoom retain explicit control of every authority.
+	if get_tree().current_scene == self:
+		FirstShiftManager.ensure_fresh_game_initialized()
 	CommissioningManager.commissioning_stage_changed.connect(_on_commissioning_stage_changed)
 	SimulationManager.production_line_changed.connect(_refresh_visual_state)
 	SimulationManager.upgrades_changed.connect(_refresh_visual_state)
 	SimulationManager.simulation_updated.connect(_on_simulation_updated)
 	GameState.state_restored.connect(_refresh_visual_state)
+	FirstShiftManager.transaction_rolled_back.connect(_refresh_visual_state)
 	_refresh_visual_state()
 
 
@@ -30,6 +35,8 @@ func _exit_tree() -> void:
 		SimulationManager.simulation_updated.disconnect(_on_simulation_updated)
 	if GameState.state_restored.is_connected(_refresh_visual_state):
 		GameState.state_restored.disconnect(_refresh_visual_state)
+	if FirstShiftManager.transaction_rolled_back.is_connected(_refresh_visual_state):
+		FirstShiftManager.transaction_rolled_back.disconnect(_refresh_visual_state)
 
 
 func _on_simulation_updated(_items_processed: int, _credits_earned: int, _elapsed_seconds: float) -> void:

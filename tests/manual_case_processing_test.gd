@@ -25,7 +25,7 @@ func _run() -> void:
 	_check(not _panel.panel.visible, "Main scene does not automatically open case UI")
 	_check(_aggregate_snapshot() == before, "Instantiating room/UI preserves aggregate state")
 	_check(not _panel.open_panel(), "Empty authority cannot open panel")
-	_check(SaveManager.SAVE_VERSION == 3 and CaseManager.CASE_SAVE_VERSION == 1, "Both save versions unchanged")
+	_check(SaveManager.SAVE_VERSION == 4 and CaseManager.CASE_SAVE_VERSION == 1, "Global v4 and unchanged Case v1")
 	_test_assets_and_inspection_data()
 	for disabled: bool in [false, true]:
 		await _test_lifecycle_and_isolation(disabled)

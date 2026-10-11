@@ -10,6 +10,7 @@ godot --headless --editor --path . --quit
 godot --headless --path . tests/case_foundation_test.tscn
 godot --headless --path . tests/manual_case_processing_test.tscn
 godot --headless --path . tests/commissioning_test.tscn
+godot --headless --path . tests/first_shift_test.tscn
 godot --headless --path . tests/progressive_room_states_test.tscn
 godot --headless --path . tests/archive_room_lighting_test.tscn
 godot --headless --path . tests/production_pipeline_test.tscn
@@ -21,8 +22,27 @@ The version must report Godot 4.7.2 stable. Every command must exit with code `0
 and the test scenes must print `Production pipeline tests passed.` and
 `Visual foundation tests passed for 1920x1080, 1280x720, and 960x540.`
 
-Case foundation prints 477 passing checks; manual Case integration prints 1873.
+Case foundation prints 487 passing checks; manual Case integration prints 1873.
 Commissioning prints 293 checks; progressive room presentation prints 2503.
+First Shift sequencing prints 436 checks. Its correction-pass coverage injects
+synchronous public listeners during Scanner, Sorter and Intake commissioning,
+forces downstream failure and unexpected stage advancement, and verifies exact
+rollback of Credits, aggregate totals, stage, runtime/production state, pending
+time and phase. It also attempts saves from reward `money_changed`, commission
+`money_changed`, `commissioning_stage_changed` and `production_line_changed`;
+each in-flight save must return false, preserve the previous file and emit no
+`game_saved`. The CASE_0001 regression proves 5 Credits remain 5 after two
+loads and a replayed archive notification, while native v4 composition checks
+reject missing/phantom claims and phase/stage mismatch without weakening the
+explicit legacy-complete marker.
+Persistent listeners now remain connected throughout rollback at all three
+commissioning gates. GameState, Commissioning, and Simulation restore their
+authority-owned snapshots silently; the test counts no rollback emissions from
+all seven ordinary domain signals, verifies the full snapshot including 0.2
+pending seconds and tick state, then confirms each normal retry succeeds. A
+real ArchiveRoom and gameplay HUD instance also re-read the dedicated rollback
+reconciliation and return the Scanner to dormant Manual presentation with the
+restored 30-Credit balance.
 The lighting correction adds 583 checks, including the single approved cyan-bounce
 correction contract. Original ART/matrix fixtures remain
 historical references; only two exact PNG replacements and nine approved alpha
@@ -35,7 +55,7 @@ all 88 existing PNG hashes, and production/case isolation in running/stopped
 fixtures. Run the graphical progressive fixture separately; reproduction commands,
 actual renderer evidence and exact pre-PR Full-Line comparison are documented in
 [`PROGRESSIVE_ROOM_STATES.md`](PROGRESSIVE_ROOM_STATES.md).
-The latter checks all ten authored cases at all three resolutions using native
+The latter checks the original ten authored cases at all three resolutions using native
 total-versus-visible line counts, measured font heights/spacing and width fit.
 Its 63px FOUND negative control must reproduce two total lines but only one
 visible line. Secondary labels/subtitles must fit at font size 18 or greater.
@@ -53,9 +73,10 @@ The suite covers:
 - Sorter → Scanner progression and deterministic tie handling;
 - rejection of free overrides for upgrade-managed machines;
 - separation of runtime and upgrade multipliers;
-- save-v3 round trips with enabled state, fractions, ownership, and unrelated modifiers;
+- global save-v4 round trips with production-v3, Case-v1, Commissioning-v1 and First-Shift-v1 state;
 - malformed and duplicated ownership rejection before live-state mutation;
 - version 1, version 2 line, and version 2 Scanner-only migrations;
+- version 3 migration to completed/unlocked First Shift;
 - exact legacy Sorter ×2 mapping without multiplier duplication.
 
 The visual foundation suite covers:

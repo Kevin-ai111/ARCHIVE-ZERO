@@ -17,7 +17,7 @@ func _ready() -> void:
 	CaseManager.active_case_changed.connect(_on_active_changed)
 	CaseManager.case_progress_changed.connect(_on_progress_changed)
 	_check(CaseManager.get_case_save_data() == CaseManager.get_default_case_save_data(), "Startup is empty, including the later hook")
-	_check(SaveManager.SAVE_VERSION == 3, "Global save version stays 3")
+	_check(SaveManager.SAVE_VERSION == 4, "Global save version advances to 4")
 	_check(SimulationManager.PROTOTYPE_CREDITS_PER_ITEM == 2, "Aggregate reward stays 2")
 	for stage: MachineRuntime in SimulationManager.get_production_line().get_stages():
 		_check(stage.is_enabled(), "Default enabled state: " + String(stage.get_id()))
@@ -41,7 +41,7 @@ func _test_catalog() -> void:
 	_check(catalog.get_category_ids() == [&"PERS", &"ELEC", &"DOCS", &"BAG"], "Stable extensible category IDs")
 	var names := ["Red Folding Umbrella", "Smartphone", "Backpack", "Passport Wallet", "Wireless Earbuds", "Canvas Tote Bag", "House Keys", "Tablet", "Document Folder", "Black Hotel Keycard"]
 	var categories := [&"PERS", &"ELEC", &"BAG", &"DOCS", &"ELEC", &"BAG", &"PERS", &"ELEC", &"DOCS", &"PERS"]
-	_check(catalog.get_case_ids().size() == 10, "Exactly ten authored cases")
+	_check(catalog.get_case_ids().size() == 15, "Exactly fifteen authored cases")
 	var seen_items := {}
 	for index: int in range(10):
 		var case_id := StringName("CASE_%04d" % (index + 1))
@@ -60,6 +60,17 @@ func _test_catalog() -> void:
 	var umbrella := catalog.get_case(&"CASE_0001")
 	_check(umbrella.found_location == "Central Station — Platform 4" and umbrella.found_time_label == "22:41" and umbrella.condition_text == "Wet / minor wear", "Exact umbrella metadata")
 	_check(catalog.get_case(&"CASE_0010").found_location == "Archive Sector A1", "Later hook location")
+	var added_cases := [
+		[&"CASE_0011", &"canvas_tote_bag", "City Bus 42 — Rear Seat", "23:01", "Dry / minor staining", &"BAG"],
+		[&"CASE_0012", &"red_folding_umbrella", "East Concourse — Bench 12", "23:05", "Dry / minor wear", &"PERS"],
+		[&"CASE_0013", &"wireless_earbuds", "Platform 6 — Ticket Machine", "23:09", "Case scratched / intact", &"ELEC"],
+		[&"CASE_0014", &"passport_wallet", "Taxi Rank — Lane 2", "23:13", "Closed / light wear", &"DOCS"],
+		[&"CASE_0015", &"backpack", "Central Station — Locker Hall", "23:18", "Zipped / surface wear", &"BAG"],
+	]
+	for expected: Array in added_cases:
+		var added := catalog.get_case(expected[0])
+		_check(added != null and [added.item_id, added.found_location, added.found_time_label, added.condition_text, added.expected_category_id] == expected.slice(1), "Exact ordinary definition " + String(expected[0]))
+		_check(added.routing_policy == CaseDefinition.NORMAL, "Normal routing " + String(expected[0]))
 	umbrella.found_location = "Modified by caller"
 	_check(catalog.get_case(&"CASE_0001").found_location == "Central Station — Platform 4", "Case definitions are detached")
 	var item_copy := catalog.get_item(&"smartphone")
@@ -70,7 +81,7 @@ func _test_catalog() -> void:
 	_check(catalog.get_category(&"PERS").display_name == "Personal Items", "Category definitions are detached")
 	var ids_copy := catalog.get_case_ids()
 	ids_copy.clear()
-	_check(catalog.get_case_ids().size() == 10, "Catalog ID snapshots are detached")
+	_check(catalog.get_case_ids().size() == 15, "Catalog ID snapshots are detached")
 	_check(catalog.get_case(&"UNKNOWN") == null and catalog.get_item(&"UNKNOWN") == null and catalog.get_category(&"UNKNOWN") == null, "Unknown definition queries are safe")
 	var category := CaseCategoryDefinition.new()
 	category.category_id = &"CLOTH"

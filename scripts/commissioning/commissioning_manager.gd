@@ -7,6 +7,7 @@ signal commissioning_stage_changed(stage: Stage)
 const COMMISSIONING_SAVE_VERSION := 1
 const STAGE_LABELS: Array[String] = ["MANUAL_SHIFT", "SCANNER_ONLINE", "SORTER_ONLINE", "FULL_LINE_ONLINE"]
 const MACHINE_STAGES := {&"receiving_desk": Stage.MANUAL_SHIFT, &"basic_scanner": Stage.SCANNER_ONLINE, &"basic_sorter": Stage.SORTER_ONLINE, &"archive_intake": Stage.FULL_LINE_ONLINE}
+const TRANSACTION_SNAPSHOT_KEYS: Array[String] = ["stage"]
 
 var _stage: Stage = Stage.FULL_LINE_ONLINE
 var _publishing := false
@@ -14,6 +15,31 @@ var _publishing := false
 
 func get_stage() -> Stage:
 	return _stage
+
+
+func get_transaction_snapshot() -> Dictionary:
+	return {"stage": _stage}
+
+
+func is_valid_transaction_snapshot(snapshot: Variant) -> bool:
+	if typeof(snapshot) != TYPE_DICTIONARY or snapshot.size() != TRANSACTION_SNAPSHOT_KEYS.size():
+		return false
+	if not snapshot.has("stage") or typeof(snapshot["stage"]) not in [TYPE_INT, TYPE_FLOAT]:
+		return false
+	var stage_value := float(snapshot["stage"])
+	return (
+		is_finite(stage_value)
+		and stage_value == floor(stage_value)
+		and stage_value >= Stage.MANUAL_SHIFT
+		and stage_value <= Stage.FULL_LINE_ONLINE
+	)
+
+
+func restore_transaction_snapshot_silent(snapshot: Variant) -> bool:
+	if _publishing or not is_valid_transaction_snapshot(snapshot):
+		return false
+	_stage = int(snapshot["stage"]) as Stage
+	return true
 
 
 func is_machine_commissioned(machine_id: StringName) -> bool:
