@@ -35,7 +35,7 @@ func _ready() -> void:
 	FirstShiftManager.case_reward_granted.connect(_on_case_reward_granted)
 	FirstShiftManager.transaction_rolled_back.connect(_refresh)
 	CaseManager.queue_changed.connect(_refresh_first_shift)
-	CaseManager.active_case_changed.connect(_refresh_first_shift)
+	CaseManager.active_case_changed.connect(_on_active_case_changed)
 	CaseManager.case_progress_changed.connect(_on_case_progress_changed)
 	_build_upgrade_rows()
 	_refresh()
@@ -64,8 +64,8 @@ func _exit_tree() -> void:
 		FirstShiftManager.transaction_rolled_back.disconnect(_refresh)
 	if CaseManager.queue_changed.is_connected(_refresh_first_shift):
 		CaseManager.queue_changed.disconnect(_refresh_first_shift)
-	if CaseManager.active_case_changed.is_connected(_refresh_first_shift):
-		CaseManager.active_case_changed.disconnect(_refresh_first_shift)
+	if CaseManager.active_case_changed.is_connected(_on_active_case_changed):
+		CaseManager.active_case_changed.disconnect(_on_active_case_changed)
 	if CaseManager.case_progress_changed.is_connected(_on_case_progress_changed):
 		CaseManager.case_progress_changed.disconnect(_on_case_progress_changed)
 
@@ -191,6 +191,11 @@ func _on_case_reward_granted(case_id: StringName, credits: int) -> void:
 
 
 func _on_case_progress_changed(_case_id: StringName) -> void:
+	_refresh_first_shift()
+
+
+func _on_active_case_changed() -> void:
+	first_shift_status.text = ""
 	_refresh_first_shift()
 
 

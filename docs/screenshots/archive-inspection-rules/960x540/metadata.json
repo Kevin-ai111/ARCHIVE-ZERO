@@ -1,0 +1,122 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3060 Ti",
+	"capture_source": "Actual Godot ArchiveRoom runtime viewport",
+	"captures": [
+		{
+			"active_case": "CASE_0001",
+			"case_state": "INSPECTED",
+			"credits": 0,
+			"directives_open": true,
+			"draw_calls": 132,
+			"name": "a-inspected-directives",
+			"phase": "MANUAL_CASES",
+			"result": {},
+			"selected": "",
+			"texture_memory_bytes": 75495894
+		},
+		{
+			"active_case": "CASE_0001",
+			"case_state": "CLASSIFIED",
+			"credits": 0,
+			"directives_open": false,
+			"draw_calls": 122,
+			"name": "b-category-pers-selected",
+			"phase": "MANUAL_CASES",
+			"result": {},
+			"selected": "PERS",
+			"texture_memory_bytes": 75670656
+		},
+		{
+			"active_case": "CASE_0001",
+			"case_state": "CLASSIFIED",
+			"credits": 0,
+			"directives_open": false,
+			"draw_calls": 122,
+			"name": "c-category-changed-elec",
+			"phase": "MANUAL_CASES",
+			"result": {},
+			"selected": "ELEC",
+			"texture_memory_bytes": 75834484
+		},
+		{
+			"active_case": "",
+			"case_state": "",
+			"credits": 5,
+			"directives_open": false,
+			"draw_calls": 130,
+			"name": "d-correct-result",
+			"phase": "MANUAL_CASES",
+			"result": {
+				"case_id": "CASE_0001",
+				"correct": true,
+				"expected_category_id": "PERS",
+				"reward": 5,
+				"selected_category_id": "PERS"
+			},
+			"selected": "",
+			"texture_memory_bytes": 75889110
+		},
+		{
+			"active_case": "",
+			"case_state": "",
+			"credits": 5,
+			"directives_open": false,
+			"draw_calls": 130,
+			"name": "e-misrouted-result",
+			"phase": "MANUAL_CASES",
+			"result": {
+				"case_id": "CASE_0002",
+				"correct": false,
+				"expected_category_id": "ELEC",
+				"reward": 0,
+				"selected_category_id": "PERS"
+			},
+			"selected": "",
+			"texture_memory_bytes": 75889110
+		},
+		{
+			"active_case": "",
+			"case_state": "",
+			"credits": 0,
+			"directives_open": false,
+			"draw_calls": 66,
+			"name": "f-zero-credit-scanner-gate",
+			"phase": "SCANNER_READY",
+			"result": {
+				"case_id": "CASE_0006",
+				"correct": false,
+				"expected_category_id": "BAG",
+				"reward": 0,
+				"selected_category_id": "PERS"
+			},
+			"selected": "",
+			"texture_memory_bytes": 75889110
+		},
+		{
+			"active_case": "CASE_0012",
+			"case_state": "INSPECTED",
+			"credits": 0,
+			"directives_open": false,
+			"draw_calls": 125,
+			"name": "g-sorter-awaiting-player-classification",
+			"phase": "SORTER_CASES",
+			"result": {},
+			"selected": "",
+			"texture_memory_bytes": 75889110
+		}
+	],
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"logical_size": "(1920, 1080)",
+	"physical_size": "(960, 540)",
+	"renderer": "gl_compatibility"
+}

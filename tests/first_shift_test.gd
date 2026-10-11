@@ -19,6 +19,7 @@ var _persistent_transition := Callable()
 var _persistent_money_attempts := 0
 var _persistent_commission_attempts := 0
 var _persistent_production_attempts := 0
+var _nested_commission_result := -1
 var _rollback_resolution_count := 0
 var _domain_signal_counts := {}
 
@@ -117,16 +118,14 @@ func _test_commission_transaction_atomicity() -> void:
 	var room := ARCHIVE_ROOM_SCENE.instantiate()
 	add_child(room)
 	await _settle()
-	_assert_persistent_money_listener_rolls_back(
-		Callable(FirstShiftManager, "commission_scanner"),
-		Callable(CommissioningManager, "commission_scanner"),
-		"Scanner"
+	_assert_persistent_commission_listener_rolls_back(
+		Callable(FirstShiftManager, "commission_scanner"), "Scanner"
 	)
 	var scanner_presentation: Dictionary = room.get_node("%BasicScanner").get_state_snapshot()
 	var hud: CanvasLayer = room.get_node("GameplayHUD") as CanvasLayer
 	_check(not bool(scanner_presentation["commissioned"]) and not bool(scanner_presentation["enabled"]), "Scanner presentation reconciles to dormant Manual state after rollback")
 	_check((hud.get_node("%CreditsValue") as Label).text == "30", "HUD reconciles to restored 30-Credit Scanner balance")
-	_check((hud.get_node("%FirstShiftActionButton") as Button).text == "COMMISSION SCANNER — 16 C", "HUD reconciles to Scanner-ready action after rollback")
+	_check((hud.get_node("%FirstShiftActionButton") as Button).text == "COMMISSION SCANNER", "HUD reconciles to zero-cost Scanner-ready action after rollback")
 	_assert_persistent_production_listener_rolls_back(
 		Callable(FirstShiftManager, "commission_scanner"), "Scanner"
 	)
@@ -138,16 +137,14 @@ func _test_commission_transaction_atomicity() -> void:
 	_transaction_save_results.clear()
 	_transaction_save_changed_file = false
 	_game_saved_count = 0
-	GameState.money_changed.connect(_save_on_money_changed)
 	CommissioningManager.commissioning_stage_changed.connect(_save_on_commissioning_changed)
 	SimulationManager.production_line_changed.connect(_save_on_production_changed)
 	SaveManager.game_saved.connect(_on_game_saved)
 	_check(FirstShiftManager.commission_scanner() == FirstShiftManager.CommissionResult.SUCCESS, "Scanner commits after adversarial rollback")
-	GameState.money_changed.disconnect(_save_on_money_changed)
 	CommissioningManager.commissioning_stage_changed.disconnect(_save_on_commissioning_changed)
 	SimulationManager.production_line_changed.disconnect(_save_on_production_changed)
 	SaveManager.game_saved.disconnect(_on_game_saved)
-	_check(_transaction_save_results.size() >= 3 and not _transaction_save_results.has(true), "Commission money/stage/production listeners all reject in-flight saves")
+	_check(_transaction_save_results.size() >= 2 and not _transaction_save_results.has(true), "Commission stage/production listeners reject in-flight saves")
 	_check(not _transaction_save_changed_file, "Rejected commissioning listener saves leave prior file untouched")
 	_check(_game_saved_count == 0, "Rejected commissioning listener saves emit no game_saved")
 	var scanner_committed := _state_snapshot()
@@ -163,10 +160,8 @@ func _test_commission_transaction_atomicity() -> void:
 	await _assert_downstream_failure_rolls_back(
 		&"basic_sorter", Callable(FirstShiftManager, "commission_sorter"), "Sorter"
 	)
-	_assert_persistent_money_listener_rolls_back(
-		Callable(FirstShiftManager, "commission_sorter"),
-		Callable(CommissioningManager, "commission_sorter"),
-		"Sorter"
+	_assert_persistent_commission_listener_rolls_back(
+		Callable(FirstShiftManager, "commission_sorter"), "Sorter"
 	)
 	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.SUCCESS, "Sorter commits after adversarial rollback")
 	var sorter_committed := _state_snapshot()
@@ -179,10 +174,8 @@ func _test_commission_transaction_atomicity() -> void:
 	await _assert_downstream_failure_rolls_back(
 		&"archive_intake", Callable(FirstShiftManager, "commission_intake"), "Intake"
 	)
-	_assert_persistent_money_listener_rolls_back(
-		Callable(FirstShiftManager, "commission_intake"),
-		Callable(CommissioningManager, "commission_intake"),
-		"Intake"
+	_assert_persistent_commission_listener_rolls_back(
+		Callable(FirstShiftManager, "commission_intake"), "Intake"
 	)
 	_check(FirstShiftManager.commission_intake() == FirstShiftManager.CommissionResult.SUCCESS, "Intake commits after adversarial rollback")
 	var intake_committed := _state_snapshot()
@@ -214,32 +207,29 @@ func _assert_downstream_failure_rolls_back(
 	_check(not _transaction_save_changed_file, label + " rejected in-flight save preserves prior file")
 
 
-func _assert_persistent_money_listener_rolls_back(
-	commission: Callable, interfering_transition: Callable, label: String
-) -> void:
+func _assert_persistent_commission_listener_rolls_back(commission: Callable, label: String) -> void:
 	var pending_fixture := SimulationManager.get_transaction_snapshot()
 	pending_fixture["pending_seconds"] = 0.2
 	_check(SimulationManager.restore_transaction_snapshot(pending_fixture), label + " persistent-listener pending fixture installs")
 	var before := _state_snapshot()
-	_persistent_transition = interfering_transition
+	_persistent_transition = commission
 	_persistent_money_attempts = 0
 	_persistent_commission_attempts = 0
+	_nested_commission_result = -1
 	_rollback_resolution_count = 0
 	_reset_domain_signal_counts()
 	_connect_domain_signal_counters()
-	GameState.money_changed.connect(_persistent_money_commission_listener)
 	CommissioningManager.commissioning_stage_changed.connect(_persistent_commission_listener)
 	FirstShiftManager.transaction_rolled_back.connect(_on_transaction_rolled_back)
 	var result: int = int(commission.call())
 	# The interfering listeners deliberately remain connected while both the
 	# rollback and its presentation reconciliation complete.
-	_check(result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, label + " persistent money listener forces transaction failure")
+	_check(result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, label + " persistent stage listener forces transaction failure")
 	_check(_state_snapshot() == before, label + " persistent listener rollback is exact while listeners remain connected")
-	_check(_persistent_money_attempts == 1, label + " silent rollback emits no second money_changed wave")
 	_check(_persistent_commission_attempts == 1, label + " silent rollback emits no second commissioning-stage wave")
+	_check(_nested_commission_result == FirstShiftManager.CommissionResult.TRANSACTION_FAILED, label + " nested public commissioning is rejected by the transaction guard")
 	_check(_rollback_resolution_count == 1, label + " publishes one dedicated rollback reconciliation")
-	_check(_domain_signal_counts == _expected_signal_counts(1, 0, 0, 1, 0, 0, 0), label + " silent rollback emits zero ordinary authority notifications")
-	GameState.money_changed.disconnect(_persistent_money_commission_listener)
+	_check(_domain_signal_counts == _expected_signal_counts(0, 0, 0, 1, 2, 0, 1), label + " zero-cost rollback leaves GameState silent and emits no restore notifications")
 	CommissioningManager.commissioning_stage_changed.disconnect(_persistent_commission_listener)
 	FirstShiftManager.transaction_rolled_back.disconnect(_on_transaction_rolled_back)
 	_disconnect_domain_signal_counters()
@@ -263,7 +253,7 @@ func _assert_persistent_production_listener_rolls_back(
 	_check(_state_snapshot() == before, label + " production-listener rollback restores exact pre-call snapshot")
 	_check(_persistent_production_attempts == 2, label + " rollback adds no third production-line notification")
 	_check(_rollback_resolution_count == 1, label + " production failure publishes one rollback reconciliation")
-	_check(_domain_signal_counts == _expected_signal_counts(1, 0, 0, 1, 2, 0, 1), label + " production rollback emits no ordinary restore notifications")
+	_check(_domain_signal_counts == _expected_signal_counts(0, 0, 0, 1, 2, 0, 1), label + " production rollback emits no ordinary restore notifications")
 	SimulationManager.production_line_changed.disconnect(_persistent_production_listener)
 	FirstShiftManager.transaction_rolled_back.disconnect(_on_transaction_rolled_back)
 	_disconnect_domain_signal_counters()
@@ -322,18 +312,14 @@ func _test_minimum_path_and_authority() -> void:
 
 	for case_id: StringName in FirstShiftManager.MANUAL_CASE_IDS:
 		await _process_case(case_id, false)
-	_check(GameState.get_money() == 24, "Six wrong manual classifications award 24 Credits")
+	_check(GameState.get_money() == 0, "Six wrong manual classifications award 0 Credits")
 	_check(FirstShiftManager.get_phase() == FirstShiftManager.Phase.SCANNER_READY, "Six manual archives open Scanner gate")
 	_check(not FirstShiftManager.can_activate_next_case(), "CASE_0007 locked behind Scanner commissioning")
 	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.WRONG_PHASE, "Out-of-order Sorter commissioning rejected")
-	GameState.restore_state(15, 24, 0, 0.0)
-	_check(FirstShiftManager.commission_scanner() == FirstShiftManager.CommissionResult.INSUFFICIENT_FUNDS, "Insufficient Scanner balance is rejected")
-	_check(GameState.get_money() == 15 and CommissioningManager.get_stage() == CommissioningManager.Stage.MANUAL_SHIFT, "Rejected commissioning is atomic")
-	GameState.restore_state(24, 24, 0, 0.0)
 	_check(FirstShiftManager.commission_scanner() == FirstShiftManager.CommissionResult.SUCCESS, "Scanner commissioning succeeds")
-	_check(GameState.get_money() == 8, "Scanner deducts exactly 16 Credits")
+	_check(GameState.get_money() == 0, "Scanner commissioning is exactly zero cost")
 	_check(FirstShiftManager.commission_scanner() == FirstShiftManager.CommissionResult.ALREADY_COMMISSIONED, "Scanner double commissioning rejected")
-	_check(GameState.get_money() == 8, "Scanner double action cannot double-charge")
+	_check(GameState.get_money() == 0, "Scanner double action leaves Credits unchanged")
 	_check(CommissioningManager.get_stage() == CommissioningManager.Stage.SCANNER_ONLINE and _enabled(&"basic_scanner"), "Scanner authority and runtime advance together")
 	_check(_close(SimulationManager.get_effective_throughput(), 0.0), "Scanner phase aggregate throughput remains zero")
 
@@ -344,13 +330,13 @@ func _test_minimum_path_and_authority() -> void:
 		_check(CaseManager.get_active_case().get_state() == CaseProgress.State.INSPECTED, "Scanner auto-inspects " + String(case_id))
 		_check(CaseManager.classify_active_case(_wrong_category(case_id)), "Player classification retained in Scanner phase")
 		_check(CaseManager.archive_active_case(), "Scanner-assisted Case archives")
-	_check(GameState.get_money() == 24, "Four wrong Scanner-assisted Cases add 16 Credits")
+	_check(GameState.get_money() == 0, "Four wrong Scanner-assisted Cases add 0 Credits")
 	_check(FirstShiftManager.get_phase() == FirstShiftManager.Phase.SORTER_READY, "Scanner block opens Sorter gate")
 	_check(not FirstShiftManager.can_activate_next_case(), "CASE_0012 locked behind Sorter commissioning")
 	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.SUCCESS, "Sorter commissioning succeeds")
-	_check(GameState.get_money() == 6, "Sorter deducts exactly 18 Credits")
+	_check(GameState.get_money() == 0, "Sorter commissioning is exactly zero cost")
 	_check(FirstShiftManager.commission_sorter() == FirstShiftManager.CommissionResult.ALREADY_COMMISSIONED, "Sorter double commissioning rejected")
-	_check(GameState.get_money() == 6, "Sorter double action cannot double-charge")
+	_check(GameState.get_money() == 0, "Sorter double action leaves Credits unchanged")
 	_check(CommissioningManager.get_stage() == CommissioningManager.Stage.SORTER_ONLINE and _enabled(&"basic_sorter"), "Sorter authority and runtime advance together")
 	_check(_close(SimulationManager.get_effective_throughput(), 0.0), "Sorter phase aggregate throughput remains zero")
 
@@ -358,10 +344,11 @@ func _test_minimum_path_and_authority() -> void:
 		_check(FirstShiftManager.activate_next_case() != null, "Sorter phase activates FIFO " + String(case_id))
 		await _settle()
 		var progress := CaseManager.get_active_case()
-		_check(progress != null and progress.get_state() == CaseProgress.State.CLASSIFIED, "Sorter auto-inspects and classifies " + String(case_id))
-		_check(progress.get_selected_category_id() == CaseManager.get_case_definition(case_id).expected_category_id, "Sorter uses expected authored category")
+		_check(progress != null and progress.get_state() == CaseProgress.State.INSPECTED, "Sorter auto-inspects but leaves classification to the player " + String(case_id))
+		_check(progress.get_selected_category_id().is_empty(), "Sorter reveals no automatic category")
+		_check(CaseManager.classify_active_case(_wrong_category(case_id)), "Player owns Sorter-phase classification")
 		_check(CaseManager.archive_active_case(), "Player releases Sorter-assisted Case")
-	_check(GameState.get_money() == 26, "Four correctly automated Sorter Cases produce 26-Credit Intake balance")
+	_check(GameState.get_money() == 0, "All fourteen wrong classifications produce 0 Credits")
 	_check(FirstShiftManager.get_phase() == FirstShiftManager.Phase.INTAKE_READY, "Sorter block opens Intake gate")
 	_check(GameState.get_total_processed_items() == 0, "Fourteen concrete Cases create zero aggregate items")
 	_check(FirstShiftManager.get_claimed_reward_case_ids().size() == 14, "Every First Shift reward claimed once")
@@ -370,9 +357,9 @@ func _test_minimum_path_and_authority() -> void:
 	FirstShiftManager._on_case_progress_changed(&"CASE_0015")
 	_check(GameState.get_money() == before_duplicate, "Repeated archive signal cannot duplicate reward")
 	_check(FirstShiftManager.commission_intake() == FirstShiftManager.CommissionResult.SUCCESS, "Archive Intake commissioning succeeds")
-	_check(GameState.get_money() == 6, "Minimum economy path finishes with 6 Credits")
+	_check(GameState.get_money() == 0, "All-wrong path completes with 0 Credits and no commissioning deductions")
 	_check(FirstShiftManager.commission_intake() == FirstShiftManager.CommissionResult.ALREADY_COMMISSIONED, "Intake double commissioning rejected")
-	_check(GameState.get_money() == 6, "Intake double action cannot double-charge")
+	_check(GameState.get_money() == 0, "Intake double action leaves Credits unchanged")
 	_check(FirstShiftManager.is_complete() and CommissioningManager.get_stage() == CommissioningManager.Stage.FULL_LINE_ONLINE, "First Shift completes at authoritative Full Line")
 	_check(_enabled(&"receiving_desk") and _enabled(&"basic_scanner") and _enabled(&"basic_sorter") and _enabled(&"archive_intake"), "All four runtimes enabled at completion")
 	_check(_close(SimulationManager.get_effective_throughput(), 0.75), "Full Line derives 0.75 items/s")
@@ -394,7 +381,7 @@ func _test_perfect_path_and_upgrade_unlock() -> void:
 	for case_id: StringName in FirstShiftManager.SORTER_CASE_IDS:
 		await _process_case(case_id, true)
 	_check(FirstShiftManager.commission_intake() == FirstShiftManager.CommissionResult.SUCCESS, "Perfect path commissions Intake")
-	_check(GameState.get_money() == 16, "Perfect economy path finishes with 16 Credits")
+	_check(GameState.get_money() == 70, "All-correct path finishes with exactly 70 Credits")
 	_check(FirstShiftManager.is_upgrade_purchasing_unlocked(), "Upgrade purchasing unlocks after completion")
 	GameState.add_money(100)
 	_check(SimulationManager.purchase_upgrade(SCANNER_UPGRADE) == SimulationManager.PurchaseResult.SUCCESS, "Existing upgrade purchase succeeds after First Shift")
@@ -583,20 +570,10 @@ func _inject_disable_target() -> void:
 	SimulationManager.set_machine_enabled(_injection_target, false)
 
 
-func _persistent_money_commission_listener(_money: int) -> void:
-	_persistent_money_attempts += 1
-	_persistent_transition.call()
-
-
 func _persistent_commission_listener(stage: CommissioningManager.Stage) -> void:
 	_persistent_commission_attempts += 1
-	match stage:
-		CommissioningManager.Stage.SCANNER_ONLINE:
-			CommissioningManager.commission_sorter()
-		CommissioningManager.Stage.SORTER_ONLINE:
-			CommissioningManager.commission_intake()
-		CommissioningManager.Stage.FULL_LINE_ONLINE:
-			CommissioningManager.reset_to_manual_shift()
+	_nested_commission_result = int(_persistent_transition.call())
+	SimulationManager.set_machine_enabled(&"receiving_desk", false)
 
 
 func _persistent_production_listener() -> void:

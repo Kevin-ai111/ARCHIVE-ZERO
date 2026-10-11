@@ -61,7 +61,7 @@ func _test_catalog() -> void:
 	_check(umbrella.found_location == "Central Station — Platform 4" and umbrella.found_time_label == "22:41" and umbrella.condition_text == "Wet / minor wear", "Exact umbrella metadata")
 	_check(catalog.get_case(&"CASE_0010").found_location == "Archive Sector A1", "Later hook location")
 	var added_cases := [
-		[&"CASE_0011", &"canvas_tote_bag", "City Bus 42 — Rear Seat", "23:01", "Dry / minor staining", &"BAG"],
+		[&"CASE_0011", &"canvas_tote_bag", "City Bus 42 — Rear Seat", "23:01", "Dry / minor staining", &"DOCS"],
 		[&"CASE_0012", &"red_folding_umbrella", "East Concourse — Bench 12", "23:05", "Dry / minor wear", &"PERS"],
 		[&"CASE_0013", &"wireless_earbuds", "Platform 6 — Ticket Machine", "23:09", "Case scratched / intact", &"ELEC"],
 		[&"CASE_0014", &"passport_wallet", "Taxi Rank — Lane 2", "23:13", "Closed / light wear", &"DOCS"],
@@ -136,7 +136,7 @@ func _test_catalog() -> void:
 	second_category.category_id = &"OTHER"
 	second_category.display_name = "Other"
 	definition.expected_category_id = second_category.category_id
-	_check(not CaseCatalog.is_valid_catalog_data([category, second_category], [item], [definition]), "Expected category must match authored item type")
+	_check(CaseCatalog.is_valid_catalog_data([category, second_category], [item], [definition]), "Evidence rules may override the item's visual category")
 	definition.expected_category_id = category.category_id
 	item.description = " "
 	_check(not CaseCatalog.is_valid_catalog_data([category], [item], [definition]), "Blank item description rejected")
@@ -215,8 +215,11 @@ func _test_queue_and_lifecycle() -> void:
 	_check(not CaseManager.is_case_classification_correct(&"CASE_0002"), "Incorrect choice detected: ELEC vs PERS")
 	_check(CaseManager.get_active_case().get_selected_category_id() == &"PERS", "Player choice retained")
 	_clear_events()
-	_check(not CaseManager.classify_active_case(&"ELEC") and not CaseManager.mark_active_case_inspected(), "Cannot reclassify or rewind")
-	_expect_events(0, 0, [], "Classified-state rejections are silent")
+	_check(CaseManager.classify_active_case(&"ELEC") and not CaseManager.mark_active_case_inspected(), "Classification remains editable but inspection cannot rewind")
+	_expect_events(0, 0, [&"CASE_0002"], "Reclassification publishes one committed progress change")
+	_clear_events()
+	_check(CaseManager.classify_active_case(&"ELEC"), "Same-category selection is a successful no-op")
+	_expect_events(0, 0, [], "Same-category no-op is silent")
 	_check(CaseManager.archive_active_case(), "Archive classified case")
 	_expect_events(0, 1, [&"CASE_0002"], "Archival signals")
 	_check(not CaseManager.has_active_case() and CaseManager.get_active_case() == null, "Archival clears active slot")

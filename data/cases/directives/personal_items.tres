@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ArchiveDirectiveDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/cases/archive_directive_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+directive_id = &"DIRECTIVE_01_A"
+title = "01-A · PERSONAL ITEMS"
+display_text = "Everyday personal belongings without a specialist identifier route to PERS."
+priority = 100
+target_category_id = &"PERS"
+evidence_field = &"item_id"
+match_values = PackedStringArray("red_folding_umbrella", "house_keys")

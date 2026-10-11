@@ -11,8 +11,8 @@ items. CaseManager has no dependency on those services and never calls
 
 CaseManager is an additional session-wide Autoload. It starts empty, has no
 processing callback, and never initializes First Shift or the later keycard hook.
-The current enabled machine defaults, two-Credit reward, art, conveyor, HUD and
-existing purchase/save behavior are unchanged.
+FirstShiftManager observes committed archives and applies the current +5/+0
+performance reward; CaseManager itself never touches Economy or Production.
 
 ## Definitions and progress
 
@@ -28,7 +28,10 @@ existing purchase/save behavior are unchanged.
 Definitions are immutable from the consumer's perspective: the catalog copies
 input resources and returns detached definition copies. Progress, queue and save
 queries also return detached snapshots, not mutable references to live authority.
-The catalog rejects a case whose expected category disagrees with its item type.
+For the fourteen ordinary First Shift records, the catalog also verifies that
+the active Archive Directives evaluate to `expected_category_id`. The expected
+category remains authoritative; an evidence-priority Directive may deliberately
+route a container differently from its visual item category.
 
 Canonical categories: `PERS` Personal Items, `ELEC` Electronics, `DOCS` Documents,
 `BAG` Bags / Containers. Initial case IDs and authored categories:
@@ -45,6 +48,11 @@ Canonical categories: `PERS` Personal Items, `ELEC` Electronics, `DOCS` Document
 | CASE_0008 | Tablet | ELEC | NORMAL |
 | CASE_0009 | Document Folder | DOCS | NORMAL |
 | CASE_0010 | Black Hotel Keycard | PERS | MANUAL_REVIEW |
+| CASE_0011 | Canvas Tote Bag | DOCS | NORMAL |
+| CASE_0012 | Red Folding Umbrella | PERS | NORMAL |
+| CASE_0013 | Wireless Earbuds | ELEC | NORMAL |
+| CASE_0014 | Passport Wallet | DOCS | NORMAL |
+| CASE_0015 | Backpack | BAG | NORMAL |
 
 CASE_0001 preserves `Central Station — Platform 4`, `22:41`, `Wet / minor wear`.
 Cases 0002–0009 have mundane metadata in their `.tres` records. CASE_0010 is
@@ -63,10 +71,13 @@ within the batch, and any already recorded queued/active/archived case reject.
 `activate_next_case()` consumes the queue head only when no case is active.
 It returns a detached CaseProgress or null on rejection.
 
-`mark_active_case_inspected()`, `classify_active_case(category_id)` and
-`archive_active_case()` require their exact preceding state and return booleans.
-No skipping, replaying a step, reclassification or backwards transition is
-permitted. Archiving clears the active slot but retains the progress record.
+`mark_active_case_inspected()`, `set_active_case_classification(category_id)`
+(with `classify_active_case` retained as a compatibility alias) and
+`archive_active_case()` validate state and return booleans. Classification is
+editable in INSPECTED or CLASSIFIED; choosing another known category keeps the
+case CLASSIFIED and replaces the selection. Same-category selection is a valid
+silent no-op. Archive is the sole commitment point. Once ARCHIVED, no selection
+can change. Archiving clears the active slot but retains the progress record.
 Archived IDs are returned in catalog order, not completion order.
 
 A chosen category is empty until classification. Any **known** category may be
@@ -127,8 +138,21 @@ match the one active ID. Every queued/active ID must have its progress record.
 Restore validates the whole payload and constructs replacement progress before
 committing anything. Invalid restore leaves state and signals unchanged.
 The snapshot is a checkpoint, not an event log: it validates structurally possible
-states, not historical proof of earlier inspection. Explicit restore may return
-to a previous valid checkpoint; normal gameplay transitions remain forward-only.
+states, not historical proof of earlier inspection. Reclassified progress saves
+the latest selection without changing Case Save v1. Explicit restore may return
+to a previous valid checkpoint; ordinary gameplay cannot reopen an archived Case.
+
+## Archive Directives
+
+`ArchiveDirectiveDefinition` Resources provide structured ID, title, display
+text, priority, target category, evidence field and match values.
+`ArchiveDirectiveCatalog` validates unique IDs/priorities and category references;
+`ArchiveDirectiveEvaluator` orders deterministically and returns the first match.
+The four Shift-01 rules are documented in [ARCHIVE_DIRECTIVES.md](ARCHIVE_DIRECTIVES.md).
+The highest-priority DOCS rule reads the existing inspection identifier. Thus
+CASE_0006 (Canvas Tote Bag, identifier None) routes BAG while CASE_0011 uses the
+same art with File reference/Sensitive evidence and routes DOCS. CASE_0010 is
+unchanged and excluded from ordinary Directive normalization.
 
 ## Validation and later integration
 
@@ -159,7 +183,7 @@ adds no presentation to render.
 Local validation with official Godot `4.7.2.stable.official.ed1daf0bf` passed:
 
 - Project import and main-scene smoke (`--quit-after 120`, 120 frames): exit 0.
-- Case foundation: **474 checks**, including **79 invalid save payloads** rejected
+- Case foundation: **489 checks**, including **79 invalid save payloads** rejected
   atomically and without notifications.
 - Production/upgrade/save/migration suite: exit 0. Pending purchase:
   `balance=1, owned=true, multiplier=2.00, fraction=0.05000, pending=0.00`.

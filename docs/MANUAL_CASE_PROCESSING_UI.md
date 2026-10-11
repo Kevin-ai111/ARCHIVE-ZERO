@@ -81,8 +81,8 @@ and unchanged category hit targets. Physical secondary font sizes are now
 `CaseItemPresentationCatalog` maps item IDs to approved textures only in
 presentation. CaseManager contains no textures or UI state. CaseDefinition gains
 three validated nonblank authored strings: `inspection_material`,
-`inspection_identifier`, `inspection_risk`. All ten records use the exact
-requested values; these strings drive no gameplay decisions. CaseProgress and
+`inspection_identifier`, `inspection_risk`. These authored strings are now
+eligible Directive evidence; the UI still never computes correctness. CaseProgress and
 CaseManager code/schema are unchanged; inspection values never enter case-save v1.
 Global SaveManager stays **v3**, with no case data added to the live user save.
 
@@ -95,26 +95,31 @@ There is no local authoritative case or selected-category cache.
 | --- | --- | --- | --- |
 | ACTIVE | Enabled | Disabled | Disabled |
 | INSPECTED | Disabled | All four enabled | Disabled |
-| CLASSIFIED | Disabled | Locked; chosen category amber + check | Enabled |
-| ARCHIVED | Panel closes; active clears | — | — |
+| CLASSIFIED | Disabled | All four enabled; chosen category amber + check | Enabled |
+| ARCHIVED | Active clears; committed result snapshot is shown | — | — |
 
 ACTIVE displays SCAN DATA / PENDING. Inspection reveals authored Material,
 Identifier and Risk with a small green check only. Incorrect but known choices
-are accepted: the umbrella can be classified ELEC without any correctness label,
-penalty or feedback. Presentation never reads expected_category_id or calls the
-correctness query. The first keyboard focus after inspection is always PERS,
+are accepted and may be corrected repeatedly before Archive, without correctness
+feedback. The Archive action is the only commitment point. Before it, presentation
+never reads `expected_category_id` or calls the correctness query. The first keyboard focus after inspection is always PERS,
 regardless of expected category; its cyan focus ring is navigation, not an answer
 hint. All unselected/unfocused categories share identical base treatment.
 
 Focus order is deterministic and skips disabled controls. Native Enter/Space
 activate focused buttons; Tab cycles the currently available controls. Focus moves
-from Inspect to the first enabled category, then to Release. Focus has a shaped
+from Inspect to Directives/Close, then to the first enabled category. After a
+selection, focus remains on the editable chosen category and Release remains in
+the native focus cycle. Focus has a shaped
 outline; chosen categories have a checkmark as well as amber treatment. Disabled
 callbacks are guarded even if a signal is artificially emitted.
 
 Close/Escape only hide presentation and preserve case/selection/queue. Reopening
-ACTIVE, INSPECTED or CLASSIFIED rebuilds the exact authority state. Archiving
-closes the panel and never activates the next queued case. MANUAL_REVIEW only adds
+ACTIVE, INSPECTED or CLASSIFIED rebuilds the exact authority state. A compact
+Directive drawer overlays only the information column; categories and Archive
+remain accessible, and closing it loses no state. After Archive, an immutable
+result snapshot shows restrained CORRECT/+5 C or MISROUTED, selected/expected and
++0 C. The archived Case is not kept active. MANUAL_REVIEW only adds
 the supplied amber administrative strip; CASE_0010 retains exact authored
 location/time/condition and the ordinary lifecycle, with no story or anomaly.
 
@@ -195,8 +200,8 @@ measurement. The case controller has no `_process`/continuous redraw loop.
 
 ## Automated validation and boundaries
 
-All six requested headless commands passed with official Godot 4.7.2. Case
-foundation: **477 checks** (79 corrupt-save payloads). Corrected Manual UI: **1873 checks**,
+All requested headless commands passed with official Godot 4.7.2. Case
+foundation: **489 checks** (79 corrupt-save payloads). Current Manual UI: **1874 checks**,
 also passed with the real OpenGL renderer. Tests include all 31 source hashes,
 original RGBA/dimensions/import parameters, all authored inspection values, full
 actual wrapped-line visibility (including the original-layout negative control),

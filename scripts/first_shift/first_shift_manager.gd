@@ -5,6 +5,7 @@ extends Node
 
 signal first_shift_state_changed(phase: Phase)
 signal case_reward_granted(case_id: StringName, credits: int)
+signal case_result_committed(result: Dictionary)
 signal transaction_rolled_back
 
 enum Phase {
@@ -49,11 +50,10 @@ const FIRST_SHIFT_CASE_IDS: Array[StringName] = [
 	&"CASE_0007", &"CASE_0008", &"CASE_0009", &"CASE_0011",
 	&"CASE_0012", &"CASE_0013", &"CASE_0014", &"CASE_0015",
 ]
-const SCANNER_COST := 16
-const SORTER_COST := 18
-const INTAKE_COST := 20
-const CASE_BASE_REWARD := 4
-const CASE_ACCURACY_BONUS := 1
+const SCANNER_COST := 0
+const SORTER_COST := 0
+const INTAKE_COST := 0
+const CORRECT_CASE_REWARD := 5
 const RECEIVING_ID := &"receiving_desk"
 const SCANNER_ID := &"basic_scanner"
 const SORTER_ID := &"basic_sorter"
@@ -66,6 +66,7 @@ var _phase: Phase = Phase.COMPLETE
 var _claimed_reward_case_ids: Array[StringName] = []
 var _session_initialized := false
 var _mutating := false
+var _last_committed_case_result: Dictionary = {}
 
 
 func _ready() -> void:
@@ -84,6 +85,8 @@ func start_new_game() -> bool:
 	if _mutating:
 		return false
 	_mutating = true
+	# Clear presentation-only history before CaseManager publishes any reset.
+	_last_committed_case_result.clear()
 	var success := true
 	if CaseManager.get_case_save_data() != CaseManager.get_default_case_save_data():
 		success = CaseManager.reset_cases()
@@ -144,6 +147,10 @@ func get_claimed_reward_case_ids() -> Array[StringName]:
 	return _claimed_reward_case_ids.duplicate()
 
 
+func get_last_committed_case_result() -> Dictionary:
+	return _last_committed_case_result.duplicate(true)
+
+
 func can_activate_next_case() -> bool:
 	if not _session_initialized or CaseManager.has_active_case():
 		return false
@@ -199,11 +206,11 @@ func get_primary_action_text() -> String:
 		Phase.MANUAL_CASES, Phase.SCANNER_CASES, Phase.SORTER_CASES:
 			return "CASE READY" if can_activate_next_case() else "CASE IN PROGRESS"
 		Phase.SCANNER_READY:
-			return "COMMISSION SCANNER — 16 C"
+			return "COMMISSION SCANNER"
 		Phase.SORTER_READY:
-			return "COMMISSION SORTER — 18 C"
+			return "COMMISSION SORTER"
 		Phase.INTAKE_READY:
-			return "COMMISSION INTAKE — 20 C"
+			return "COMMISSION INTAKE"
 		_:
 			return "FULL LINE ONLINE"
 
@@ -358,6 +365,7 @@ func restore_first_shift_save_data(data: Variant) -> bool:
 	var changed := _phase != next_phase or _claimed_reward_case_ids != next_claimed or not _session_initialized
 	_phase = next_phase as Phase
 	_claimed_reward_case_ids = next_claimed
+	_last_committed_case_result.clear()
 	_session_initialized = true
 	if changed:
 		first_shift_state_changed.emit(_phase)
@@ -385,13 +393,15 @@ func _commission(
 		or int(CommissioningManager.MACHINE_STAGES.get(machine_id, -1)) != expected_stage + 1
 	):
 		return CommissionResult.TRANSACTION_FAILED
-	if not Economy.can_afford(cost):
+	if cost > 0 and not Economy.can_afford(cost):
 		return CommissionResult.INSUFFICIENT_FUNDS
 	var snapshot := _get_commission_snapshot()
 	if snapshot.is_empty():
 		return CommissionResult.TRANSACTION_FAILED
 	_mutating = true
-	var success := Economy.spend_money(cost)
+	var success := true
+	if cost > 0:
+		success = Economy.spend_money(cost)
 	if success:
 		success = bool(advance.call())
 	if success:
@@ -482,6 +492,8 @@ func _restore_commission_snapshot(snapshot: Dictionary) -> bool:
 
 
 func _on_active_case_changed() -> void:
+	if CaseManager.has_active_case():
+		_last_committed_case_result.clear()
 	if _mutating or not _session_initialized or _phase == Phase.COMPLETE:
 		return
 	var progress := CaseManager.get_active_case()
@@ -506,10 +518,6 @@ func _apply_case_assistance(case_id: StringName) -> void:
 		if not CaseManager.mark_active_case_inspected():
 			return
 		progress = CaseManager.get_active_case()
-	if _phase == Phase.SORTER_CASES and progress != null and progress.get_state() == CaseProgress.State.INSPECTED:
-		var definition := CaseManager.get_case_definition(case_id)
-		if definition != null:
-			CaseManager.classify_active_case(definition.expected_category_id)
 
 
 func _on_case_progress_changed(case_id: StringName) -> void:
@@ -520,17 +528,23 @@ func _on_case_progress_changed(case_id: StringName) -> void:
 		return
 	if case_id not in FIRST_SHIFT_CASE_IDS or _claimed_reward_case_ids.has(case_id):
 		return
-	var reward := CASE_BASE_REWARD
-	if CaseManager.is_case_classification_correct(case_id):
-		reward += CASE_ACCURACY_BONUS
+	var archived_progress := CaseManager.get_case_progress(case_id)
+	var definition := CaseManager.get_case_definition(case_id)
+	if archived_progress == null or definition == null:
+		return
+	var correct := CaseManager.is_case_classification_correct(case_id)
+	var reward := CORRECT_CASE_REWARD if correct else 0
 	var game_before := GameState.get_transaction_snapshot()
 	var phase_before := _phase
 	var claims_before := _claimed_reward_case_ids.duplicate()
+	var result_before := _last_committed_case_result.duplicate(true)
 	_mutating = true
 	# Reserve before Economy emits money_changed, so no observer can see money
 	# credited without the corresponding idempotency claim.
 	_claimed_reward_case_ids.append(case_id)
-	var success := Economy.add_money(reward)
+	var success := true
+	if reward > 0:
+		success = Economy.add_money(reward)
 	var phase_changed := false
 	if success:
 		phase_changed = _update_progression_gate()
@@ -541,9 +555,18 @@ func _on_case_progress_changed(case_id: StringName) -> void:
 			and is_equal_approx(GameState.get_total_playtime(), float(game_before["total_playtime"]))
 			and _claimed_reward_case_ids.count(case_id) == 1
 		)
+	if success:
+		_last_committed_case_result = {
+			"case_id": String(case_id),
+			"selected_category_id": String(archived_progress.get_selected_category_id()),
+			"expected_category_id": String(definition.expected_category_id),
+			"correct": correct,
+			"reward": reward,
+		}
 	if not success:
 		_claimed_reward_case_ids = claims_before
 		_phase = phase_before
+		_last_committed_case_result = result_before
 		var restored := GameState.restore_transaction_snapshot_silent(game_before)
 		_mutating = false
 		if (
@@ -558,6 +581,7 @@ func _on_case_progress_changed(case_id: StringName) -> void:
 	case_reward_granted.emit(case_id, reward)
 	if phase_changed:
 		first_shift_state_changed.emit(_phase)
+	case_result_committed.emit(get_last_committed_case_result())
 
 
 func _update_progression_gate() -> bool:
